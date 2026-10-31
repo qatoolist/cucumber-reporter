@@ -4,13 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/qatoolist/cucumber-reporter/cucumber"
 )
 
 // OptionsVersion is the only Options.Version this release accepts.
-const OptionsVersion = 1
+const OptionsVersion = 2
 
 // Errors returned by Render, RenderDir and RenderDirTo, in addition to the cucumber package's parse
 // errors. Messages never contain report data.
@@ -27,48 +26,43 @@ var (
 	ErrEmptyOutput = errors.New("report: renderer produced no report")
 )
 
-// Options configure one render. The zero value is not valid: Version must be set.
+// Options configure one render. The zero value is not valid: Version must be set. The JSON names are
+// the format of the command's -options file.
 type Options struct {
-	// Version is the options schema version; it must be OptionsVersion (1).
-	Version int
-	// Title is the document title. Default "Cucumber report".
-	Title string
-	// Name is the heading shown on the page. Default: Title.
-	Name string
-	// RunFacts are shown, in order, in the run information panel.
-	RunFacts []Fact
-	// Sections are caller-owned panels shown, in order, on the dashboard.
-	Sections []Section
+	// Version is the options schema version; it must be OptionsVersion (2).
+	Version int `json:"version"`
+	// Title is the document title and the brand line of the printed cover. Default "Cucumber report".
+	Title string `json:"title,omitempty"`
+	// Name is the run name shown in the top bar and as the printed heading. Default: Title.
+	Name string `json:"name,omitempty"`
+	// RunFacts are shown, in order, on the dashboard (the first six), under Run details and on the
+	// printed cover.
+	RunFacts []Fact `json:"runFacts,omitempty"`
+	// TopFacts names, by label, up to three RunFacts whose values the top bar shows under the run name.
+	// Empty: the first three RunFacts.
+	TopFacts []string `json:"topFacts,omitempty"`
+	// WallClock, when set, is shown beside the summed test time, for example "9m 35s". Cucumber JSON
+	// has no start times, so the renderer cannot compute it.
+	WallClock string `json:"wallClock,omitempty"`
+	// Sections are caller-owned panels: compact cards on the dashboard and full panels under Run details.
+	Sections []Section `json:"sections,omitempty"`
+	// Annotations attach known issues, skip reasons and observation limits to scenarios.
+	Annotations []Annotation `json:"annotations,omitempty"`
 	// Defaults are the generation-time view settings. A viewer's saved preferences override them.
-	Defaults ViewDefaults
+	Defaults ViewDefaults `json:"defaults"`
 	// Verdict, when set, replaces the computed headline, for example "Passed with known failures".
-	// The page then also shows the result computed from the steps.
-	Verdict *Verdict
+	Verdict *Verdict `json:"verdict,omitempty"`
 	// Limits bound the input (RenderDir) and the inline attachment size (all renders).
-	Limits cucumber.Limits
+	Limits cucumber.Limits `json:"limits"`
 }
 
 // Fact is one label and value pair.
 type Fact struct {
-	Label, Value string
+	Label string `json:"label"`
+	Value string `json:"value"`
 }
 
-// Verdict is a caller-chosen headline. Status (one of the six) sets the symbol and color; Label
-// defaults to the status name; Explanation is an optional line below the headline.
-type Verdict struct {
-	Status             cucumber.Status
-	Label, Explanation string
-}
-
-// FeatureAnchor is the stable in-page anchor (element id) of the feature at index i (zero-based) of
-// the rendered features. Callers can use it to refer to a feature's card.
-func FeatureAnchor(i int) string { return "f" + strconv.Itoa(i+1) }
-
-// ScenarioAnchor is the stable in-page anchor (element id) of scenario j (zero-based) of feature i
-// (zero-based).
-func ScenarioAnchor(i, j int) string { return FeatureAnchor(i) + "-s" + strconv.Itoa(j+1) }
-
-// Tone values for a Section or a Segment.
+// Tone values for a Verdict or a Section.
 const (
 	ToneInfo = "info"
 	ToneOK   = "ok"
@@ -76,57 +70,87 @@ const (
 	ToneFail = "fail"
 )
 
-// Section is a caller-owned panel. ID is a stable identifier of 1 to 48 characters from a-z, 0-9 and
-// "-", starting with a letter; it names the section in settings and in ViewDefaults.Sections.
-type Section struct {
-	ID, Title string
-	// Tone is ToneInfo (default), ToneOK, ToneWarn or ToneFail.
-	Tone string
-	// Summary facts are shown as a compact list at the top of the panel.
-	Summary []Fact
-	// Rows are shown as a two-column table.
-	Rows []Fact
-	// Note is a closing paragraph.
-	Note string
-	// Chart, when set, adds a stacked bar to the chart grid with ChartID SectionChartID(ID).
-	Chart *ChartSeries
+// Verdict is a caller-chosen headline. Label is required. Tone colors the headline and picks its
+// symbol (ToneFail a cross, ToneWarn a flag, otherwise a check); empty selects the tone the renderer
+// computes from the results.
+type Verdict struct {
+	Label string `json:"label"`
+	Tone  string `json:"tone,omitempty"`
 }
 
-// ChartSeries is a caller-supplied stacked bar, for example known failures compared with failures.
-type ChartSeries struct {
-	Title    string
-	Segments []Segment
-}
-
-// MaxSegmentValue bounds Segment.Value so that a series total cannot overflow.
-const MaxSegmentValue = 1_000_000_000
-
-// Segment is one part of a ChartSeries. Value is between 0 and MaxSegmentValue.
-type Segment struct {
-	Label string
-	Value int
-	// Tone colors the segment: ToneInfo (default), ToneOK, ToneWarn or ToneFail.
-	Tone string
-}
-
-// ChartID names a chart in settings and in ViewDefaults.Charts.
-type ChartID string
-
-// Built-in charts.
+// Section roles. A role tells the page that a section summarizes data it also receives as annotations.
 const (
-	ChartScenarioStatus   ChartID = "scenario-status"
-	ChartStepStatus       ChartID = "step-status"
-	ChartFeatureResults   ChartID = "feature-results"
-	ChartSlowestSteps     ChartID = "slowest-steps"
-	ChartSlowestScenarios ChartID = "slowest-scenarios"
-	ChartFeatureDuration  ChartID = "feature-duration"
+	// RoleKnownIssues: the section's summary facts and note appear on the Known issues page instead of
+	// a dashboard card. At most one section may have this role.
+	RoleKnownIssues = "known"
+	// RoleSkipped: the section lists skipped scenarios.
+	RoleSkipped = "skip"
+	// RoleLimits: the section lists observation limits (scenarios not fully verified).
+	RoleLimits = "limit"
 )
 
-// BuiltinCharts lists the built-in charts in display order.
-var BuiltinCharts = []ChartID{ChartScenarioStatus, ChartStepStatus, ChartFeatureResults, ChartSlowestSteps, ChartSlowestScenarios, ChartFeatureDuration}
+// Section is a caller-owned panel. ID is a stable identifier of 1 to 48 characters from a-z, 0-9 and
+// "-", starting with a letter; links to Run details use it (#/run?section=<id>).
+type Section struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	// Tone is ToneInfo (default), ToneOK, ToneWarn or ToneFail.
+	Tone string `json:"tone,omitempty"`
+	// Role is empty, RoleKnownIssues, RoleSkipped or RoleLimits. Sections with a role are left out of
+	// the printed scope sections, because their entries are printed from the annotations.
+	Role string `json:"role,omitempty"`
+	// Summary facts are shown as a compact list at the top of the panel.
+	Summary []Fact `json:"summary,omitempty"`
+	// Rows are shown as a two-column table.
+	Rows []Fact `json:"rows,omitempty"`
+	// Note is a closing paragraph; a dashboard card without summary or rows shows it instead.
+	Note string `json:"note,omitempty"`
+}
 
-// SectionChartID is the ChartID of a section's chart.
-func SectionChartID(sectionID string) ChartID { return ChartID("section-" + sectionID) }
+// Annotation kinds.
+const (
+	// KindKnown: a known issue covers the scenario.
+	KindKnown = "known"
+	// KindSkip: the reason a scenario was skipped.
+	KindSkip = "skip"
+	// KindLimit: part of what the scenario claims cannot be observed in the environment.
+	KindLimit = "limit"
+)
+
+// Annotation attaches caller knowledge to one scenario, named by its ScenarioIDs value.
+//
+// Known issues follow these rules, applied by the renderer so that callers need no post-processing:
+//   - At most one KindKnown annotation per scenario and Ref.
+//   - Step is the declared step, numbered from 1 over the scenario's steps (0: none declared).
+//   - Observed reports that an expected-failure outcome was recorded at Step; it requires Step.
+//   - A scenario with a KindKnown annotation whose result is failed, or that passed with an observed
+//     expected failure, counts as a known failure, not as failed. Other results are unchanged; a
+//     passed scenario with only unobserved known issues is flagged "the issue may be fixed".
+//   - The known-failure marker sits on the scenario's failed steps when it has any, otherwise on the
+//     observed declared steps only. Outcomes are listed as detail and never mark a step.
+//   - The default headline and the "As expected" figure count known failures as expected.
+type Annotation struct {
+	Scenario string `json:"scenario"`
+	// Kind is KindKnown, KindSkip or KindLimit.
+	Kind string `json:"kind"`
+	// Ref is the issue key of a known issue, for example "EX-101".
+	Ref   string `json:"ref,omitempty"`
+	Title string `json:"title,omitempty"`
+	Note  string `json:"note,omitempty"`
+	// Step is the declared step (KindKnown), from 1; 0 when none is declared.
+	Step int `json:"step,omitempty"`
+	// Observed: an expected-failure outcome was recorded at Step (KindKnown only).
+	Observed bool `json:"observed,omitempty"`
+	// Outcomes are every outcome recorded for this issue in this scenario, shown as detail.
+	Outcomes []Outcome `json:"outcomes,omitempty"`
+}
+
+// Outcome is one recorded known-issue outcome. Step is numbered from 1, 0 when it has no step.
+type Outcome struct {
+	Step    int    `json:"step,omitempty"`
+	Outcome string `json:"outcome"`
+	Text    string `json:"text,omitempty"`
+}
 
 // View setting values.
 const (
@@ -137,31 +161,64 @@ const (
 	DensityComfortable = "comfortable"
 	DensityCompact     = "compact"
 
+	// ExpandFailed opens the first attachment of a failed step; ExpandAll opens every attachment;
+	// ExpandNone opens none.
 	ExpandFailed = "failed"
-	ExpandNone   = "none"
 	ExpandAll    = "all"
+	ExpandNone   = "none"
 
-	// PageSizeAll shows every scenario and feature row without paging.
-	PageSizeAll = -1
-	// DefaultPageSize applies when ViewDefaults.PageSize is zero.
-	DefaultPageSize = 50
+	ViewDashboard = "dashboard"
+	ViewFeatures  = "features"
+	ViewScenarios = "scenarios"
+	ViewFailures  = "failures"
 )
 
-// ViewDefaults are the generation-time settings. Zero values select: every chart and section shown,
-// ThemeAuto, DensityComfortable, ExpandFailed and DefaultPageSize.
+// Dashboard widgets, in display order. ViewDefaults.Widgets keys must be one of these.
+const (
+	WidgetHero      = "hero"
+	WidgetKPIs      = "kpis"
+	WidgetStatus    = "status"
+	WidgetFeatures  = "features"
+	WidgetAttention = "attention"
+	WidgetKnown     = "known"
+	WidgetDuration  = "duration"
+	WidgetSections  = "sections"
+)
+
+// Widgets lists every dashboard widget in display order.
+var Widgets = []string{WidgetHero, WidgetKPIs, WidgetStatus, WidgetFeatures, WidgetAttention, WidgetKnown, WidgetDuration, WidgetSections}
+
+// Navigation sections, in display order. ViewDefaults.Nav keys must be one of these; NavDashboard
+// cannot be hidden.
+const (
+	NavDashboard = "dashboard"
+	NavFeatures  = "features"
+	NavScenarios = "scenarios"
+	NavFailures  = "failures"
+	NavKnown     = "known"
+	NavSkipped   = "skipped"
+	NavTimeline  = "timeline"
+	NavRun       = "run"
+)
+
+// NavSections lists every navigation section in display order.
+var NavSections = []string{NavDashboard, NavFeatures, NavScenarios, NavFailures, NavKnown, NavSkipped, NavTimeline, NavRun}
+
+// ViewDefaults are the generation-time settings. Zero values select ThemeAuto, DensityComfortable,
+// ExpandFailed, ViewDashboard and every widget and navigation section shown.
 type ViewDefaults struct {
-	// Charts hides a chart when its entry is false. Keys must name a built-in or section chart.
-	Charts map[ChartID]bool
-	// Sections hides a section when its entry is false. Keys must name a section in Options.Sections.
-	Sections map[string]bool
 	// Theme is ThemeAuto, ThemeLight or ThemeDark.
-	Theme string
+	Theme string `json:"theme,omitempty"`
 	// Density is DensityComfortable or DensityCompact.
-	Density string
-	// Expand selects which scenario cards start open: ExpandFailed, ExpandNone or ExpandAll.
-	Expand string
-	// PageSize is 25, 50, 100 or PageSizeAll; zero selects DefaultPageSize.
-	PageSize int
+	Density string `json:"density,omitempty"`
+	// Expand selects which attachments start open: ExpandFailed, ExpandAll or ExpandNone.
+	Expand string `json:"expand,omitempty"`
+	// View is the start page: ViewDashboard, ViewFeatures, ViewScenarios or ViewFailures.
+	View string `json:"view,omitempty"`
+	// Widgets hides a dashboard widget when its entry is false.
+	Widgets map[string]bool `json:"widgets,omitempty"`
+	// Nav hides a navigation section when its entry is false.
+	Nav map[string]bool `json:"nav,omitempty"`
 }
 
 var sectionIDPattern = regexp.MustCompile(`^[a-z][a-z0-9-]{0,47}$`)
@@ -170,16 +227,46 @@ func invalid(format string, args ...any) error {
 	return fmt.Errorf("%w: %s", ErrInvalidOptions, fmt.Sprintf(format, args...))
 }
 
-func validTone(t string) bool {
-	switch t {
-	case "", ToneInfo, ToneOK, ToneWarn, ToneFail:
-		return true
+func validTone(t string) bool { return oneOf(t, "", ToneInfo, ToneOK, ToneWarn, ToneFail) }
+
+func oneOf(v string, set ...string) bool {
+	for _, s := range set {
+		if v == s {
+			return true
+		}
 	}
 	return false
 }
 
-// normalize validates opt and returns a copy with defaults applied. Error messages name the field
-// and index only.
+// choose validates a setting and applies its default, the first value of set.
+func choose(v *string, field string, set ...string) error {
+	if *v == "" {
+		*v = set[0]
+		return nil
+	}
+	if !oneOf(*v, set...) {
+		return invalid("defaults.%s", field)
+	}
+	return nil
+}
+
+// switches validates a widget or navigation map and returns it with every key present.
+func switches(in map[string]bool, field string, keys []string) (map[string]bool, error) {
+	for k := range in {
+		if !oneOf(k, keys...) {
+			return nil, invalid("defaults.%s names an unknown entry", field)
+		}
+	}
+	out := make(map[string]bool, len(keys))
+	for _, k := range keys {
+		on, set := in[k]
+		out[k] = !set || on
+	}
+	return out, nil
+}
+
+// normalize validates opt without the features and returns a copy with defaults applied. Annotations
+// are checked against the features by checkAnnotations. Error messages name the field and index only.
 func normalize(opt Options) (Options, error) {
 	if opt.Version != OptionsVersion {
 		return opt, ErrOptionsVersion
@@ -191,81 +278,118 @@ func normalize(opt Options) (Options, error) {
 		opt.Name = opt.Title
 	}
 	opt.Limits = opt.Limits.WithDefaults()
-	if v := opt.Verdict; v != nil && !v.Status.Valid() {
-		return opt, invalid("verdict.status")
+	if v := opt.Verdict; v != nil {
+		if v.Label == "" {
+			return opt, invalid("verdict.label is empty")
+		}
+		if !validTone(v.Tone) {
+			return opt, invalid("verdict.tone")
+		}
 	}
-
-	charts := map[ChartID]bool{}
-	for _, id := range BuiltinCharts {
-		charts[id] = true
+	if len(opt.TopFacts) > 3 {
+		return opt, invalid("topFacts names more than three facts")
 	}
-	sections := map[string]bool{}
+	for i, label := range opt.TopFacts {
+		found := false
+		for _, f := range opt.RunFacts {
+			found = found || f.Label == label
+		}
+		if !found {
+			return opt, invalid("topFacts[%d] names no run fact", i)
+		}
+	}
+	ids := map[string]bool{}
+	knownSections := 0
 	for i, s := range opt.Sections {
 		if !sectionIDPattern.MatchString(s.ID) {
 			return opt, invalid("sections[%d].id", i)
 		}
-		if sections[s.ID] {
+		if ids[s.ID] {
 			return opt, invalid("sections[%d].id is a duplicate", i)
 		}
-		sections[s.ID] = true
+		ids[s.ID] = true
 		if s.Title == "" {
 			return opt, invalid("sections[%d].title is empty", i)
 		}
 		if !validTone(s.Tone) {
 			return opt, invalid("sections[%d].tone", i)
 		}
-		if s.Chart != nil {
-			for j, seg := range s.Chart.Segments {
-				if seg.Value < 0 || seg.Value > MaxSegmentValue {
-					return opt, invalid("sections[%d].chart.segments[%d].value is outside 0 to MaxSegmentValue", i, j)
-				}
-				if !validTone(seg.Tone) {
-					return opt, invalid("sections[%d].chart.segments[%d].tone", i, j)
-				}
-			}
-			charts[SectionChartID(s.ID)] = true
+		if !oneOf(s.Role, "", RoleKnownIssues, RoleSkipped, RoleLimits) {
+			return opt, invalid("sections[%d].role", i)
+		}
+		if s.Role == RoleKnownIssues {
+			knownSections++
+		}
+	}
+	if knownSections > 1 {
+		return opt, invalid("more than one section has the known-issues role")
+	}
+	for i, a := range opt.Annotations {
+		if !oneOf(a.Kind, KindKnown, KindSkip, KindLimit) {
+			return opt, invalid("annotations[%d].kind", i)
+		}
+		if a.Kind != KindKnown && (a.Step != 0 || a.Observed || len(a.Outcomes) > 0) {
+			return opt, invalid("annotations[%d]: step, observed and outcomes apply to known issues only", i)
+		}
+		if a.Observed && a.Step == 0 {
+			return opt, invalid("annotations[%d].observed needs a declared step", i)
 		}
 	}
 
 	d := opt.Defaults
-	for id := range d.Charts {
-		if !charts[id] {
-			return opt, invalid("defaults.charts names an unknown chart")
+	for _, c := range []struct {
+		v     *string
+		field string
+		set   []string
+	}{
+		{&d.Theme, "theme", []string{ThemeAuto, ThemeLight, ThemeDark}},
+		{&d.Density, "density", []string{DensityComfortable, DensityCompact}},
+		{&d.Expand, "expand", []string{ExpandFailed, ExpandAll, ExpandNone}},
+		{&d.View, "view", []string{ViewDashboard, ViewFeatures, ViewScenarios, ViewFailures}},
+	} {
+		if err := choose(c.v, c.field, c.set...); err != nil {
+			return opt, err
 		}
 	}
-	for id := range d.Sections {
-		if !sections[id] {
-			return opt, invalid("defaults.sections names an unknown section")
-		}
+	var err error
+	if d.Widgets, err = switches(d.Widgets, "widgets", Widgets); err != nil {
+		return opt, err
 	}
-	switch d.Theme {
-	case "":
-		d.Theme = ThemeAuto
-	case ThemeAuto, ThemeLight, ThemeDark:
-	default:
-		return opt, invalid("defaults.theme")
+	if d.Nav, err = switches(d.Nav, "nav", NavSections); err != nil {
+		return opt, err
 	}
-	switch d.Density {
-	case "":
-		d.Density = DensityComfortable
-	case DensityComfortable, DensityCompact:
-	default:
-		return opt, invalid("defaults.density")
-	}
-	switch d.Expand {
-	case "":
-		d.Expand = ExpandFailed
-	case ExpandFailed, ExpandNone, ExpandAll:
-	default:
-		return opt, invalid("defaults.expand")
-	}
-	switch d.PageSize {
-	case 0:
-		d.PageSize = DefaultPageSize
-	case 25, 50, 100, PageSizeAll:
-	default:
-		return opt, invalid("defaults.pageSize")
+	if !d.Nav[NavDashboard] {
+		return opt, invalid("defaults.nav cannot hide the dashboard")
 	}
 	opt.Defaults = d
 	return opt, nil
+}
+
+// checkAnnotations validates the annotations against the scenarios: steps maps each scenario ID to
+// its number of steps.
+func checkAnnotations(anns []Annotation, steps map[string]int) error {
+	type key struct{ scenario, ref string }
+	seen := map[key]bool{}
+	for i, a := range anns {
+		n, ok := steps[a.Scenario]
+		if !ok {
+			return invalid("annotations[%d].scenario names no scenario", i)
+		}
+		if a.Step < 0 || a.Step > n {
+			return invalid("annotations[%d].step is outside the scenario's steps", i)
+		}
+		for j, o := range a.Outcomes {
+			if o.Step < 0 || o.Step > n {
+				return invalid("annotations[%d].outcomes[%d].step is outside the scenario's steps", i, j)
+			}
+		}
+		if a.Kind == KindKnown {
+			k := key{a.Scenario, a.Ref}
+			if seen[k] {
+				return invalid("annotations[%d] repeats a known issue for the same scenario", i)
+			}
+			seen[k] = true
+		}
+	}
+	return nil
 }

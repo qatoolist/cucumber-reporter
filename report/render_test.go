@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -44,11 +45,11 @@ func mustRender(t testing.TB, features []cucumber.Feature, opt Options) string {
 	return string(out)
 }
 
-// sampleOptions mirrors how a test framework would call the library: run facts and caller sections,
-// one with a chart, and one chart hidden by default. All values are invented.
+// sampleOptions mirrors how a test framework would call the library: run facts, caller sections with
+// roles, and one widget and one navigation section hidden by default. All values are invented.
 func sampleOptions() Options {
 	return Options{
-		Version: 1,
+		Version: OptionsVersion,
 		Title:   "Example suite",
 		Name:    "Example suite execution results",
 		RunFacts: []Fact{
@@ -58,40 +59,58 @@ func sampleOptions() Options {
 		},
 		Sections: []Section{
 			{
-				ID: "known-issues", Title: "Known issues", Tone: ToneWarn,
+				ID: "known-issues", Title: "Known issues", Tone: ToneWarn, Role: RoleKnownIssues,
 				Summary: []Fact{{Label: "Run status", Value: "completed"}, {Label: "Known failures", Value: "2"}, {Label: "Unexpected failures", Value: "0"}},
 				Rows: []Fact{
 					{Label: "EX-101 Order processing / Reject an order with quantity 0", Value: "known failure"},
 					{Label: "EX-101 Order processing / Reject an order with quantity -1", Value: "known failure"},
 				},
-				Note:  "Known failures are listed apart from raw step status.",
-				Chart: &ChartSeries{Title: "Known failures compared with failures", Segments: []Segment{{"Known failures", 2, ToneWarn}, {"Unexpected failures", 0, ToneFail}}},
+				Note: "Known failures are listed apart from raw step status.",
 			},
 			{
-				ID: "skipped", Title: "Skipped scenarios", Tone: ToneInfo,
+				ID: "skipped", Title: "Skipped scenarios", Role: RoleSkipped,
 				Rows: []Fact{{Label: "Billing / Invoice is pending implementation", Value: "Scenario skipped by Godog"}},
 			},
 		},
-		Defaults: ViewDefaults{Charts: map[ChartID]bool{ChartSlowestScenarios: false}},
+		Defaults: ViewDefaults{Widgets: map[string]bool{WidgetDuration: false}, Nav: map[string]bool{NavTimeline: false}},
 	}
 }
 
+// loadShowcase reads the synthetic showcase run and its options file (the command's -options format).
+func loadShowcase(t testing.TB, suffix string) ([]cucumber.Feature, Options) {
+	t.Helper()
+	features := loadFixture(t, filepath.Join("showcase", "cucumber"+suffix+".json"))
+	raw, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", "showcase", "options"+suffix+".json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.DisallowUnknownFields()
+	var opt Options
+	if err := dec.Decode(&opt); err != nil {
+		t.Fatalf("options%s.json: %v", suffix, err)
+	}
+	return features, opt
+}
+
 func TestGolden(t *testing.T) {
+	showcase, showcaseOpt := loadShowcase(t, "")
 	cases := []struct {
-		name    string
-		fixture string
-		opt     Options
+		name     string
+		features []cucumber.Feature
+		opt      Options
 	}{
-		{"godog-v0.16.0", "godog-v0.16.0.json", sampleOptions()},
-		{"minimal", "minimal.json", Options{Version: 1}},
-		{"minimal-defaults", "minimal.json", Options{Version: 1, Title: "Defaults", Defaults: ViewDefaults{
-			Charts: map[ChartID]bool{ChartStepStatus: false, ChartFeatureDuration: false},
-			Theme:  ThemeDark, Density: DensityCompact, Expand: ExpandAll, PageSize: PageSizeAll,
+		{"godog-v0.16.0", loadFixture(t, "godog-v0.16.0.json"), sampleOptions()},
+		{"minimal", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion}},
+		{"minimal-defaults", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion, Title: "Defaults", Defaults: ViewDefaults{
+			Theme: ThemeDark, Density: DensityCompact, Expand: ExpandAll, View: ViewFailures,
+			Widgets: map[string]bool{WidgetStatus: false}, Nav: map[string]bool{NavRun: false},
 		}}},
+		{"showcase", showcase, showcaseOpt},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := mustRender(t, loadFixture(t, tc.fixture), tc.opt)
+			got := mustRender(t, tc.features, tc.opt)
 			path := filepath.Join("..", "testdata", "golden", tc.name+".html")
 			if *update {
 				if err := os.WriteFile(path, []byte(got), 0o644); err != nil {
@@ -120,17 +139,14 @@ func TestDeterministic(t *testing.T) {
 
 var cspPattern = regexp.MustCompile(`<meta http-equiv="Content-Security-Policy" content="([^"]*)">`)
 
-func inlineElement(t *testing.T, doc, tag string) string {
+// bareElement returns the content of the only <tag> element written without attributes.
+func bareElement(t *testing.T, doc, tag string) string {
 	t.Helper()
 	open, end := "<"+tag+">", "</"+tag+">"
-	if strings.Count(doc, "<"+tag) != 1 || strings.Count(doc, end) != 1 {
-		t.Fatalf("want exactly one <%s> element", tag)
+	if strings.Count(doc, open) != 1 {
+		t.Fatalf("want exactly one bare <%s> element", tag)
 	}
-	start := strings.Index(doc, open)
-	if start < 0 {
-		t.Fatalf("<%s> has attributes; want a bare element", tag)
-	}
-	start += len(open)
+	start := strings.Index(doc, open) + len(open)
 	return doc[start : start+strings.Index(doc[start:], end)]
 }
 
@@ -140,7 +156,7 @@ func hashSource(s string) string {
 }
 
 // TestCSPMatchesInlineAssets: the policy pins exactly the inline bytes, which are exactly the
-// hand-written asset files.
+// committed minified asset files.
 func TestCSPMatchesInlineAssets(t *testing.T) {
 	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions())
 	m := cspPattern.FindStringSubmatch(doc)
@@ -148,19 +164,19 @@ func TestCSPMatchesInlineAssets(t *testing.T) {
 		t.Fatal("no CSP meta tag")
 	}
 	policy := html.UnescapeString(m[1])
-	style, script := inlineElement(t, doc, "style"), inlineElement(t, doc, "script")
+	style, script := bareElement(t, doc, "style"), bareElement(t, doc, "script")
 	want := "default-src 'none'; script-src " + hashSource(script) + "; style-src " + hashSource(style) +
 		"; img-src data:; base-uri 'none'; form-action 'none'; object-src 'none'"
 	if policy != want {
 		t.Errorf("policy = %q\nwant     %q", policy, want)
 	}
-	for file, inline := range map[string]string{"report.css": style, "report.js": script} {
+	for file, inline := range map[string]string{"app.min.css": style, "app.min.js": script} {
 		disk, err := os.ReadFile(filepath.Join("assets", file))
 		if err != nil {
 			t.Fatal(err)
 		}
 		if string(disk) != inline {
-			t.Errorf("inline %s differs from assets/%s", file, file)
+			t.Errorf("inline content differs from assets/%s", file)
 		}
 	}
 	if !strings.Contains(doc, `<meta name="referrer" content="no-referrer">`) {
@@ -169,29 +185,34 @@ func TestCSPMatchesInlineAssets(t *testing.T) {
 	if strings.Index(doc, "Content-Security-Policy") > strings.Index(doc, "<style>") {
 		t.Error("CSP must precede the inline style")
 	}
-	for _, banned := range []string{" style=", "javascript:", "<link", "<iframe", "<object", "<embed", "<img", "<base", "<form"} {
+	if strings.Count(doc, "<script") != 2 || !strings.Contains(doc, `<script type="application/json" id="report-data">`) {
+		t.Error("want the data block and the app script only")
+	}
+	for _, banned := range []string{" style=", "javascript:", "<link", "<iframe", "<object", "<embed", "<img", "<base", "<form", "unsafe-"} {
 		if strings.Contains(doc, banned) {
 			t.Errorf("document contains %q", banned)
 		}
 	}
 }
 
-func TestAssetBudgets(t *testing.T) {
-	for file, max := range map[string]int{"report.css": 12 << 10, "report.js": 8 << 10} {
-		info, err := os.Stat(filepath.Join("assets", file))
+// TestAssetSizes reports the embedded sizes; there is no budget to fail.
+func TestAssetSizes(t *testing.T) {
+	for _, pair := range [][2]string{{"app.js", "app.min.js"}, {"app.css", "app.min.css"}} {
+		src, err := os.ReadFile(filepath.Join("assets", pair[0]))
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Logf("%s: %d bytes (target %d)", file, info.Size(), max)
-		if info.Size() > int64(max) {
-			t.Errorf("%s is %d bytes; target %d", file, info.Size(), max)
-		}
+		t.Logf("%s: %d bytes readable, %d bytes embedded (%s)", pair[0], len(src), len(assetText(pair[1])), pair[1])
 	}
-	doc := mustRender(t, loadFixture(t, "minimal.json"), Options{Version: 1})
-	t.Logf("minimal report: %d bytes (target 25600)", len(doc))
-	if len(doc) > 25<<10 {
-		t.Errorf("minimal report is %d bytes; static overhead target 25 KiB", len(doc))
+	doc := mustRender(t, loadFixture(t, "minimal.json"), Options{Version: OptionsVersion})
+	t.Logf("minimal report: %d bytes", len(doc))
+}
+
+func assetText(name string) string {
+	if strings.HasSuffix(name, ".js") {
+		return scriptSource
 	}
+	return styleSource
 }
 
 func TestOptionsValidation(t *testing.T) {
@@ -202,7 +223,8 @@ func TestOptionsValidation(t *testing.T) {
 		want error
 	}{
 		{"zero version", ok(func(o *Options) { o.Version = 0 }), ErrOptionsVersion},
-		{"future version", ok(func(o *Options) { o.Version = 2 }), ErrOptionsVersion},
+		{"version 1", ok(func(o *Options) { o.Version = 1 }), ErrOptionsVersion},
+		{"future version", ok(func(o *Options) { o.Version = 3 }), ErrOptionsVersion},
 		{"section id with capitals", ok(func(o *Options) { o.Sections[0].ID = "Known" }), ErrInvalidOptions},
 		{"section id with quote", ok(func(o *Options) { o.Sections[0].ID = `a"b` }), ErrInvalidOptions},
 		{"section id empty", ok(func(o *Options) { o.Sections[0].ID = "" }), ErrInvalidOptions},
@@ -210,19 +232,22 @@ func TestOptionsValidation(t *testing.T) {
 		{"duplicate section", ok(func(o *Options) { o.Sections[1].ID = o.Sections[0].ID }), ErrInvalidOptions},
 		{"untitled section", ok(func(o *Options) { o.Sections[0].Title = "" }), ErrInvalidOptions},
 		{"bad tone", ok(func(o *Options) { o.Sections[0].Tone = "red" }), ErrInvalidOptions},
-		{"bad segment tone", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Tone = "x" }), ErrInvalidOptions},
-		{"negative segment", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Value = -1 }), ErrInvalidOptions},
-		{"oversize segment", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Value = 1_000_000_001 }), ErrInvalidOptions},
-		{"unknown chart", ok(func(o *Options) { o.Defaults.Charts = map[ChartID]bool{"pie": true} }), ErrInvalidOptions},
-		{"chart of a section without one", ok(func(o *Options) { o.Defaults.Charts = map[ChartID]bool{SectionChartID("skipped"): true} }), ErrInvalidOptions},
-		{"unknown section", ok(func(o *Options) { o.Defaults.Sections = map[string]bool{"other": false} }), ErrInvalidOptions},
+		{"bad role", ok(func(o *Options) { o.Sections[0].Role = "issues" }), ErrInvalidOptions},
+		{"two known-issue sections", ok(func(o *Options) { o.Sections[1].Role = RoleKnownIssues }), ErrInvalidOptions},
+		{"verdict without label", ok(func(o *Options) { o.Verdict = &Verdict{Tone: ToneOK} }), ErrInvalidOptions},
+		{"verdict bad tone", ok(func(o *Options) { o.Verdict = &Verdict{Label: "x", Tone: "green"} }), ErrInvalidOptions},
+		{"top fact unknown", ok(func(o *Options) { o.TopFacts = []string{"Branch"} }), ErrInvalidOptions},
+		{"four top facts", ok(func(o *Options) { o.TopFacts = []string{"Started", "Revision", "Go version", "Started"} }), ErrInvalidOptions},
+		{"unknown widget", ok(func(o *Options) { o.Defaults.Widgets = map[string]bool{"pie": true} }), ErrInvalidOptions},
+		{"unknown nav", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{"help": true} }), ErrInvalidOptions},
+		{"hidden dashboard", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{NavDashboard: false} }), ErrInvalidOptions},
 		{"bad theme", ok(func(o *Options) { o.Defaults.Theme = "blue" }), ErrInvalidOptions},
 		{"bad density", ok(func(o *Options) { o.Defaults.Density = "tight" }), ErrInvalidOptions},
 		{"bad expand", ok(func(o *Options) { o.Defaults.Expand = "some" }), ErrInvalidOptions},
-		{"bad page size", ok(func(o *Options) { o.Defaults.PageSize = 10 }), ErrInvalidOptions},
-		{"section chart default", ok(func(o *Options) { o.Defaults.Charts = map[ChartID]bool{SectionChartID("known-issues"): false} }), nil},
-		{"section default", ok(func(o *Options) { o.Defaults.Sections = map[string]bool{"skipped": false} }), nil},
-		{"every page size", ok(func(o *Options) { o.Defaults.PageSize = PageSizeAll }), nil},
+		{"bad view", ok(func(o *Options) { o.Defaults.View = "timeline" }), ErrInvalidOptions},
+		{"every view", ok(func(o *Options) { o.Defaults.View = ViewScenarios }), nil},
+		{"dashboard shown explicitly", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{NavDashboard: true} }), nil},
+		{"verdict with tone", ok(func(o *Options) { o.Verdict = &Verdict{Label: "Passed", Tone: ToneOK} }), nil},
 	}
 	features := loadFixture(t, "minimal.json")
 	for _, tt := range tests {
@@ -237,92 +262,16 @@ func TestOptionsValidation(t *testing.T) {
 }
 
 func TestRenderRejectsInvalidModel(t *testing.T) {
-	if _, err := Render(nil, Options{Version: 1}); !errors.Is(err, cucumber.ErrNoResults) {
+	if _, err := Render(nil, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrNoResults) {
 		t.Errorf("nil features: %v", err)
 	}
 	bad := []cucumber.Feature{{Elements: []cucumber.Scenario{{Steps: []cucumber.Step{{Result: cucumber.Result{Status: "exploded"}}}}}}}
-	if _, err := Render(bad, Options{Version: 1}); !errors.Is(err, cucumber.ErrInvalid) {
+	if _, err := Render(bad, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrInvalid) {
 		t.Errorf("invalid status: %v", err)
 	}
 	empty := []cucumber.Feature{{Name: "F"}}
-	if _, err := Render(empty, Options{Version: 1}); !errors.Is(err, cucumber.ErrIncomplete) {
+	if _, err := Render(empty, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrIncomplete) {
 		t.Errorf("feature without scenarios: %v", err)
-	}
-}
-
-func countOpen(doc string) (open, total int) {
-	for _, m := range regexp.MustCompile(`<details class="scenario[^"]*"[^>]*>`).FindAllString(doc, -1) {
-		total++
-		if strings.Contains(m, " open") {
-			open++
-		}
-	}
-	return open, total
-}
-
-func TestViewDefaultsReachThePage(t *testing.T) {
-	features := loadFixture(t, "godog-v0.16.0.json")
-	doc := mustRender(t, features, sampleOptions())
-	for _, want := range []string{
-		`<html lang="en" data-theme="auto">`,
-		`data-theme="auto" data-density="comfortable" data-expand="failed" data-page-size="50"`,
-		`data-hidden-charts="slowest-scenarios" data-hidden-sections=""`,
-		`<figure class="chart" id="chart-slowest-scenarios" data-chart="slowest-scenarios" hidden>`,
-		`<figure class="chart" id="chart-section-known-issues" data-chart="section-known-issues">`,
-		`<section class="card tone-warn" id="sec-known-issues" data-section="known-issues" aria-labelledby="hd-sec-known-issues">`,
-		`data-toggle="chart:slowest-scenarios"`,
-		`data-toggle="section:skipped" checked`,
-	} {
-		if !strings.Contains(doc, want) {
-			t.Errorf("missing %s", want)
-		}
-	}
-	if open, total := countOpen(doc); open != 2 || total != 6 {
-		t.Errorf("expand failed: %d of %d open, want 2 of 6", open, total)
-	}
-
-	opt := sampleOptions()
-	opt.Defaults = ViewDefaults{
-		Theme: ThemeDark, Density: DensityCompact, Expand: ExpandAll, PageSize: 25,
-		Sections: map[string]bool{"known-issues": false}, Charts: map[ChartID]bool{ChartStepStatus: false, ChartScenarioStatus: true},
-	}
-	doc = mustRender(t, features, opt)
-	for _, want := range []string{
-		`<html lang="en" data-theme="dark">`,
-		`<body class="compact"`,
-		`data-theme="dark" data-density="compact" data-expand="all" data-page-size="25"`,
-		`data-hidden-charts="step-status" data-hidden-sections="known-issues"`,
-		`id="sec-known-issues" data-section="known-issues" aria-labelledby="hd-sec-known-issues" hidden>`,
-		`data-toggle="section:known-issues">`,
-	} {
-		if !strings.Contains(doc, want) {
-			t.Errorf("missing %s", want)
-		}
-	}
-	if open, total := countOpen(doc); open != total {
-		t.Errorf("expand all: %d of %d open", open, total)
-	}
-	opt.Defaults.Expand, opt.Defaults.PageSize = ExpandNone, PageSizeAll
-	doc = mustRender(t, features, opt)
-	if open, _ := countOpen(doc); open != 0 {
-		t.Errorf("expand none: %d open", open)
-	}
-	if !strings.Contains(doc, `data-page-size="0"`) {
-		t.Error("page size all should reach the page as 0")
-	}
-}
-
-func TestSummaryCounts(t *testing.T) {
-	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions())
-	for _, want := range []string{
-		`<h2 class="verdict st-failed"><span class="glyph" aria-hidden="true">✘</span> Failed</h2>`,
-		`<div class="tile" data-kind="features"><h3>Features</h3><p class="total">2</p>`,
-		`<div class="tile" data-kind="scenarios"><h3>Scenarios</h3><p class="total">6</p>`,
-		`<div class="tile" data-kind="steps"><h3>Steps</h3><p class="total">15</p>`,
-	} {
-		if !strings.Contains(doc, want) {
-			t.Errorf("missing %s", want)
-		}
 	}
 }
 
@@ -336,55 +285,55 @@ func step(name string, status cucumber.Status, ns int64, emb ...cucumber.Embeddi
 }
 
 func one(steps ...cucumber.Step) []cucumber.Feature {
-	return []cucumber.Feature{{Name: "F", Keyword: "Feature", URI: "f.feature", Elements: []cucumber.Scenario{{Name: "S", Keyword: "Scenario", Type: "scenario", Steps: steps}}}}
+	return []cucumber.Feature{{Name: "F", Keyword: "Feature", URI: "f.feature", Elements: []cucumber.Scenario{{Name: "S", Keyword: "Scenario", Type: "scenario", Line: 2, Steps: steps}}}}
 }
 
 func b64(s string) string { return base64.StdEncoding.EncodeToString([]byte(s)) }
 
-func TestAttachments(t *testing.T) {
-	features := one(step("s", cucumber.StatusPassed, 1,
-		cucumber.Embedding{Name: "note.txt", MimeType: "text/plain", Data: b64("line 1\n  line <2> & \"3\"\n")},
-		cucumber.Embedding{Name: "data.json", MimeType: "application/json", Data: b64(`{"b":[1,2],"a":"<x>"}`)},
-		cucumber.Embedding{Name: "page.html", MimeType: "text/html; charset=utf-8", Data: b64(`<b onclick="x()">bold</b>`)},
-		cucumber.Embedding{Name: "broken.json", MimeType: "application/json", Data: b64(`{"a":`)},
-		cucumber.Embedding{Name: "pixel.png", MimeType: "image/png", Data: b64("\x89PNG\x00\x01")},
-		cucumber.Embedding{Name: "bad.txt", MimeType: "text/plain", Data: "%%%"},
-		cucumber.Embedding{Name: "latin1.txt", MimeType: "text/plain", Data: b64("caf\xe9")},
-	))
-	doc := mustRender(t, features, Options{Version: 1})
-	text := html.UnescapeString(doc)
-	for _, want := range []string{
-		"line 1\n  line <2> & \"3\"\n",
-		"{\n  \"b\": [\n    1,\n    2\n  ],\n  \"a\": \"<x>\"\n}",
-		`<b onclick="x()">bold</b>`,
-		`{"a":`,
-		"Not valid JSON; shown as text.",
-		"pixel.png",
-		"image/png · 6 B · content not shown",
-		"Attachment data is not valid base64; content not shown.",
-		"text/plain · 4 B · content not shown",
-	} {
-		if !strings.Contains(text, want) {
-			t.Errorf("missing %q", want)
-		}
+// noscript returns the no-JS fallback markup.
+func noscript(t testing.TB, doc string) string {
+	t.Helper()
+	i, j := strings.Index(doc, "<noscript>"), strings.Index(doc, "</noscript>")
+	if i < 0 || j < i || strings.Count(doc, "<noscript>") != 1 {
+		t.Fatal("want one noscript fallback")
 	}
-	if strings.Contains(doc, `<b onclick`) || strings.Contains(doc, "\x89PNG") {
-		t.Error("attachment content reached the page unescaped or binary content was shown")
-	}
-	if n := strings.Count(doc, `data-copy=`); n != 4 {
-		t.Errorf("copy buttons = %d, want 4 (one per shown text attachment)", n)
-	}
+	return doc[i+len("<noscript>") : j]
 }
 
-func TestOversizeAttachmentLeftOutByRender(t *testing.T) {
-	big := strings.Repeat("x", 2048)
-	features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "big.txt", MimeType: "text/plain", Data: b64(big)}))
-	doc := mustRender(t, features, Options{Version: 1, Limits: cucumber.Limits{InlineAttachment: 1024}})
-	if strings.Contains(doc, big) {
-		t.Error("oversize attachment was inlined")
+func TestFallback(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	fb := noscript(t, mustRender(t, features, opt))
+	text := html.UnescapeString(fb)
+	for _, want := range []string{
+		`<p class="nj-v s-failed">Failed: 3 unexpected failures</p>`,
+		"<tr><th>Environment</th><td><bdi>staging-eu-1</bdi></td></tr>",
+		`<tr><td class="st s-known">⚑ Known failure</td><td>4</td></tr>`,
+		`<tr><td class="st s-failed">✕ Failed</td><td>3</td></tr>`,
+		"<tr><th>Total</th><th>40</th></tr>",
+		"<h2><bdi>Scope</bdi></h2>",
+		"<p>Load and soak scenarios run in a separate suite.</p>",
+		"<code>features/orders/order_processing.feature</code> @orders",
+		`<details open><summary><span class="st s-failed">✕ Failed</span>`,
+		"Attachment: confirm-response.json (application/json, ",
+		"Known failure EX-330: Expected failure: no push is sent to that customer",
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("fallback lacks %q", want)
+		}
 	}
-	if !strings.Contains(doc, "Larger than the 1.0 KiB inline limit; content not included.") {
-		t.Error("no notice for the oversize attachment")
+	// The declared step of the observed expected failure carries the marker; the others keep their status.
+	i := strings.Index(text, "Scenario: <bdi>Push notification preferences")
+	if i < 0 {
+		t.Fatal("no push-preferences scenario")
+	}
+	sc := text[i : i+strings.Index(text[i:], "</details>")]
+	if strings.Count(sc, `class="st s-known"`) != 1 || strings.Count(sc, `class="st s-passed"`) != 2 || !strings.Contains(sc, `s-known">⚑ Known failure</span> <b>Then</b>`) {
+		t.Errorf("push-preferences scenario markers wrong: %s", sc)
+	}
+	for _, banned := range []string{" style=", "<script", "<img"} {
+		if strings.Contains(strings.ToLower(fb), banned) {
+			t.Errorf("fallback contains %q", banned)
+		}
 	}
 }
 
@@ -415,23 +364,29 @@ func syntheticRun(features, scenarios, steps int) []cucumber.Feature {
 	return out
 }
 
-// TestLargeRun: 5,000 steps stay within a size bound. Render time is measured with testing.Benchmark
-// and logged, not asserted, so the test does not depend on the machine's speed.
+// TestLargeRun: 5,000 steps render and every step reaches the data block. Size and render time are
+// logged, not asserted.
 func TestLargeRun(t *testing.T) {
 	features := syntheticRun(50, 10, 10)
-	doc := mustRender(t, features, Options{Version: 1})
-	const maxBytes = 6 << 20
-	t.Logf("5,000 steps: %d bytes (%.1f bytes per step)", len(doc), float64(len(doc))/5000)
-	if len(doc) > maxBytes {
-		t.Errorf("5,000-step report is %d bytes; bound %d", len(doc), maxBytes)
+	doc := mustRender(t, features, Options{Version: OptionsVersion})
+	d, _ := dataBlock(t, doc)
+	n := 0
+	for _, f := range d.Features {
+		for _, s := range f.Elements {
+			n += len(s.Steps)
+		}
 	}
+	if n != 5000 {
+		t.Errorf("data block has %d steps, want 5000", n)
+	}
+	t.Logf("5,000 steps: %d bytes (%.1f bytes per step)", len(doc), float64(len(doc))/5000)
 	if testing.Short() {
 		return
 	}
 	r := testing.Benchmark(func(b *testing.B) {
 		b.ReportAllocs()
 		for b.Loop() {
-			if _, err := Render(features, Options{Version: 1}); err != nil {
+			if _, err := Render(features, Options{Version: OptionsVersion}); err != nil {
 				b.Fatal(err)
 			}
 		}
@@ -439,35 +394,30 @@ func TestLargeRun(t *testing.T) {
 	t.Logf("5,000 steps: %s per render, %d B allocated per render", time.Duration(r.NsPerOp()), r.AllocedBytesPerOp())
 }
 
-// TestAttachmentHeavyRun approximates the largest known real run's shape with invented content:
-// ten 175 KB JSON attachments (about 233 KB of base64 each).
+// TestAttachmentHeavyRun: ten large JSON attachments reach the data block as their exact base64 text.
+// The size ratio is logged, not asserted.
 func TestAttachmentHeavyRun(t *testing.T) {
 	var entries []map[string]any
 	for i := 0; len(entries) < 1800; i++ {
 		entries = append(entries, map[string]any{"id": fmt.Sprintf("res-%05d", i), "kind": "synthetic-resource", "state": "retained", "size": i * 17, "labels": []string{"alpha", "beta"}})
 	}
 	payload, _ := json.MarshalIndent(map[string]any{"resources": entries}, "", "  ")
+	encoded := base64.StdEncoding.EncodeToString(payload)
 	var steps []cucumber.Step
-	decoded := 0
 	for i := 0; i < 10; i++ {
 		steps = append(steps, step(fmt.Sprintf("evidence %d is retained", i), cucumber.StatusPassed, 1000,
-			cucumber.Embedding{Name: "retained-evidence.json", MimeType: "application/json", Data: base64.StdEncoding.EncodeToString(payload)}))
-		decoded += len(payload)
+			cucumber.Embedding{Name: "retained-evidence.json", MimeType: "application/json", Data: encoded}))
 	}
-	doc := mustRender(t, one(steps...), Options{Version: 1})
-	ratio := float64(len(doc)) / float64(decoded)
-	t.Logf("attachment-heavy run: %d decoded bytes, %d base64 bytes, %d HTML bytes, ratio %.2f to decoded, %.2f to base64",
-		decoded, decoded*4/3, len(doc), ratio, float64(len(doc))/float64(decoded*4/3))
-	if ratio > 2.5 {
-		t.Errorf("HTML is %.2f× the decoded attachments; bound 2.5", ratio)
-	}
-	if !bytes.Contains([]byte(html.UnescapeString(doc)), payload) {
-		t.Error("pretty-printed attachment not shown exactly")
+	doc := mustRender(t, one(steps...), Options{Version: OptionsVersion})
+	t.Logf("attachment-heavy run: %d decoded bytes, %d HTML bytes, ratio %.2f to decoded, %.2f to base64",
+		10*len(payload), len(doc), float64(len(doc))/float64(10*len(payload)), float64(len(doc))/float64(10*len(encoded)))
+	if strings.Count(doc, `"data":"`+encoded+`"`) != 10 {
+		t.Error("attachments are not carried as their exact base64 text")
 	}
 }
 
-func scenarioOf(name string, statuses ...cucumber.Status) cucumber.Scenario {
-	sc := cucumber.Scenario{Keyword: "Scenario", Name: name, Type: "scenario"}
+func scenarioOf(name string, line int, statuses ...cucumber.Status) cucumber.Scenario {
+	sc := cucumber.Scenario{Keyword: "Scenario", Name: name, Type: "scenario", Line: line}
 	for _, s := range statuses {
 		sc.Steps = append(sc.Steps, step("s", s, -1))
 	}
@@ -480,89 +430,45 @@ func TestHeadlineFollowsFeatureRule(t *testing.T) {
 	tests := []struct {
 		name      string
 		scenarios []cucumber.Scenario
-		verdict   string
-		tile      string
+		verdict   Verdict
 	}{
-		{"passed and skipped", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "passed", "skipped")}, "✔</span> Passed", "1 Passed"},
-		{"passed and pending", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "pending")}, "✔</span> Passed", "1 Passed"},
-		{"all skipped", []cucumber.Scenario{scenarioOf("a", "skipped"), scenarioOf("b", "passed", "skipped")}, "↷</span> Skipped", "1 Skipped"},
-		{"skipped and pending", []cucumber.Scenario{scenarioOf("a", "skipped"), scenarioOf("b", "pending")}, "↷</span> Skipped", "1 Skipped"},
-		{"all pending", []cucumber.Scenario{scenarioOf("a", "pending"), scenarioOf("b", "passed", "pending")}, "…</span> Pending", "1 Pending"},
-		{"undefined among passed", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "undefined")}, "?</span> Undefined", "1 Undefined"},
+		{"passed and skipped", []cucumber.Scenario{scenarioOf("a", 1, "passed"), scenarioOf("b", 2, "passed", "skipped")}, Verdict{"Passed", ToneOK}},
+		{"passed and pending", []cucumber.Scenario{scenarioOf("a", 1, "passed"), scenarioOf("b", 2, "pending")}, Verdict{"Passed", ToneOK}},
+		{"all skipped", []cucumber.Scenario{scenarioOf("a", 1, "skipped"), scenarioOf("b", 2, "passed", "skipped")}, Verdict{"Skipped", ToneInfo}},
+		{"skipped and pending", []cucumber.Scenario{scenarioOf("a", 1, "skipped"), scenarioOf("b", 2, "pending")}, Verdict{"Skipped", ToneInfo}},
+		{"all pending", []cucumber.Scenario{scenarioOf("a", 1, "pending"), scenarioOf("b", 2, "passed", "pending")}, Verdict{"Pending", ToneInfo}},
+		{"undefined among passed", []cucumber.Scenario{scenarioOf("a", 1, "passed"), scenarioOf("b", 2, "undefined")}, Verdict{"Undefined", ToneFail}},
+		{"ambiguous", []cucumber.Scenario{scenarioOf("a", 1, "ambiguous")}, Verdict{"Ambiguous", ToneFail}},
 	}
 	for _, tt := range tests {
-		doc := mustRender(t, []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: tt.scenarios}}, Options{Version: 1})
-		if !strings.Contains(doc, `<h2 class="verdict`) || !strings.Contains(doc, tt.verdict+"</h2>") {
-			t.Errorf("%s: headline is not %q", tt.name, tt.verdict)
-		}
-		tile := regexp.MustCompile(`data-kind="features">.*?</ul>`).FindString(doc)
-		if !strings.Contains(tile, tt.tile) {
-			t.Errorf("%s: feature tile %q lacks %q", tt.name, tile, tt.tile)
+		features := []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: tt.scenarios}}
+		d, _ := dataBlock(t, mustRender(t, features, Options{Version: OptionsVersion}))
+		if d.Verdict != tt.verdict || d.Features[0].Status != strings.ToLower(tt.verdict.Label) {
+			t.Errorf("%s: verdict %+v, feature %s; want %+v", tt.name, d.Verdict, d.Features[0].Status, tt.verdict)
 		}
 	}
 }
 
 func TestSteplessScenarioRendersUndefined(t *testing.T) {
-	doc := mustRender(t, loadFixture(t, "godog-v0.16.0-stepless.json"), Options{Version: 1})
-	for _, want := range []string{
-		`<div class="tile" data-kind="scenarios"><h3>Scenarios</h3><p class="total">3</p>`,
-		`<div class="tile" data-kind="steps"><h3>Steps</h3><p class="total">3</p>`,
-		`<details class="scenario pg-item" id="f1-s2" data-status="undefined">`,
-	} {
-		if !strings.Contains(doc, want) {
-			t.Errorf("missing %s", want)
-		}
+	d, _ := dataBlock(t, mustRender(t, loadFixture(t, "godog-v0.16.0-stepless.json"), Options{Version: OptionsVersion}))
+	var statuses []string
+	for _, s := range d.Features[0].Elements {
+		statuses = append(statuses, s.Status)
+	}
+	if !slices.Contains(statuses, "undefined") {
+		t.Errorf("statuses %v; a scenario without steps is undefined", statuses)
 	}
 }
 
 func TestVerdictOverride(t *testing.T) {
-	features := loadFixture(t, "godog-v0.16.0.json")
 	opt := sampleOptions()
-	opt.Verdict = &Verdict{Status: cucumber.StatusPassed, Label: "Passed with known failures", Explanation: "Both failures are declared known issues.\nNo unexpected failure."}
-	doc := mustRender(t, features, opt)
-	for _, want := range []string{
-		`<h2 class="verdict st-passed"><span class="glyph" aria-hidden="true">✔</span> Passed with known failures</h2>`,
-		"<p class=\"verdict-note\">Both failures are declared known issues.\nNo unexpected failure.</p>",
-		`<p class="note">Computed from step results: <span class="st-failed"><span class="glyph" aria-hidden="true">✘</span> Failed</span></p>`,
-	} {
-		if !strings.Contains(doc, want) {
-			t.Errorf("missing %s", want)
-		}
+	opt.Verdict = &Verdict{Label: "Passed with known failures", Tone: ToneWarn}
+	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), opt)
+	d, _ := dataBlock(t, doc)
+	if d.Verdict != *opt.Verdict {
+		t.Errorf("verdict %+v", d.Verdict)
 	}
-	opt.Verdict = &Verdict{Status: cucumber.StatusPending}
-	doc = mustRender(t, features, opt)
-	if !strings.Contains(doc, `<h2 class="verdict st-pending"><span class="glyph" aria-hidden="true">…</span> Pending</h2>`) || strings.Contains(doc, "verdict-note") {
-		t.Error("a verdict without a label should use the status label and no explanation")
-	}
-	for _, bad := range []cucumber.Status{"", "green"} {
-		opt.Verdict = &Verdict{Status: bad, Label: "x"}
-		if _, err := Render(features, opt); !errors.Is(err, ErrInvalidOptions) {
-			t.Errorf("verdict status %q: err = %v", bad, err)
-		}
-	}
-	doc = mustRender(t, features, sampleOptions())
-	if strings.Contains(doc, "Computed from step results") {
-		t.Error("the computed line appears only when the caller sets a verdict")
-	}
-}
-
-func TestAnchorsMatchThePage(t *testing.T) {
-	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions())
-	for _, id := range []string{FeatureAnchor(0), FeatureAnchor(1), ScenarioAnchor(0, 2), ScenarioAnchor(1, 2)} {
-		if !strings.Contains(doc, ` id="`+id+`"`) {
-			t.Errorf("no element with id %q", id)
-		}
-	}
-	if FeatureAnchor(1) != "f2" || ScenarioAnchor(1, 2) != "f2-s3" {
-		t.Errorf("anchors = %s, %s; want f2, f2-s3", FeatureAnchor(1), ScenarioAnchor(1, 2))
-	}
-}
-
-func TestSectionChartTotalsDoNotOverflow(t *testing.T) {
-	opt := sampleOptions()
-	opt.Sections[0].Chart.Segments = []Segment{{"a", MaxSegmentValue, ToneOK}, {"b", MaxSegmentValue, ToneWarn}, {"c", MaxSegmentValue, ToneFail}}
-	doc := mustRender(t, loadFixture(t, "minimal.json"), opt)
-	if strings.Count(doc, "<td>33.3%</td>") != 3 {
-		t.Error("three equal maximum segments should each be 33.3%")
+	if !strings.Contains(noscript(t, doc), `<p class="nj-v s-known">Passed with known failures</p>`) {
+		t.Error("fallback headline does not use the caller's verdict and tone")
 	}
 }

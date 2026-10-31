@@ -1,10 +1,15 @@
 // Package report renders parsed Cucumber results as one self-contained, offline HTML document.
 //
-// All report data passes through html/template, which escapes it for its context. The page carries a
-// Content-Security-Policy that admits only the embedded stylesheet and script by their SHA-256 hashes,
-// so no markup, style or script can come from the data. Viewer preferences are stored in the
-// browser's localStorage; generation-time defaults reach the page as data attributes.
+// The report data travels in one <script type="application/json"> block written by encoding/json with
+// HTML-safe escaping; the embedded page script builds the interface from it with createElement and
+// textContent only. A no-JS fallback is rendered by html/template from the same view model. The page
+// carries a Content-Security-Policy that admits only the embedded stylesheet and script by their
+// SHA-256 hashes, so no markup, style or script can come from the data. Viewer preferences are stored
+// in the browser's localStorage.
 package report
+
+//go:generate go run ../internal/cmd/minify assets/app.js assets/app.min.js
+//go:generate go run ../internal/cmd/minify assets/app.css assets/app.min.css
 
 import (
 	"bytes"
@@ -22,19 +27,46 @@ import (
 )
 
 var (
-	//go:embed assets/report.css
+	// Only the minified assets are embedded; TestMinifiedAssetsAreCurrent keeps them equal to the
+	// minified readable sources.
+	//go:embed assets/app.min.css
 	styleSource string
-	//go:embed assets/report.js
+	//go:embed assets/app.min.js
 	scriptSource string
-	//go:embed templates/*.gohtml
+	//go:embed templates/page.gohtml
 	templateFS embed.FS
 
-	page = template.Must(template.New("page.gohtml").ParseFS(templateFS, "templates/*.gohtml"))
+	page = template.Must(template.New("page.gohtml").Funcs(template.FuncMap{
+		"label": func(s string) string { return statusLabels[s] },
+		"toneClass": func(t string) string {
+			return map[string]string{ToneFail: "s-failed", ToneWarn: "s-known", ToneOK: "s-passed"}[t]
+		},
+		"open": func(s string) bool { return s == "failed" || s == "ambiguous" || s == "undefined" },
+		"join": func(tags []string) string { return strings.Join(tags, " ") },
+		"trim": strings.TrimSpace,
+		"dur": func(v any) string {
+			switch ns := v.(type) {
+			case int64:
+				return formatNS(ns)
+			case *int64:
+				return formatNS(*ns)
+			}
+			return ""
+		},
+	}).ParseFS(templateFS, "templates/page.gohtml"))
 
 	// head and script are fixed at package initialisation from the embedded assets only. They are the
 	// only template.HTML values in the package; report data never becomes template.HTML.
 	head, script = assetElements()
 )
+
+// pageView is the template's root: the constant asset elements, the view model for the fallback, and
+// the same view model as Data, which html/template marshals with encoding/json into the data block.
+type pageView struct {
+	Head, Script template.HTML
+	*pageData
+	Data *pageData
+}
 
 func hashOf(s string) string {
 	sum := sha256.Sum256([]byte(s))
@@ -72,12 +104,12 @@ func render(features []cucumber.Feature, opt Options, sidecar sidecarFunc) ([]by
 	if err = cucumber.Validate(features); err != nil {
 		return nil, err
 	}
-	view, err := buildPage(features, opt, sidecar)
+	data, err := buildPage(features, opt, sidecar)
 	if err != nil {
 		return nil, err
 	}
 	var buf bytes.Buffer
-	if err := page.Execute(&buf, view); err != nil {
+	if err := page.Execute(&buf, pageView{Head: head, Script: script, pageData: data, Data: data}); err != nil {
 		return nil, fmt.Errorf("report: execute template: %w", err)
 	}
 	if buf.Len() == 0 {

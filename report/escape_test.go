@@ -61,7 +61,9 @@ func tokenize(t testing.TB, doc string) []token {
 			out = append(out, tok)
 			i += n
 			if tok.name == "script" || tok.name == "style" {
-				j := strings.Index(strings.ToLower(doc[i:]), "</"+tok.name)
+				// ASCII-only lowering keeps byte offsets: strings.ToLower changes the length of some
+				// runes (U+023A becomes three bytes), which would misplace the end of the element.
+				j := strings.Index(asciiLower(doc[i:]), "</"+tok.name)
 				if j < 0 {
 					t.Fatalf("unterminated %s", tok.name)
 				}
@@ -125,6 +127,16 @@ func startTag(t testing.TB, s string) (token, int) {
 	}
 }
 
+func asciiLower(s string) string {
+	b := []byte(s)
+	for i, c := range b {
+		if c >= 'A' && c <= 'Z' {
+			b[i] = c + 'a' - 'A'
+		}
+	}
+	return string(b)
+}
+
 func isNameByte(b byte) bool {
 	return b >= 'a' && b <= 'z' || b >= 'A' && b <= 'Z' || b >= '0' && b <= '9' || b == '-'
 }
@@ -169,6 +181,9 @@ func checkSafe(t testing.TB, tokens []token) {
 		switch tk.name {
 		case "script":
 			scripts++
+			if len(tk.attrs) != 0 && (len(tk.attrs) != 2 || tk.attrs[0] != (attr{"type", "application/json"}) || tk.attrs[1] != (attr{"id", "report-data"})) {
+				t.Errorf("unexpected script element %v", tk.attrs)
+			}
 		case "style":
 			styles++
 		case "iframe", "object", "embed", "img", "image", "link", "base", "form", "foreignobject", "use", "animate", "set":
@@ -187,15 +202,24 @@ func checkSafe(t testing.TB, tokens []token) {
 			}
 		}
 	}
-	if scripts != 1 || styles != 1 {
-		t.Errorf("scripts = %d, styles = %d; want 1 and 1", scripts, styles)
+	if scripts != 2 || styles != 1 {
+		t.Errorf("scripts = %d, styles = %d; want 2 (data block and app) and 1", scripts, styles)
 	}
 }
 
-// display is how a data string must read back from the page: html/template turns NUL into U+FFFD and
-// the renderer replaces invalid UTF-8 with U+FFFD.
+// valid replaces each byte that is not part of valid UTF-8 with U+FFFD, as encoding/json does.
+func valid(s string) string {
+	var b strings.Builder
+	for _, r := range s {
+		b.WriteRune(r) // ranging over a string yields U+FFFD for each invalid byte
+	}
+	return b.String()
+}
+
+// display is how a data string must read back from the fallback: the renderer replaces invalid UTF-8
+// byte by byte with U+FFFD and html/template turns NUL into U+FFFD.
 func display(s string) string {
-	return strings.ReplaceAll(strings.ToValidUTF8(s, "�"), "\x00", "�")
+	return strings.ReplaceAll(valid(s), "\x00", "\uFFFD")
 }
 
 var hostile = []string{
@@ -243,13 +267,18 @@ func hostileRun(s string) ([]cucumber.Feature, Options) {
 			},
 		}},
 	}}
+	id := ScenarioIDs(features)[0][0]
 	opt := Options{
-		Version: 1, Title: s, Name: s,
+		Version: OptionsVersion, Title: s, Name: s, WallClock: s, TopFacts: []string{s},
 		RunFacts: []Fact{{Label: s, Value: s}},
+		Verdict:  &Verdict{Label: s, Tone: ToneWarn},
 		Sections: []Section{{
 			ID: "hostile", Title: s, Tone: ToneFail, Summary: []Fact{{Label: s, Value: s}}, Rows: []Fact{{Label: s, Value: s}}, Note: s,
-			Chart: &ChartSeries{Title: s, Segments: []Segment{{s, 1, ToneFail}, {s, 2, ToneOK}}},
 		}},
+		Annotations: []Annotation{
+			{Scenario: id, Kind: KindKnown, Ref: s, Title: s, Note: s, Step: 1, Observed: true, Outcomes: []Outcome{{Step: 1, Outcome: s, Text: s}}},
+			{Scenario: id, Kind: KindLimit, Title: s, Note: s},
+		},
 	}
 	return features, opt
 }
@@ -277,7 +306,32 @@ func TestEscaping(t *testing.T) {
 			if !strings.Contains(allText(tokens), display(s)) {
 				t.Errorf("data %q does not read back as text", s)
 			}
+			checkDataReadsBack(t, doc, s)
 		})
+	}
+}
+
+// checkDataReadsBack decodes the data block and finds s, as encoding/json carries it (invalid UTF-8
+// becomes U+FFFD), in every field.
+func checkDataReadsBack(t testing.TB, doc, s string) {
+	t.Helper()
+	d, _ := dataBlock(t, doc)
+	want := valid(s)
+	f := d.Features[0]
+	sc := f.Elements[0]
+	st := sc.Steps[0]
+	a := d.Annotations[0]
+	got := []string{
+		d.Title, d.Name, d.WallClock, d.Top[0], d.Verdict.Label, d.Facts[0].Label, d.Facts[0].Value,
+		d.Sections[0].Title, d.Sections[0].Summary[0].Value, d.Sections[0].Rows[0].Label, d.Sections[0].Note,
+		a.Ref, a.Title, a.Note, a.Outcomes[0].Outcome, a.Outcomes[0].Text,
+		f.URI, f.Name, f.Tags[0], sc.Keyword, sc.Name, sc.Tags[0],
+		st.Keyword, st.Name, st.Match, st.Error, st.Doc.Value, st.Doc.Type, st.Rows[1][1], st.Att[0].Name,
+	}
+	for i, g := range got {
+		if g != strings.TrimSpace(want) && g != want {
+			t.Errorf("data field %d = %q, want %q", i, g, want)
+		}
 	}
 }
 
@@ -285,7 +339,7 @@ func TestEscaping(t *testing.T) {
 func TestHostileMimeType(t *testing.T) {
 	for _, s := range hostile {
 		features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "a", MimeType: s, Data: b64("<b>content</b>")}))
-		doc := mustRender(t, features, Options{Version: 1})
+		doc := mustRender(t, features, Options{Version: OptionsVersion})
 		tokens := tokenize(t, doc)
 		checkSafe(t, tokens)
 		text := allText(tokens)

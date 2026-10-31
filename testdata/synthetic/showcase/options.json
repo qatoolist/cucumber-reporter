@@ -1,0 +1,218 @@
+{
+  "version": 2,
+  "title": "Example shop suite",
+  "name": "Nightly regression · staging-eu-1",
+  "runFacts": [
+    {
+      "label": "Environment",
+      "value": "staging-eu-1"
+    },
+    {
+      "label": "Revision",
+      "value": "7f3c2a91d0e4"
+    },
+    {
+      "label": "Branch",
+      "value": "release/2026.11"
+    },
+    {
+      "label": "Started",
+      "value": "2026-10-30 21:04:12 UTC"
+    },
+    {
+      "label": "Finished",
+      "value": "2026-10-30 21:13:47 UTC"
+    },
+    {
+      "label": "Wall clock",
+      "value": "9m 35s"
+    },
+    {
+      "label": "Selection",
+      "value": "not @wip-blocked and not @manual"
+    },
+    {
+      "label": "Godog",
+      "value": "v0.15.0"
+    },
+    {
+      "label": "Go version",
+      "value": "go1.27.2"
+    },
+    {
+      "label": "Runner",
+      "value": "ci-runner-07"
+    }
+  ],
+  "topFacts": [
+    "Environment",
+    "Revision",
+    "Started"
+  ],
+  "wallClock": "9m 35s",
+  "verdict": {
+    "label": "Failed: 3 unexpected failures",
+    "tone": "fail"
+  },
+  "sections": [
+    {
+      "id": "known-issues",
+      "title": "Known issues",
+      "tone": "warn",
+      "summary": [
+        {
+          "label": "Run status",
+          "value": "completed"
+        },
+        {
+          "label": "Known failures",
+          "value": "4"
+        },
+        {
+          "label": "Unexpected failures",
+          "value": "3"
+        }
+      ],
+      "rows": [
+        {
+          "label": "EX-101 Order processing / Reject an order with quantity 0",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-101 Order processing / Reject an order with quantity -1",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-214 Customer accounts / Password reset link expires after 30 minutes",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-330 Notifications / Push notification preferences are respected",
+          "value": "expected failure"
+        }
+      ],
+      "note": "Known failures are listed apart from raw step status.",
+      "role": "known"
+    },
+    {
+      "id": "skips",
+      "title": "Skipped scenarios",
+      "tone": "info",
+      "rows": [
+        {
+          "label": "Payment settlement / 3-D Secure challenge is honoured",
+          "value": "ACS simulator is not deployed in staging-eu-1"
+        },
+        {
+          "label": "Customer accounts / Sign in with single sign-on",
+          "value": "SSO identity provider is not configured for this environment"
+        }
+      ],
+      "role": "skip"
+    },
+    {
+      "id": "observation-limits",
+      "title": "Observation limits (not verified)",
+      "tone": "info",
+      "rows": [
+        {
+          "label": "Notifications / Order confirmation email is sent",
+          "value": "Delivery receipts are not observable in this environment."
+        },
+        {
+          "label": "Notifications / SMS fallback when email bounces",
+          "value": "SMS gateway delivery reports are stubbed."
+        }
+      ],
+      "role": "limit"
+    },
+    {
+      "id": "scope",
+      "title": "Scope",
+      "tone": "ok",
+      "summary": [
+        {
+          "label": "Suite",
+          "value": "regression"
+        },
+        {
+          "label": "Data",
+          "value": "shared, read-only"
+        },
+        {
+          "label": "Areas",
+          "value": "orders, billing, payments"
+        }
+      ],
+      "note": "Load and soak scenarios run in a separate suite."
+    }
+  ],
+  "annotations": [
+    {
+      "scenario": "order-processing-L30",
+      "kind": "known",
+      "ref": "EX-101",
+      "title": "Zero and negative quantities are accepted on confirm",
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12."
+    },
+    {
+      "scenario": "order-processing-L31",
+      "kind": "known",
+      "ref": "EX-101",
+      "title": "Zero and negative quantities are accepted on confirm",
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12."
+    },
+    {
+      "scenario": "settlement-L24",
+      "kind": "skip",
+      "title": "ACS simulator is not deployed in staging-eu-1",
+      "note": "Scenario skipped by the environment guard."
+    },
+    {
+      "scenario": "accounts-L10",
+      "kind": "skip",
+      "title": "SSO identity provider is not configured for this environment",
+      "note": "Scenario skipped by Godog."
+    },
+    {
+      "scenario": "accounts-L16",
+      "kind": "known",
+      "ref": "EX-214",
+      "title": "Reset tokens live 60 minutes instead of 30",
+      "note": "Configuration drift in staging; product owner accepted until 2026-11-15."
+    },
+    {
+      "scenario": "notifications-L4",
+      "kind": "limit",
+      "title": "Delivery receipts are not observable in this environment",
+      "note": "Step \"the email is delivered\" checks the queue only."
+    },
+    {
+      "scenario": "notifications-L11",
+      "kind": "limit",
+      "title": "SMS gateway delivery reports are stubbed",
+      "note": "The gateway double acknowledges every message."
+    },
+    {
+      "scenario": "notifications-L17",
+      "kind": "known",
+      "ref": "EX-330",
+      "step": 3,
+      "observed": true,
+      "title": "Expected failure: no push is sent to that customer",
+      "note": "Opted-out customers still receive campaign pushes; tracked as EX-330.",
+      "outcomes": [
+        {
+          "step": 2,
+          "outcome": "not applicable",
+          "text": "a campaign is sent"
+        },
+        {
+          "step": 3,
+          "outcome": "expected failure",
+          "text": "no push is sent to that customer"
+        }
+      ]
+    }
+  ]
+}

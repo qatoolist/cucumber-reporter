@@ -6,7 +6,8 @@ import (
 )
 
 // FuzzRender puts one arbitrary string into every data field. The render must succeed, keep the
-// fixed markup skeleton, contain no active content and read the string back as text.
+// fixed markup skeleton, contain no active content, carry the string intact in the data block and read
+// it back as text in the fallback.
 func FuzzRender(f *testing.F) {
 	for _, s := range hostile {
 		f.Add(s)
@@ -22,6 +23,7 @@ func FuzzRender(f *testing.F) {
 		doc := mustRender(t, features, opt)
 		tokens := tokenize(t, doc)
 		checkSafe(t, tokens)
+		checkDataReadsBack(t, doc, s)
 		if strings.TrimSpace(s) == "" {
 			return // empty fields are left out of the page, which changes the skeleton legitimately
 		}

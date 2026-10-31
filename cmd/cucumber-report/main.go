@@ -1,6 +1,6 @@
 // Command cucumber-report renders a run directory's cucumber.json as an HTML report.
 //
-//	cucumber-report [-title T] [-name N] [-defaults settings.json] [-o parent-dir] <run-dir>
+//	cucumber-report [-title T] [-name N] [-options options.json] [-o parent-dir] <run-dir>
 //
 // It writes a new <run-dir>/html-XXXXXX/index.html (or under -o) and prints only
 // "HTML report: <path>". Errors go to standard error and never quote the results' content.
@@ -19,7 +19,7 @@ import (
 	"github.com/qatoolist/cucumber-reporter/report"
 )
 
-const usage = "usage: cucumber-report [-title T] [-name N] [-defaults settings.json] [-o parent-dir] <run-dir>\n"
+const usage = "usage: cucumber-report [-title T] [-name N] [-options options.json] [-o parent-dir] <run-dir>\n"
 
 func main() { os.Exit(run(os.Args[1:], os.Stdout, os.Stderr)) }
 
@@ -28,7 +28,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	fs.SetOutput(io.Discard)
 	title := fs.String("title", "", "document title")
 	name := fs.String("name", "", "heading shown on the page (default: the title)")
-	defaults := fs.String("defaults", "", "JSON settings file with the report's view defaults")
+	options := fs.String("options", "", "JSON file with the report options (report.Options, \"version\": 2)")
 	parent := fs.String("o", "", "directory to create html-XXXXXX in (default: the run directory)")
 	if err := fs.Parse(args); err != nil || fs.NArg() != 1 {
 		_, _ = fmt.Fprint(stderr, usage)
@@ -36,14 +36,20 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	runDir := fs.Arg(0)
 
-	opt := report.Options{Version: report.OptionsVersion, Title: *title, Name: *name}
-	if *defaults != "" {
-		d, err := readDefaults(*defaults)
+	opt := report.Options{Version: report.OptionsVersion}
+	if *options != "" {
+		o, err := readOptions(*options)
 		if err != nil {
-			_, _ = fmt.Fprintf(stderr, "cucumber-report: -defaults: %v\n", err)
+			_, _ = fmt.Fprintf(stderr, "cucumber-report: -options: %v\n", err)
 			return 1
 		}
-		opt.Defaults = d
+		opt = o
+	}
+	if *title != "" {
+		opt.Title = *title
+	}
+	if *name != "" {
+		opt.Name = *name
 	}
 	out := *parent
 	if out == "" {
@@ -58,74 +64,54 @@ func run(args []string, stdout, stderr io.Writer) int {
 	return 0
 }
 
-// settingsFile is the -defaults format. pageSize is 25, 50, 100 or "all".
-type settingsFile struct {
-	Version  int                     `json:"version"`
-	Charts   map[report.ChartID]bool `json:"charts"`
-	Theme    string                  `json:"theme"`
-	Density  string                  `json:"density"`
-	Expand   string                  `json:"expand"`
-	PageSize json.RawMessage         `json:"pageSize"`
-}
-
 var (
-	errSettingsVersion = errors.New("unsupported version; the settings file needs \"version\": 1")
-	errSettingsInvalid = errors.New("not a valid settings file")
-	errSettingsKind    = errors.New("the settings file is a symbolic link or not a regular file")
-	errSettingsRead    = errors.New("cannot read the settings file")
+	errOptionsVersion = errors.New("unsupported version; the options file needs \"version\": 2")
+	errOptionsInvalid = errors.New("not a valid options file")
+	errOptionsKind    = errors.New("the options file is a symbolic link or not a regular file")
+	errOptionsRead    = errors.New("cannot read the options file")
 )
 
-const maxSettingsBytes = 64 << 10
+// maxOptionsBytes bounds the -options file; annotations for a large run fit comfortably.
+const maxOptionsBytes = 16 << 20
 
-// readDefaults reads the -defaults file. Its errors are fixed messages that never quote the file.
-func readDefaults(path string) (report.ViewDefaults, error) {
-	var d report.ViewDefaults
+// readOptions reads the -options file: report.Options as JSON, decoded strictly (unknown keys and
+// trailing data are refused). Its errors are fixed messages that never quote the file; the renderer
+// validates the values.
+func readOptions(path string) (report.Options, error) {
+	var opt report.Options
 	path = filepath.Clean(path)
 	info, err := os.Lstat(path)
 	if err != nil {
-		return d, errSettingsRead
+		return opt, errOptionsRead
 	}
 	if !info.Mode().IsRegular() {
-		return d, errSettingsKind
+		return opt, errOptionsKind
 	}
 	f, err := os.Open(path)
 	if err != nil {
-		return d, errSettingsRead
+		return opt, errOptionsRead
 	}
 	defer func() { _ = f.Close() }() // read only
 	if opened, statErr := f.Stat(); statErr != nil || !os.SameFile(info, opened) {
-		return d, errSettingsKind
+		return opt, errOptionsKind
 	}
-	data, err := io.ReadAll(io.LimitReader(f, maxSettingsBytes+1))
+	data, err := io.ReadAll(io.LimitReader(f, maxOptionsBytes+1))
 	if err != nil {
-		return d, errSettingsRead
+		return opt, errOptionsRead
 	}
-	if len(data) > maxSettingsBytes {
-		return d, errSettingsInvalid
+	if len(data) > maxOptionsBytes {
+		return opt, errOptionsInvalid
 	}
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
-	var s settingsFile
-	if err := dec.Decode(&s); err != nil {
-		return d, errSettingsInvalid
+	if err := dec.Decode(&opt); err != nil {
+		return opt, errOptionsInvalid
 	}
 	if _, err := dec.Token(); err != io.EOF {
-		return d, errSettingsInvalid
+		return opt, errOptionsInvalid
 	}
-	if s.Version != report.OptionsVersion {
-		return d, errSettingsVersion
+	if opt.Version != report.OptionsVersion {
+		return opt, errOptionsVersion
 	}
-	d = report.ViewDefaults{Charts: s.Charts, Theme: s.Theme, Density: s.Density, Expand: s.Expand}
-	if len(s.PageSize) > 0 {
-		var all string
-		if err := json.Unmarshal(s.PageSize, &all); err == nil {
-			if all != "all" {
-				return d, errSettingsInvalid
-			}
-			d.PageSize = report.PageSizeAll
-		} else if err := json.Unmarshal(s.PageSize, &d.PageSize); err != nil || d.PageSize <= 0 {
-			return d, errSettingsInvalid
-		}
-	}
-	return d, nil
+	return opt, nil
 }

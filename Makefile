@@ -2,7 +2,7 @@ GO ?= go
 GOLANGCI_LINT ?= golangci-lint
 FUZZTIME ?= 30s
 
-.PHONY: help fmt fmt-check vet lint test fuzz-smoke golden-update browser-check verify
+.PHONY: help fmt fmt-check vet lint test generate fuzz-smoke golden-update browser-check verify
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
@@ -25,6 +25,9 @@ lint: ## Run golangci-lint v2 with the project's lint configuration (the binary 
 test: ## Run all tests under the race detector
 	$(GO) test -race -count=1 ./...
 
+generate: ## Re-minify assets/app.js and assets/app.css into the committed .min files
+	$(GO) generate ./report
+
 fuzz-smoke: ## Run each fuzz target for FUZZTIME (default 30s)
 	$(GO) test ./cucumber -run '^$$' -fuzz FuzzParse -fuzztime $(FUZZTIME)
 	$(GO) test ./report -run '^$$' -fuzz FuzzRender -fuzztime $(FUZZTIME)
@@ -32,7 +35,7 @@ fuzz-smoke: ## Run each fuzz target for FUZZTIME (default 30s)
 golden-update: ## Rewrite testdata/golden from the current renderer (review the diff)
 	$(GO) test ./report -run TestGolden -update
 
-browser-check: ## Check the page script in a local headless Chrome, Chromium or Edge (CHROME selects one)
-	$(GO) test -tags browser -count=1 -run Browser ./report
+browser-check: ## Interaction, print and stress checks in local headless Chrome (CHROME selects one; PDF checks need Ghostscript, GS selects one)
+	$(GO) test -tags browser -count=1 ./internal/cdp ./report
 
 verify: fmt-check vet lint test ## The offline gate: formatting, vet, lint and tests

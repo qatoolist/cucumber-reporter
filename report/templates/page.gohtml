@@ -1,50 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="{{.Theme}}">
+<html lang="en"{{if ne .Defaults.Theme "auto"}} data-theme="{{.Defaults.Theme}}"{{end}}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 {{.Head}}
-<title>{{.Title}}</title>
+<title>{{.Name}}</title>
 </head>
-<body{{if .Compact}} class="compact"{{end}} data-theme="{{.Theme}}" data-density="{{.Density}}" data-expand="{{.Expand}}" data-page-size="{{.PageSize}}" data-hidden-charts="{{.HiddenCharts}}" data-hidden-sections="{{.HiddenSections}}">
-<a class="skip" href="#features">Skip to features</a>
-<header class="top">
-<div class="bar-row">
-<h1>{{.Name}}</h1>
-<button type="button" class="js" id="open-settings" hidden>Settings</button>
-<button type="button" class="js" id="open-help" hidden aria-label="Keyboard shortcuts">?</button>
-</div>
-<p class="note" id="storage-note" role="status" hidden>Preferences are not saved in this browser.</p>
-<h2 class="verdict st-{{.Verdict.Key}}"><span class="glyph" aria-hidden="true">{{.Verdict.Glyph}}</span> {{.VerdictLabel}}</h2>
-{{- if .VerdictNote}}
-<p class="verdict-note">{{.VerdictNote}}</p>
-{{- end}}
-{{- with .Computed}}
-<p class="note">Computed from step results: <span class="st-{{.Key}}"><span class="glyph" aria-hidden="true">{{.Glyph}}</span> {{.Label}}</span></p>
-{{- end}}
+<body>
+<noscript><div class="nj">
+<p>{{.Title}}</p>
+<h1><bdi>{{.Name}}</bdi></h1>
+<p class="nj-v{{with toneClass .Verdict.Tone}} {{.}}{{end}}">{{.Verdict.Label}}</p>
+<p>This is the static version of the report. Enable JavaScript for the dashboard, search, filters and charts.</p>
 {{- if .Facts}}
-<dl class="facts">{{range .Facts}}<div><dt>{{.Label}}</dt><dd>{{.Value}}</dd></div>{{end}}</dl>
+<h2>Run facts</h2><table><tbody>{{range .Facts}}<tr><th>{{.Label}}</th><td><bdi>{{.Value}}</bdi></td></tr>{{end}}</tbody></table>
 {{- end}}
-</header>
-<main>
-<section class="dashboard" aria-label="Summary">
-<div class="tiles">
-{{- range .Tiles}}
-<div class="tile" data-kind="{{.Kind}}"><h3>{{.Label}}</h3><p class="total">{{.Total}}</p><ul class="counts">{{range .Counts}}<li class="st-{{.Status.Key}}"><span class="glyph" aria-hidden="true">{{.Status.Glyph}}</span> {{.N}} {{.Status.Label}}</li>{{end}}</ul></div>
-{{- end}}
-</div>
+<h2>Summary</h2><table><thead><tr><th>Status</th><th>Scenarios</th></tr></thead><tbody>{{range .Summary}}<tr><td class="st s-{{.Status}}">{{label .Status}}</td><td>{{.N}}</td></tr>{{end}}<tr><th>Total</th><th>{{.Total}}</th></tr></tbody></table>
 {{- range .Sections}}
-{{template "section" .}}
+<h2><bdi>{{.Title}}</bdi></h2>{{if or .Summary .Rows}}<table><tbody>{{range .Summary}}<tr><th>{{.Label}}</th><td><bdi>{{.Value}}</bdi></td></tr>{{end}}{{range .Rows}}<tr><th>{{.Label}}</th><td><bdi>{{.Value}}</bdi></td></tr>{{end}}</tbody></table>{{end}}
+{{- with .Note}}
+<p>{{.}}</p>
 {{- end}}
-<div class="charts">
-{{- range .Charts}}
-{{template "chart" .}}
 {{- end}}
-</div>
-</section>
-{{template "features" .}}
-</main>
-{{template "settings" .}}
+<h2>Features</h2>
+{{- range .Features}}
+<h2><bdi>{{.Name}}</bdi></h2><p><code>{{.URI}}</code> {{join .Tags}}</p>
+{{- range .Elements}}
+<details{{if open .Status}} open{{end}}><summary><span class="st s-{{.Status}}">{{label .Status}}</span> {{.Keyword}}: <bdi>{{.Name}}</bdi> · {{dur .Duration}} {{join .Tags}}</summary>
+{{- range .Notes}}
+<p>{{.}}</p>
+{{- end}}
+<ol>
+{{- range .Steps}}
+<li><span class="st s-{{if .Known}}known{{else}}{{.Status}}{{end}}">{{if .Known}}{{label "known"}}{{else}}{{label .Status}}{{end}}</span> <b>{{trim .Keyword}}</b> <bdi>{{.Name}}</bdi> · {{with .Duration}}{{dur .}}{{else}}—{{end}}
+{{- if .Rows}}<table><tbody>{{range .Rows}}<tr>{{range .}}<td>{{.}}</td>{{end}}</tr>{{end}}</tbody></table>{{end}}
+{{- with .Doc}}<pre>{{.Value}}</pre>{{end}}
+{{- if and .Error (ne .Status "passed")}}<pre>{{.Error}}</pre>{{end}}
+{{- range .Att}}<p>Attachment: {{.Name}} ({{.Mime}}, {{if .Note}}{{.Note}}{{else}}{{.Size}} bytes{{end}}){{with .Href}} <a href="{{.}}">Open the file</a>{{end}}</p>{{end}}</li>
+{{- end}}
+</ol></details>
+{{- end}}
+{{- end}}
+</div></noscript>
+<script type="application/json" id="report-data">{{.Data}}</script>
 {{.Script}}
 </body>
 </html>

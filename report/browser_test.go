@@ -2,240 +2,898 @@
 
 package report
 
-// Headless browser check of the page script (make browser-check). It needs a local Chrome, Chromium
-// or Edge, found through $CHROME or the usual install locations; no module dependency is involved.
-// Each case renders a report, removes the CSP meta tag so a test prelude and postlude script may run
-// around the unchanged report script, and inspects the DOM that the browser serializes.
+// Headless browser checks of the rendered page (make browser-check). They drive a local Chrome,
+// Chromium or Edge (found through $CHROME or the usual install locations) over the DevTools protocol
+// with internal/cdp, against the unmodified page under its own Content-Security-Policy, and fail on
+// any exception, console error or CSP violation. The PDF checks also need Ghostscript ($GS or gs on
+// PATH). All data is synthetic.
+//
+// The interaction checks are a port of the approved prototype's 35 checks. Waits poll a page condition
+// with a bounded deadline; no check asserts on elapsed time.
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/qatoolist/cucumber-reporter/cucumber"
+	"github.com/qatoolist/cucumber-reporter/internal/cdp"
 )
 
-func findBrowser(t *testing.T) string {
-	if c := os.Getenv("CHROME"); c != "" {
-		return c
-	}
-	for _, c := range []string{
-		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-		"/Applications/Chromium.app/Contents/MacOS/Chromium",
-		"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-	} {
-		if _, err := os.Stat(c); err == nil {
-			return c
-		}
-	}
-	for _, name := range []string{"google-chrome", "chromium", "chromium-browser", "microsoft-edge"} {
-		if p, err := exec.LookPath(name); err == nil {
-			return p
-		}
-	}
-	t.Fatal("no Chrome, Chromium or Edge found; set CHROME")
-	return ""
+type session struct {
+	t     *testing.T
+	ctx   context.Context
+	b     *cdp.Browser
+	file  string
+	loads int
 }
 
-// dumpDOM loads doc with prelude before and postlude after the report script and returns the DOM.
-func dumpDOM(t *testing.T, doc, prelude, postlude string) string {
+// openSession renders features with opt into a temporary file and opens it in a fresh browser at a
+// 1440 × 900 viewport.
+func openSession(t *testing.T, features []cucumber.Feature, opt Options, reducedMotion bool) *session {
 	t.Helper()
-	doc = cspPattern.ReplaceAllString(doc, "")
-	i := strings.LastIndex(doc, "<script>")
-	j := i + strings.Index(doc[i:], "</script>") + len("</script>")
-	doc = doc[:i] + "<script>" + prelude + "</script>" + doc[i:j] + "<script>" + postlude + "</script>" + doc[j:]
-	dir := t.TempDir()
-	page := filepath.Join(dir, "index.html")
-	if err := os.WriteFile(page, []byte(doc), 0o600); err != nil {
+	chrome, err := cdp.FindChrome()
+	if err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-	out, err := exec.CommandContext(ctx, findBrowser(t), "--headless=new", "--disable-gpu", "--no-first-run",
-		"--user-data-dir="+filepath.Join(dir, "profile"), "--virtual-time-budget=3000", "--dump-dom", "file://"+page).Output()
+	dir := t.TempDir()
+	file := filepath.Join(dir, "index.html")
+	if err = os.WriteFile(file, []byte(mustRender(t, features, opt)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
+	t.Cleanup(cancel)
+	b, err := cdp.Launch(ctx, chrome, filepath.Join(dir, "profile"))
 	if err != nil {
-		t.Fatalf("browser: %v", err)
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = b.Close() })
+	s := &session{t: t, ctx: ctx, b: b, file: file}
+	if reducedMotion {
+		s.call("Emulation.setEmulatedMedia", map[string]any{"features": []map[string]string{{"name": "prefers-reduced-motion", "value": "reduce"}}})
+	}
+	s.size(1440, 900)
+	s.goTo("/")
+	s.must(`localStorage.clear(), true`)
+	return s
+}
+
+func (s *session) call(method string, params any) {
+	s.t.Helper()
+	if err := s.b.Call(s.ctx, method, params, nil); err != nil {
+		s.t.Fatalf("%s: %v", method, err)
+	}
+}
+
+// eval evaluates expr and decodes its value into out; an exception fails the test.
+func (s *session) eval(expr string, out any) {
+	s.t.Helper()
+	if err := s.b.Eval(s.ctx, expr, out); err != nil {
+		s.t.Fatalf("eval %.80q: %v", expr, err)
+	}
+}
+
+func (s *session) str(expr string) string {
+	s.t.Helper()
+	var v string
+	s.eval(expr, &v)
+	return v
+}
+
+func (s *session) num(expr string) int {
+	s.t.Helper()
+	var v float64
+	s.eval(expr, &v)
+	return int(v)
+}
+
+func (s *session) is(expr string) bool {
+	s.t.Helper()
+	var v bool
+	s.eval("!!("+expr+")", &v)
+	return v
+}
+
+// must evaluates a boolean expression and fails when it is false.
+func (s *session) must(expr string) {
+	s.t.Helper()
+	if !s.is(expr) {
+		s.t.Fatalf("not true: %s", expr)
+	}
+}
+
+// waitFor polls expr until it is true, for up to five seconds, and reports whether it became true.
+func (s *session) waitFor(expr string) bool {
+	s.t.Helper()
+	deadline := time.Now().Add(5 * time.Second)
+	for {
+		if s.is(expr) {
+			return true
+		}
+		if time.Now().After(deadline) {
+			return false
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+}
+
+// settle waits for two animation frames and a task, so that pending hashchange renders and frame
+// callbacks finish.
+func (s *session) settle() {
+	s.t.Helper()
+	s.eval(`new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => r(true), 0))))`, nil)
+}
+
+func (s *session) size(w, h int) {
+	s.t.Helper()
+	if err := s.b.SetViewport(s.ctx, w, h); err != nil {
+		s.t.Fatal(err)
+	}
+}
+
+// goTo loads the page afresh at route hash (a full load, so every check starts from a clean render).
+func (s *session) goTo(hash string) {
+	s.t.Helper()
+	s.loads++
+	if err := s.b.Navigate(s.ctx, "file://"+s.file+"?load="+strconv.Itoa(s.loads)+"#"+hash); err != nil {
+		s.t.Fatal(err)
+	}
+	if !s.waitFor(`document.querySelector('.page-t')`) {
+		s.t.Fatalf("route %s did not render", hash)
+	}
+	s.settle()
+}
+
+func (s *session) reload() {
+	s.t.Helper()
+	if err := s.b.Reload(s.ctx); err != nil {
+		s.t.Fatal(err)
+	}
+	if !s.waitFor(`document.querySelector('.page-t')`) {
+		s.t.Fatal("reload did not render")
+	}
+	s.settle()
+}
+
+func (s *session) key(k string, mods int) {
+	s.t.Helper()
+	if err := s.b.Key(s.ctx, k, mods); err != nil {
+		s.t.Fatal(err)
+	}
+	s.settle()
+}
+
+func (s *session) hash() string { s.t.Helper(); return s.str(`decodeURIComponent(location.hash)`) }
+
+// check runs one named check as a subtest and fails it on any new browser problem.
+func (s *session) check(name string, fn func() error) {
+	s.t.Run(name, func(t *testing.T) {
+		outer := s.t
+		s.t = t
+		defer func() { s.t = outer }()
+		before := len(s.b.Problems())
+		if err := fn(); err != nil {
+			t.Error(err)
+		}
+		if p := s.b.Problems(); len(p) > before {
+			t.Errorf("browser problems: %v", p[before:])
+		}
+	})
+}
+
+func fail(format string, args ...any) error { return fmt.Errorf(format, args...) }
+
+func stressRun() []cucumber.Feature { return syntheticRun(40, 25, 5) } // 1,000 scenarios, 5,000 steps
+
+func TestBrowserInteractions(t *testing.T) {
+	showcase, showcaseOpt := loadShowcase(t, "")
+	known, knownOpt := loadShowcase(t, "-known")
+	pages := []struct {
+		name     string
+		features []cucumber.Feature
+		opt      Options
+	}{
+		{"showcase", showcase, showcaseOpt},
+		{"known", known, knownOpt},
+		{"stress", stressRun(), Options{Version: OptionsVersion, Title: "Stress", RunFacts: []Fact{{Label: "Environment", Value: "synthetic"}}}},
+	}
+	for _, p := range pages {
+		t.Run(p.name, func(t *testing.T) { interactionChecks(t, openSession(t, p.features, p.opt, true)) })
+	}
+}
+
+// interactionChecks is the port of the prototype's tools/verify.mjs, check for check.
+func interactionChecks(t *testing.T, s *session) {
+	t.Helper()
+	firstScenario := s.str(`(() => { const a = document.querySelector('.attn a, .slow a'); return a ? a.getAttribute('href') : ''; })()`)
+
+	s.check("loads with app shell", func() error {
+		if !s.is(`document.querySelector('.top .verdict-pill') && document.querySelector('.hero, .kpis')`) {
+			return fail("no app shell")
+		}
+		return nil
+	})
+	s.check("nav link routes to Features", func() error {
+		s.eval(`document.querySelector('.nav-i[data-k=features]').click()`, nil)
+		if !s.waitFor(`location.hash === '#/features' && document.querySelector('.page-t').textContent === 'Features'`) {
+			return fail("hash %s", s.hash())
+		}
+		return nil
+	})
+	s.check("nav marks current page (aria-current)", func() error {
+		if !s.is(`document.querySelector('.nav-i[aria-current=page]').dataset.k === 'features'`) {
+			return fail("aria-current not on Features")
+		}
+		return nil
+	})
+	s.check("feature card drills into feature", func() error {
+		s.eval(`document.querySelector('.fcard').click()`, nil)
+		if !s.waitFor(`location.hash.startsWith('#/features/') && document.querySelector('.crumbs li:nth-child(2) a').textContent === 'Features'`) {
+			return fail("hash %s", s.hash())
+		}
+		return nil
+	})
+	s.check("breadcrumb returns to Features", func() error {
+		s.eval(`document.querySelector('.crumbs li:nth-child(2) a').click()`, nil)
+		if !s.waitFor(`location.hash === '#/features'`) {
+			return fail("hash %s", s.hash())
+		}
+		return nil
+	})
+	s.check("history back and forward", func() error {
+		s.eval(`history.back()`, nil)
+		if !s.waitFor(`location.hash.startsWith('#/features/')`) {
+			return fail("back: %s", s.hash())
+		}
+		s.eval(`history.forward()`, nil)
+		if !s.waitFor(`location.hash === '#/features'`) {
+			return fail("forward: %s", s.hash())
+		}
+		return nil
+	})
+	s.check("deep link to scenario step highlights it", func() error {
+		route := strings.TrimPrefix(firstScenario, "#")
+		if !strings.Contains(route, "?") {
+			route += "?step=0"
+		}
+		s.goTo(route)
+		if !s.waitFor(`document.querySelector('.step.flash') && document.querySelector('.steps')`) {
+			return fail("no highlighted step at %s", route)
+		}
+		return nil
+	})
+	s.check("scenario prev/next navigation", func() error {
+		before := s.hash()
+		s.eval(`(document.querySelector('.pn a:last-child:not(.off)') || document.querySelector('.pn a:first-child:not(.off)')).click()`, nil)
+		if !s.waitFor(`location.hash.startsWith('#/scenarios/') && decodeURIComponent(location.hash) !== ` + jsString(before)) {
+			return fail("still at %s", before)
+		}
+		return nil
+	})
+	s.check("keyboard ] and [ move between scenarios", func() error {
+		a := s.hash()
+		s.eval(`document.activeElement.blur()`, nil)
+		s.key("]", 0)
+		b := s.hash()
+		s.key("[", 0)
+		c := s.hash()
+		if (a == b && a == c) || !strings.HasPrefix(c, "#/scenarios/") {
+			return fail("%s → %s → %s", a, b, c)
+		}
+		return nil
+	})
+	s.check("Cmd/Ctrl+K opens search; typing filters; Enter opens result", func() error {
+		s.goTo("/")
+		s.key("k", 4)
+		if !s.is(`document.querySelector('.palette').open`) {
+			return fail("palette not open")
+		}
+		word := s.str(`(() => { const e = document.querySelector('.att-t, .slow-t bdi, .fb-n bdi'); return e.textContent.split(/\s+/).find((w) => w.length > 4) || e.textContent.slice(0, 5); })()`)
+		for _, r := range strings.ToLower(word) {
+			if err := s.b.InsertText(s.ctx, string(r)); err != nil {
+				return err
+			}
+		}
+		s.settle()
+		n, marks := s.num(`document.querySelectorAll('.pal-o').length`), s.num(`document.querySelectorAll('.pal-o mark').length`)
+		s.key("ArrowDown", 0)
+		sel := s.str(`decodeURIComponent(document.querySelector('.pal-o[aria-selected=true]').getAttribute('href'))`)
+		s.key("Enter", 0)
+		if !s.waitFor(`decodeURIComponent(location.hash) === `+jsString(sel)+` && !document.querySelector('.palette').open`) || n == 0 || marks == 0 {
+			return fail("word %q: %d options, %d marks, selected %s, hash %s", word, n, marks, sel, s.hash())
+		}
+		return nil
+	})
+	s.check("slash opens search, Escape closes", func() error {
+		s.eval(`document.activeElement.blur()`, nil)
+		s.key("/", 0)
+		opened := s.is(`document.querySelector('.palette').open`)
+		s.key("Escape", 0)
+		if !opened || s.is(`document.querySelector('.palette').open`) {
+			return fail("opened %v, still open after Escape", opened)
+		}
+		return nil
+	})
+	s.check("? opens shortcuts; g f goes to failures", func() error {
+		s.eval(`document.activeElement.blur()`, nil)
+		s.key("?", 0)
+		opened := s.is(`document.querySelector('dialog.small').open`)
+		s.key("Escape", 0)
+		s.key("g", 0)
+		s.key("f", 0)
+		if !opened || !s.waitFor(`location.hash === '#/failures'`) {
+			return fail("shortcuts dialog %v, hash %s", opened, s.hash())
+		}
+		return nil
+	})
+	s.check("status chip filters list and is saved in the URL", func() error {
+		s.goTo("/scenarios")
+		count := `parseInt(document.querySelector('.active-f .count').textContent.replace(/,/g, ''))`
+		all := s.num(count)
+		k := s.str(`(() => { const c = [...document.querySelectorAll('.fchip[class*="s-"]')].find((b) => !b.classList.contains('s-passed')) || document.querySelector('.fchip.s-passed'); c.click(); return c.className.match(/s-(\w+)/)[1]; })()`)
+		s.settle()
+		n, h := s.num(count), s.hash()
+		s.reload()
+		pressed := s.str(`[...document.querySelectorAll('.fchip[aria-pressed=true]')].map((b) => b.className).join(' ')`)
+		if !strings.Contains(h, "status="+k) || n > all || !strings.Contains(pressed, "s-"+k) {
+			return fail("all %d, n %d, hash %s, pressed %q, status %s", all, n, h, pressed, k)
+		}
+		return nil
+	})
+	s.check("text filter highlights matches and count updates", func() error {
+		s.goTo("/scenarios")
+		s.eval(`(() => { const i = document.querySelector('.tb-search input'); i.value = document.querySelector('.row-t bdi').textContent.split(/\s+/).find((x) => x.length > 3); i.dispatchEvent(new Event('input')); })()`, nil)
+		if !s.waitFor(`document.querySelectorAll('.rows mark').length > 0 && /q=/.test(location.hash) && /scenario/.test(document.querySelector('.active-f .count').textContent)`) {
+			return fail("no highlighted matches")
+		}
+		return nil
+	})
+	s.check("clear filters restores the list", func() error {
+		s.eval(`document.querySelector('.active-f .linkbtn').click()`, nil)
+		if !s.waitFor(`!/q=|status=/.test(location.hash)`) {
+			return fail("hash %s", s.hash())
+		}
+		return nil
+	})
+	s.check("donut segment hover shows tooltip; click drills down", func() error {
+		s.goTo("/")
+		tip := s.is(`(() => { const e = document.querySelector('.donut .seg'); const r = e.getBoundingClientRect(); e.dispatchEvent(new PointerEvent('pointermove', { clientX: r.left + 5, clientY: r.top + 5, bubbles: true })); return !document.getElementById('tip').hidden && document.getElementById('tip').textContent.length > 0; })()`)
+		s.eval(`document.querySelector('.donut .seg').dispatchEvent(new MouseEvent('click', { bubbles: true }))`, nil)
+		if !tip || !s.waitFor(`location.hash.startsWith('#/scenarios?status=')`) {
+			return fail("tooltip %v, hash %s", tip, s.hash())
+		}
+		return nil
+	})
+	s.check("donut segment reachable and activatable by keyboard", func() error {
+		s.goTo("/")
+		s.eval(`document.querySelector('.donut .seg').focus()`, nil)
+		tip := s.is(`!document.getElementById('tip').hidden`)
+		s.key("Enter", 0)
+		if !tip || !s.waitFor(`location.hash.startsWith('#/scenarios?status=')`) {
+			return fail("tooltip %v, hash %s", tip, s.hash())
+		}
+		return nil
+	})
+	s.check("legend toggle hides a segment (aria-pressed)", func() error {
+		s.goTo("/")
+		a := s.num(`document.querySelectorAll('.donut .seg').length`)
+		s.eval(`document.querySelector('.legend .leg').click()`, nil)
+		s.settle()
+		b := s.num(`document.querySelectorAll('.donut .seg').length`)
+		pressed := s.str(`document.querySelector('.legend .leg').getAttribute('aria-pressed')`)
+		if (a > 1 && b != a-1) || b > a || pressed != "false" {
+			return fail("segments %d → %d, aria-pressed %s", a, b, pressed)
+		}
+		return nil
+	})
+	s.check("Scenarios/Steps switch redraws the donut", func() error {
+		s.goTo("/")
+		s.eval(`document.querySelector('.c-status .seg button:last-child').click()`, nil)
+		s.settle()
+		if !s.is(`/step/.test(document.querySelector('.donut-n span').textContent) && document.querySelector('.c-status .seg button:last-child').getAttribute('aria-checked') === 'true'`) {
+			return fail("donut not switched to steps")
+		}
+		return nil
+	})
+	s.check("feature bar segment links to filtered feature", func() error {
+		h := s.str(`document.querySelector('.fbars .sbar a').getAttribute('href')`)
+		if !regexp.MustCompile(`^#/features/[^?]+\?status=\w+$`).MatchString(h) {
+			return fail("href %s", h)
+		}
+		return nil
+	})
+	s.check("KPI tile is a link that filters", func() error {
+		href := s.str(`document.querySelectorAll('.kpi')[3].getAttribute('href')`)
+		s.eval(`document.querySelectorAll('.kpi')[3].click()`, nil)
+		if !regexp.MustCompile(`^#/scenarios\?status=passed(,known)?$`).MatchString(href) || !s.waitFor(`location.hash === `+jsString(href)) {
+			return fail("href %s, hash %s", href, s.hash())
+		}
+		return nil
+	})
+	s.check("settings: hide a widget, persists across reload, reset restores", func() error {
+		s.goTo("/")
+		s.eval(`document.querySelector('[aria-label=Settings]').click()`, nil)
+		s.eval(`[...document.querySelectorAll('.sw-r')].find((r) => r.textContent.includes('Duration profile')).querySelector('input').click()`, nil)
+		s.settle()
+		gone := s.is(`!document.querySelector('.c-dur')`)
+		s.key("Escape", 0)
+		s.reload()
+		still := s.is(`!document.querySelector('.c-dur')`)
+		s.eval(`document.querySelector('[aria-label=Settings]').click()`, nil)
+		s.eval(`[...document.querySelectorAll('.sheet-f button')].pop().click()`, nil)
+		s.settle()
+		back := s.is(`document.querySelector('.c-dur')`)
+		if !gone || !still || !back {
+			return fail("hidden %v, after reload %v, restored %v", gone, still, back)
+		}
+		return nil
+	})
+	s.check("settings: hide a nav section", func() error {
+		toggle := `[...document.querySelectorAll('.sw-r')].find((r) => r.textContent.includes('Run details')).querySelector('input').click()`
+		s.eval(toggle, nil)
+		s.settle()
+		gone := s.is(`!document.querySelector('.nav-i[data-k=run]')`)
+		s.eval(toggle, nil)
+		s.key("Escape", 0)
+		if !gone || !s.is(`document.querySelector('.nav-i[data-k=run]')`) {
+			return fail("hidden %v", gone)
+		}
+		return nil
+	})
+	s.check("theme button cycles and persists", func() error {
+		s.goTo("/")
+		btn := `document.querySelector('.top .ibtn[aria-label^=Theme]').click()`
+		s.eval(btn, nil)
+		t1 := s.str(`document.documentElement.dataset.theme || ''`)
+		s.reload()
+		t2 := s.str(`document.documentElement.dataset.theme || ''`)
+		s.eval(btn, nil)
+		s.eval(btn, nil)
+		t3 := s.str(`document.documentElement.dataset.theme || ''`)
+		if t1 != "light" || t2 != "light" || t3 != "" {
+			return fail("themes %q %q %q", t1, t2, t3)
+		}
+		return nil
+	})
+	s.check("blocked storage falls back without errors", func() error {
+		r := s.str(`(() => { try { Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } }); } catch (e) {} document.querySelector('[aria-label=Settings]').click(); const sw = document.querySelector('.sw-r input'); sw.click(); sw.click(); return document.querySelector('.sheet-f p').textContent; })()`)
+		s.key("Escape", 0)
+		if !regexp.MustCompile(`blocks storage|Saved`).MatchString(r) {
+			return fail("footer %q", r)
+		}
+		return nil
+	})
+	s.check("attachment opens and JSON/text renders; copy shows toast", func() error {
+		sid := s.str(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); for (const f of D.features) for (const e of f.elements) if (e.steps.some((x) => x.att && x.att.some((a) => a.data))) return e.id; return ''; })()`)
+		if sid == "" {
+			return nil
+		}
+		s.goTo("/scenarios/" + sid)
+		opened := s.is(`(() => { const b = [...document.querySelectorAll('.att-h')].find((x) => !/image\//.test(x.textContent)); const was = b.getAttribute('aria-expanded'); b.click(); if (b.getAttribute('aria-expanded') === 'false') b.click(); return was !== null && b.getAttribute('aria-expanded') === 'true'; })()`)
+		body := s.waitFor(`document.querySelector('[aria-expanded=true] + .acc .jt li, [aria-expanded=true] + .acc pre')`)
+		s.eval(`document.querySelector('[aria-expanded=true] + .acc .att-tools .btn:not([role])').click()`, nil)
+		if !opened || !body || !s.waitFor(`/copied|blocked/i.test(document.querySelector('.toast').textContent)`) {
+			return fail("opened %v, body %v, toast %q", opened, body, s.str(`document.querySelector('.toast').textContent`))
+		}
+		return nil
+	})
+	s.check("timeline renders lanes and step definitions; header sort works", func() error {
+		s.goTo("/timeline")
+		lanes := s.is(`document.querySelectorAll('.gantt a').length > 0 && document.querySelectorAll('.prof tbody tr').length > 0`)
+		s.eval(`document.querySelector('.prof th:nth-child(2) button').click()`, nil)
+		if !lanes || s.str(`document.querySelector('.prof th:nth-child(2)').getAttribute('aria-sort')`) != "descending" {
+			return fail("lanes %v", lanes)
+		}
+		return nil
+	})
+	s.check("every route renders", func() error {
+		for _, r := range []string{"/", "/features", "/scenarios", "/failures", "/known", "/skipped", "/timeline", "/run", "/print", "/nope"} {
+			s.goTo(r)
+		}
+		return nil
+	})
+	s.check("narrow width: menu opens navigation, Escape closes", func() error {
+		s.size(390, 844)
+		defer s.size(1440, 900)
+		s.goTo("/")
+		vis := s.is(`getComputedStyle(document.querySelector('.menu-btn')).display !== 'none'`)
+		s.eval(`document.querySelector('.menu-btn').click()`, nil)
+		s.settle()
+		open := s.is(`document.documentElement.classList.contains('side-open') && document.querySelector('.menu-btn').getAttribute('aria-expanded') === 'true'`)
+		s.key("Escape", 0)
+		closed := s.is(`!document.documentElement.classList.contains('side-open')`)
+		overflow := s.is(`document.documentElement.scrollWidth <= window.innerWidth`)
+		if !vis || !open || !closed || !overflow {
+			return fail("menu visible %v, opens %v, closes %v, no horizontal scroll %v", vis, open, closed, overflow)
+		}
+		return nil
+	})
+	s.check("print to PDF produces a multi-page document", func() error {
+		s.goTo("/")
+		s.eval(`window.dispatchEvent(new Event('beforeprint'))`, nil)
+		pdf, err := s.b.PrintPDF(s.ctx)
+		if err != nil {
+			return err
+		}
+		if n := pdfPages(pdf); n < 2 {
+			return fail("%d pages", n)
+		}
+		return nil
+	})
+	s.check("headline KPI agrees with the verdict", func() error {
+		s.goTo("/")
+		var r struct {
+			Known                   bool
+			Label, Val, Hero, HeroL string
+			Sub                     string
+		}
+		s.eval(`(() => { const k = document.querySelectorAll('.kpi')[3];
+			return { known: document.querySelectorAll('.nav-i[data-k=known] .nav-c').length > 0, label: k.querySelector('.kpi-l').textContent.trim(), val: k.querySelector('.kpi-v').textContent.trim(),
+				hero: document.querySelector('.hero-rv').textContent.trim(), heroL: document.querySelector('.hero-rl').textContent, sub: k.querySelector('.kpi-s').textContent }; })()`, &r)
+		if r.Known {
+			if r.Label != "As expected" || r.Val != r.Hero || r.HeroL != "as expected" || !regexp.MustCompile(`passed · \d+ known · pass rate`).MatchString(r.Sub) {
+				return fail("%+v", r)
+			}
+		} else if r.Label != "Pass rate" || r.Val != r.Hero {
+			return fail("%+v", r)
+		}
+		return nil
+	})
+	s.check("known-failure marker sits only on the declared step", func() error {
+		var anns []struct {
+			ID       string
+			Step     int
+			Observed bool
+			Failed   []int
+		}
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const st = {};
+			for (const f of D.features) for (const e of f.elements) st[e.id] = e.steps.map((x) => x.status);
+			return (D.annotations || []).filter((a) => a.kind === 'known' && st[a.scenario]).map((a) => ({ id: a.scenario, step: a.step || 0, observed: !!a.observed, failed: st[a.scenario].map((x, i) => (x === 'failed' ? i : -1)).filter((i) => i >= 0) })); })()`, &anns)
+		seen := map[string]bool{}
+		for _, a := range anns {
+			if seen[a.ID] {
+				continue
+			}
+			seen[a.ID] = true
+			s.goTo("/scenarios/" + a.ID)
+			var marked []int
+			s.eval(`[...document.querySelectorAll('.steps > .step')].map((li, i) => (li.classList.contains('s-known') ? i : -1)).filter((i) => i >= 0)`, &marked)
+			want := a.Failed
+			if len(want) == 0 && a.Observed && a.Step > 0 {
+				want = []int{a.Step - 1}
+			}
+			if fmt.Sprint(marked) != fmt.Sprint(want) && (len(marked) != 0 || len(want) != 0) {
+				return fail("%s: marked %v, want %v", a.ID, marked, want)
+			}
+		}
+		return nil
+	})
+	s.check("print uses the declared known-issue outcome and the same headline", func() error {
+		s.goTo("/print")
+		var r struct {
+			Bad []string
+			KP  string
+		}
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const pr = document.getElementById('print-root').textContent; const bad = [];
+			for (const a of (D.annotations || []).filter((a) => a.kind === 'known')) if (a.step && a.observed && !pr.includes((a.ref ? a.ref + ': ' : '') + a.title + ' (step ' + a.step + ')')) bad.push(a.scenario);
+			if (/not applicable: /.test(pr)) bad.push('not applicable outcome printed');
+			return { bad, kp: document.querySelector('.pr-kpis').textContent }; })()`, &r)
+		known := s.is(`document.querySelector('.nav-i[data-k=known] .nav-c')`)
+		ok := len(r.Bad) == 0 && ((known && strings.Contains(r.KP, "As expected") && !strings.Contains(r.KP, "Pass rate")) || (!known && strings.Contains(r.KP, "Pass rate")))
+		if !ok {
+			return fail("%+v (known failures %v)", r, known)
+		}
+		return nil
+	})
+	s.check("dashboard columns end together (1440 and 1280 px)", func() error {
+		defer s.size(1440, 900)
+		for _, w := range []int{1440, 1280} {
+			s.size(w, 900)
+			s.goTo("/")
+			var d []int
+			s.eval(`[...document.querySelectorAll('.v-dash .pair')].map((p) => { const b = [...p.children].map((c) => c.getBoundingClientRect().bottom); return Math.round(Math.max(...b) - Math.min(...b)); })`, &d)
+			for _, x := range d {
+				if x > 4 {
+					return fail("width %d: column differences %v", w, d)
+				}
+			}
+		}
+		return nil
+	})
+	s.check("no CSP violations or console errors across the run", func() error {
+		if p := s.b.Problems(); len(p) > 0 {
+			return fail("%v", p)
+		}
+		return nil
+	})
+}
+
+func jsString(s string) string {
+	b, _ := json.Marshal(s)
+	return string(b)
+}
+
+var pdfPage = regexp.MustCompile(`/Type\s*/Page[^s]`)
+
+func pdfPages(pdf []byte) int { return len(pdfPage.FindAll(pdf, -1)) }
+
+// TestBrowserMotion loads the dashboard with motion enabled: the count-up reaches the final values and
+// the draw-in animations raise no errors.
+func TestBrowserMotion(t *testing.T) {
+	features, opt := loadShowcase(t, "-known")
+	s := openSession(t, features, opt, false)
+	s.check("counters reach the headline value", func() error {
+		// The expected figure, computed here from the data block: (passed + known) / executed.
+		want := s.str(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const n = {};
+			for (const f of D.features) for (const e of f.elements) n[e.status] = (n[e.status] || 0) + 1;
+			const v = ((n.passed || 0) + (n.known || 0)) * 100 / (Object.values(n).reduce((a, b) => a + b, 0) - (n.skipped || 0));
+			return (v === 100 || v === 0 ? v.toFixed(0) : v.toFixed(1)) + '%'; })()`)
+		if !s.waitFor(`document.querySelectorAll('.kpi')[3].querySelector('.kpi-v').textContent.trim() === ` + jsString(want) + ` && document.querySelector('.hero-rv').textContent.trim() === ` + jsString(want)) {
+			return fail("hero %q, want %q", s.str(`document.querySelector('.hero-rv').textContent`), want)
+		}
+		if !s.waitFor(`[...document.querySelectorAll('.donut .seg')].every((c) => !c.getAttribute('stroke-dasharray').startsWith('0 '))`) {
+			return fail("donut did not draw in")
+		}
+		return nil
+	})
+}
+
+// TestBrowserDefaultsAndPreferences: generation-time defaults reach the page; saved preferences that
+// are invalid fall back to them.
+func TestBrowserDefaultsAndPreferences(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	opt.Defaults = ViewDefaults{Theme: ThemeDark, Density: DensityCompact, View: ViewFailures, Widgets: map[string]bool{WidgetDuration: false}, Nav: map[string]bool{NavRun: false}}
+	s := openSession(t, features, opt, true)
+	state := `[document.documentElement.dataset.theme, document.documentElement.dataset.density, document.querySelector('.page-t').textContent, !!document.querySelector('.nav-i[data-k=run]')].join('|')`
+	s.check("defaults apply without saved preferences", func() error {
+		s.goTo("")
+		if got := s.str(state); got != "dark|compact|Failures|false" {
+			return fail("state %s", got)
+		}
+		s.goTo("/dashboard") // "#/" opens the start page, here Failures
+		if s.is(`document.querySelector('.c-dur')`) || !s.is(`document.querySelector('.c-status')`) {
+			return fail("widget defaults not applied: %s", s.str(`[...document.querySelectorAll('.card')].map((c) => c.className).join(',') + ' | ' + location.hash`))
+		}
+		return nil
+	})
+	for _, prefs := range []string{`'{not json'`, `JSON.stringify({v: 2, theme: 'neon', density: 5, view: 'nope', widgets: [1], nav: {dashboard: false, run: 'yes'}})`, `'[]'`, `'null'`, `JSON.stringify({v: 1, theme: 'light'})`} {
+		s.check("invalid saved preferences fall back: "+prefs, func() error {
+			s.eval(`localStorage.setItem('cucumber-reporter:v2:prefs', `+prefs+`), true`, nil)
+			s.goTo("")
+			if got := s.str(state); got != "dark|compact|Failures|false" {
+				return fail("state %s", got)
+			}
+			return nil
+		})
+	}
+	s.check("valid saved preferences override the defaults", func() error {
+		s.eval(`localStorage.setItem('cucumber-reporter:v2:prefs', JSON.stringify({v: 2, theme: 'light', density: 'comfortable', view: 'features', nav: {run: true}, bogus: 1})), true`, nil)
+		s.goTo("")
+		if got := s.str(state); got != "light|comfortable|Features|true" {
+			return fail("state %s", got)
+		}
+		return nil
+	})
+}
+
+// TestBrowserNoScript: with JavaScript disabled the fallback shows the run and prints.
+func TestBrowserNoScript(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	s := openSession(t, features, opt, true)
+	s.call("Emulation.setScriptExecutionDisabled", map[string]any{"value": true})
+	s.loads++
+	if err := s.b.Navigate(s.ctx, "file://"+s.file+"?load="+strconv.Itoa(s.loads)); err != nil {
+		t.Fatal(err)
+	}
+	var text string
+	s.eval(`document.querySelector('.nj') ? document.querySelector('.nj').textContent : ''`, &text)
+	for _, want := range []string{"Failed: 3 unexpected failures", "Run facts", "Summary", "Order processing", "Known failure EX-330"} {
+		if !strings.Contains(text, want) {
+			t.Errorf("fallback lacks %q", want)
+		}
+	}
+	if s.is(`document.querySelector('.top')`) {
+		t.Error("the app shell was built although scripts were disabled")
+	}
+	pdf, err := s.b.PrintPDF(s.ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pdfPages(pdf) < 2 {
+		t.Errorf("no-JS print has %d pages", pdfPages(pdf))
+	}
+	if p := s.b.Problems(); len(p) > 0 {
+		t.Errorf("browser problems: %v", p)
+	}
+}
+
+// TestBrowserStress: the 5,000-step page loads with a small DOM and a virtualised scenario list.
+// Timings are logged, not asserted.
+func TestBrowserStress(t *testing.T) {
+	s := openSession(t, stressRun(), Options{Version: OptionsVersion}, true)
+	var m struct {
+		Nodes, Rows            int
+		Route, Filter, Palette float64
+	}
+	s.goTo("/")
+	m.Nodes = s.num(`document.getElementsByTagName('*').length`)
+	s.eval(`(() => { const t0 = performance.now(); location.hash = '#/scenarios'; window.dispatchEvent(new HashChangeEvent('hashchange')); return performance.now() - t0; })()`, &m.Route)
+	s.waitFor(`document.querySelector('.rows .vl')`)
+	s.settle()
+	m.Rows = s.num(`document.querySelectorAll('.rows .row').length`)
+	s.eval(`(() => { const i = document.querySelector('.tb-search input'); i.value = 'case 07'; const t0 = performance.now(); i.dispatchEvent(new Event('input')); return new Promise((r) => setTimeout(() => r(performance.now() - t0 - 60), 61)); })()`, &m.Filter)
+	s.eval(`(() => { document.dispatchEvent(new KeyboardEvent('keydown', { key: '/' })); const i = document.querySelector('.pal-in'); const t0 = performance.now(); i.value = 'request 12'; i.dispatchEvent(new Event('input')); return performance.now() - t0; })()`, &m.Palette)
+	t.Logf("stress page (1,000 scenarios, 5,000 steps): %d DOM nodes at load, scenario route %.1f ms, filter keystroke about %.1f ms, palette search %.1f ms, %d list rows rendered", m.Nodes, m.Route, m.Filter, m.Palette, m.Rows)
+	if m.Rows == 0 || m.Rows > 100 {
+		t.Errorf("%d rows rendered for 1,000 scenarios; the list must be virtualised", m.Rows)
+	}
+	if m.Nodes > 5000 {
+		t.Errorf("%d DOM nodes at load; the dashboard must not render every scenario", m.Nodes)
+	}
+	if p := s.b.Problems(); len(p) > 0 {
+		t.Errorf("browser problems: %v", p)
+	}
+}
+
+// TestBrowserPDF prints each page and checks the PDF the way the prototype's tools/pdfcheck.py did:
+// no near-empty page except the last, and no forbidden text.
+func TestBrowserPDF(t *testing.T) {
+	gs := os.Getenv("GS")
+	if gs == "" {
+		var err error
+		if gs, err = exec.LookPath("gs"); err != nil {
+			t.Fatal("Ghostscript not found; set GS or install gs")
+		}
+	}
+	showcase, showcaseOpt := loadShowcase(t, "")
+	known, knownOpt := loadShowcase(t, "-known")
+	for _, p := range []struct {
+		name     string
+		features []cucumber.Feature
+		opt      Options
+		fillRule bool // a one-scenario run has a short cover page by design; its fill is logged only
+	}{
+		{"showcase", showcase, showcaseOpt, true},
+		{"known", known, knownOpt, true},
+		{"minimal", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion}, false},
+	} {
+		t.Run(p.name, func(t *testing.T) {
+			s := openSession(t, p.features, p.opt, true)
+			s.eval(`window.dispatchEvent(new Event('beforeprint')), true`, nil)
+			pdf, err := s.b.PrintPDF(s.ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			dir := t.TempDir()
+			file := filepath.Join(dir, p.name+".pdf")
+			if err := os.WriteFile(file, pdf, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			if out := os.Getenv("PDF_OUT"); out != "" {
+				_ = os.WriteFile(filepath.Join(out, p.name+".pdf"), pdf, 0o600)
+			}
+			fill := pageFill(t, gs, file, dir)
+			t.Logf("%s: %d pages, fill %v%%", p.name, len(fill), fill)
+			for i, f := range fill[:len(fill)-1] {
+				if p.fillRule && f < 35 {
+					t.Errorf("page %d of %d is %d%% filled; only the last page may be under 35%%", i+1, len(fill), f)
+				}
+			}
+			text := strings.Join(strings.Fields(pdfText(t, gs, file)), " ")
+			for _, banned := range []string{"not applicable: ", "Pass rate 0%", "file://", "Reset to report defaults"} {
+				if strings.Contains(text, banned) {
+					t.Errorf("PDF contains %q", banned)
+				}
+			}
+			if !strings.Contains(text, "Page 1 of") || !strings.Contains(text, "End of report") {
+				t.Error("PDF lacks the page footer or the end marker")
+			}
+			if p.name != "minimal" && !strings.Contains(text, "EX-330: Expected failure: no push is sent to that customer (step 3)") {
+				t.Error("PDF lacks the declared known-issue outcome")
+			}
+		})
+	}
+}
+
+// pageFill rasterises the PDF at 24 dpi and returns, per page, the percentage of rows between 9% and
+// 91% of the height (inside the margin boxes) that contain a dark pixel.
+func pageFill(t *testing.T, gs, pdf, dir string) []int {
+	t.Helper()
+	out := filepath.Join(dir, "p-%03d.pgm")
+	if b, err := exec.CommandContext(t.Context(), gs, "-q", "-dNOPAUSE", "-dBATCH", "-dSAFER", "-sDEVICE=pgmraw", "-r24", "-sOutputFile="+out, pdf).CombinedOutput(); err != nil {
+		t.Fatalf("gs: %v: %s", err, b)
+	}
+	names, _ := filepath.Glob(filepath.Join(dir, "p-*.pgm"))
+	var fill []int
+	for _, name := range names {
+		data, err := os.ReadFile(name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var vals []string
+		pos := 0
+		for len(vals) < 4 {
+			end := pos + bytes.IndexByte(data[pos:], '\n')
+			line := data[pos:end]
+			pos = end + 1
+			if !bytes.HasPrefix(line, []byte("#")) {
+				vals = append(vals, strings.Fields(string(line))...)
+			}
+		}
+		w, _ := strconv.Atoi(vals[1])
+		h, _ := strconv.Atoi(vals[2])
+		px := data[pos:]
+		ink, rows := 0, 0
+		for y := h * 9 / 100; y < h*91/100; y++ {
+			rows++
+			for _, v := range px[y*w : (y+1)*w] {
+				if v < 200 {
+					ink++
+					break
+				}
+			}
+		}
+		fill = append(fill, ink*100/rows)
+	}
+	return fill
+}
+
+func pdfText(t *testing.T, gs, pdf string) string {
+	t.Helper()
+	out, err := exec.CommandContext(t.Context(), gs, "-q", "-dNOPAUSE", "-dBATCH", "-dSAFER", "-sDEVICE=txtwrite", "-sOutputFile=-", pdf).Output()
+	if err != nil {
+		t.Fatalf("gs txtwrite: %v", err)
 	}
 	return string(out)
 }
 
-func hiddenAttr(t *testing.T, dom, id string) bool {
-	t.Helper()
-	m := regexp.MustCompile(`<[a-z]+ [^>]*id="` + regexp.QuoteMeta(id) + `"[^>]*>`).FindString(dom)
-	if m == "" {
-		t.Fatalf("no element #%s", id)
-	}
-	return strings.Contains(m, ` hidden=""`)
-}
-
-func openCount(dom string) int {
-	return len(regexp.MustCompile(`<details class="scenario pg-item"[^>]* open=""`).FindAllString(dom, -1))
-}
-
-const setPrefs = `localStorage.setItem('cucumber-reporter:v1:prefs', %s);`
-
-func withPrefs(js string) string { return strings.Replace(setPrefs, "%s", js, 1) }
-
-func TestBrowserDefaultsWithoutPreferences(t *testing.T) {
-	dom := dumpDOM(t, mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions()), "localStorage.clear();", "")
-	if !strings.Contains(dom, `<html lang="en" data-theme="auto">`) {
-		t.Error("theme default not applied")
-	}
-	if !hiddenAttr(t, dom, "chart-slowest-scenarios") || hiddenAttr(t, dom, "chart-step-status") {
-		t.Error("chart defaults not applied")
-	}
-	if hiddenAttr(t, dom, "open-settings") || hiddenAttr(t, dom, "open-help") {
-		t.Error("script controls still hidden")
-	}
-	if !hiddenAttr(t, dom, "storage-note") {
-		t.Error("storage notice shown although storage works")
-	}
-	if n := openCount(dom); n != 2 {
-		t.Errorf("open scenarios = %d, want the 2 failed", n)
-	}
-	if !strings.Contains(dom, `2 of 2 features`) {
-		t.Error("filter count not shown")
-	}
-}
-
-func TestBrowserSavedPreferencesOverrideDefaults(t *testing.T) {
-	prefs := `JSON.stringify({theme:'dark',density:'compact',expand:'all',pageSize:'25',bogus:1,
-		show:{'chart:slowest-scenarios':true,'section:skipped':false,'chart:no-such-chart':false,'section:known-issues':'yes'}})`
-	dom := dumpDOM(t, mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions()), withPrefs(prefs), "")
-	if !strings.Contains(dom, `<html lang="en" data-theme="dark">`) || !regexp.MustCompile(`<body [^>]*class="compact"`).MatchString(dom) {
-		t.Error("theme or density preference not applied")
-	}
-	if hiddenAttr(t, dom, "chart-slowest-scenarios") {
-		t.Error("chart shown by preference is hidden")
-	}
-	if !hiddenAttr(t, dom, "sec-skipped") {
-		t.Error("section hidden by preference is shown")
-	}
-	if hiddenAttr(t, dom, "sec-known-issues") {
-		t.Error("a non-boolean preference was not ignored")
-	}
-	if n := openCount(dom); n != 6 {
-		t.Errorf("open scenarios = %d, want all 6", n)
-	}
-}
-
-func TestBrowserInvalidPreferencesFallBack(t *testing.T) {
-	for _, prefs := range []string{`'{not json'`, `JSON.stringify({theme:'neon',pageSize:'7',expand:5,show:[1]})`, `'[]'`, `'null'`} {
-		dom := dumpDOM(t, mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions()), withPrefs(prefs), "")
-		if !strings.Contains(dom, `data-theme="auto">`) || !hiddenAttr(t, dom, "chart-slowest-scenarios") || openCount(dom) != 2 {
-			t.Errorf("prefs %s: defaults not used", prefs)
+// TestBrowserHostileData renders each attack string of the escaping table into every field and visits
+// every view: the page must build no element, attribute or link from the data, raise no dialog and
+// report no exception or CSP violation.
+func TestBrowserHostileData(t *testing.T) {
+	features, opt := hostileRun("placeholder")
+	s := openSession(t, features, opt, true)
+	s.call("Page.addScriptToEvaluateOnNewDocument", map[string]any{"source": `for (const k of ['alert', 'confirm', 'prompt', 'print']) window[k] = () => { document.documentElement.setAttribute('data-dialog', k); };`})
+	for i, h := range hostile {
+		features, opt := hostileRun(h)
+		file := filepath.Join(filepath.Dir(s.file), "hostile-"+strconv.Itoa(i)+".html")
+		if err := os.WriteFile(file, []byte(mustRender(t, features, opt)), 0o600); err != nil {
+			t.Fatal(err)
 		}
-		if !hiddenAttr(t, dom, "storage-note") {
-			t.Errorf("prefs %s: storage notice shown for unreadable content", prefs)
-		}
-	}
-}
-
-func TestBrowserBlockedStorage(t *testing.T) {
-	block := `Object.defineProperty(window, 'localStorage', {get: function () { throw new DOMException('blocked', 'SecurityError'); }});`
-	post := `document.querySelector('[data-pref=theme]').value = 'dark';
-		document.querySelector('[data-pref=theme]').dispatchEvent(new Event('change'));`
-	dom := dumpDOM(t, mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions()), block, post)
-	if hiddenAttr(t, dom, "storage-note") {
-		t.Error("no notice although storage is blocked")
-	}
-	if !strings.Contains(dom, `data-theme="dark">`) {
-		t.Error("a change made while storage is blocked was not applied to the page")
-	}
-}
-
-func TestBrowserSettingsSaveAndReset(t *testing.T) {
-	post := `var s = document.querySelector('[data-pref=density]'); s.value = 'compact'; s.dispatchEvent(new Event('change'));
-		var c = document.querySelector('[data-toggle="chart:step-status"]'); c.checked = false; c.dispatchEvent(new Event('change'));
-		document.body.setAttribute('data-saved', localStorage.getItem('cucumber-reporter:v1:prefs'));
-		document.getElementById('reset-prefs').click();
-		document.body.setAttribute('data-after-reset', String(localStorage.getItem('cucumber-reporter:v1:prefs')));`
-	dom := dumpDOM(t, mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions()), "localStorage.clear();", post)
-	if !strings.Contains(dom, `data-saved="{&quot;show&quot;:{&quot;chart:step-status&quot;:false},&quot;density&quot;:&quot;compact&quot;}"`) {
-		t.Error("preferences not saved as expected")
-	}
-	if !strings.Contains(dom, `data-after-reset="null"`) {
-		t.Error("reset did not remove the saved preferences")
-	}
-	if regexp.MustCompile(`<body [^>]*class="compact"`).MatchString(dom) || hiddenAttr(t, dom, "chart-step-status") {
-		t.Error("reset did not restore the report defaults")
-	}
-}
-
-func TestBrowserPagingFilteringAndShortcuts(t *testing.T) {
-	opt := Options{Version: 1, Defaults: ViewDefaults{PageSize: 25}}
-	doc := mustRender(t, syntheticRun(30, 5, 6), opt)
-
-	dom := dumpDOM(t, doc, "localStorage.clear();", "")
-	rows := regexp.MustCompile(`<tr class="pg-item[^"]*"[^>]*>`).FindAllString(dom, -1)
-	visible := 0
-	for _, r := range rows {
-		if !strings.Contains(r, `hidden=""`) {
-			visible++
-		}
-	}
-	if len(rows) != 30 || visible != 25 {
-		t.Errorf("rows %d, visible %d; want 30 and 25", len(rows), visible)
-	}
-	if !strings.Contains(dom, `Show 5 more of 5</button>`) {
-		t.Error("no Show more button for the feature table")
-	}
-
-	post := `var q = document.getElementById('search'); q.value = 'AREA 07'; q.dispatchEvent(new Event('input'));`
-	dom = dumpDOM(t, doc, "localStorage.clear();", post)
-	if !strings.Contains(dom, `1 of 30 features`) || hiddenAttr(t, dom, "f8") || !hiddenAttr(t, dom, "f9") {
-		t.Error("search did not filter features case-insensitively")
-	}
-
-	post = `document.dispatchEvent(new KeyboardEvent('keydown', {key: 'f'}));`
-	dom = dumpDOM(t, doc, "localStorage.clear();", post)
-	if !strings.Contains(dom, `30 of 30 features`) {
-		t.Error("f shortcut: every synthetic feature has a failed scenario and should match")
-	}
-	post = `document.dispatchEvent(new KeyboardEvent('keydown', {key: 'f'})); document.dispatchEvent(new KeyboardEvent('keydown', {key: 'f'}));`
-	dom = dumpDOM(t, doc, "localStorage.clear();", post)
-	if !regexp.MustCompile(`<select id="status-filter"[^>]*>`).MatchString(dom) || !strings.Contains(dom, `30 of 30 features`) {
-		t.Error("f twice should return to all features")
-	}
-
-	// A link to a scenario that paging hid extends the page and opens the card.
-	one := []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: syntheticRun(1, 30, 1)[0].Elements}}
-	post = `history.replaceState(null, '', '#f1-s28'); window.dispatchEvent(new HashChangeEvent('hashchange'));`
-	dom = dumpDOM(t, mustRender(t, one, opt), "localStorage.clear();", post)
-	if hiddenAttr(t, dom, "f1-s28") || !regexp.MustCompile(`id="f1-s28"[^>]* open=""`).MatchString(dom) || !hiddenAttr(t, dom, "f1-s29") {
-		t.Error("link target hidden by paging was not shown and opened")
-	}
-
-	post = `document.querySelector('th[data-sort=num]:nth-child(8) button').click(); document.querySelector('th[data-sort=num]:nth-child(8) button').click();`
-	dom = dumpDOM(t, doc, "localStorage.clear();", post)
-	if !strings.Contains(dom, `aria-sort="descending"`) {
-		t.Error("sorting did not mark the column")
-	}
-}
-
-// TestBrowserScriptRunsUnderCSP loads the unmodified report: the hashed script must run (it reveals
-// the settings button) and the hashed stylesheet must apply, under the page's own policy.
-func TestBrowserScriptRunsUnderCSP(t *testing.T) {
-	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions())
-	dir := t.TempDir()
-	page := filepath.Join(dir, "index.html")
-	if err := os.WriteFile(page, []byte(doc), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-	defer cancel()
-	out, err := exec.CommandContext(ctx, findBrowser(t), "--headless=new", "--disable-gpu", "--no-first-run",
-		"--user-data-dir="+filepath.Join(dir, "profile"), "--virtual-time-budget=3000", "--dump-dom", "file://"+page).Output()
-	if err != nil {
-		t.Fatalf("browser: %v", err)
-	}
-	dom := string(out)
-	if hiddenAttr(t, dom, "open-settings") || !strings.Contains(dom, "2 of 2 features") {
-		t.Error("report script did not run under the page's Content-Security-Policy")
+		s.file = file
+		fid, sid := FeatureIDs(features)[0], ScenarioIDs(features)[0][0]
+		s.check(fmt.Sprintf("string %d", i), func() error {
+			for _, r := range []string{"/", "/features", "/features/" + fid, "/scenarios", "/scenarios/" + sid, "/failures", "/known", "/skipped", "/timeline", "/run", "/print"} {
+				s.goTo(r)
+				s.eval(`(() => { for (const b of document.querySelectorAll('.att-h')) if (b.getAttribute('aria-expanded') !== 'true') b.click(); document.dispatchEvent(new KeyboardEvent('keydown', { key: '/' })); const i = document.querySelector('.pal-in'); i.value = 'a'; i.dispatchEvent(new Event('input')); return true; })()`, nil)
+				s.settle()
+				var bad []string
+				s.eval(`(() => { const bad = [];
+					const q = (sel) => [...document.querySelectorAll(sel)];
+					for (const e of q('img, iframe, object, embed, math, foreignObject, base, form, link, meta[http-equiv=refresh]')) if (e.tagName !== 'META' || e.httpEquiv.toLowerCase() !== 'content-security-policy') bad.push('element ' + e.tagName);
+					for (const e of q('*')) for (const a of e.attributes) {
+						if (/^on/i.test(a.name)) bad.push('attribute ' + a.name + ' on ' + e.tagName);
+						// CSSOM geometry (positions, sizes, delays) is computed from numbers; nothing else may appear.
+						if (a.name === 'style' && (!/^[\w\s:;.%()-]*$/.test(a.value) || /url|expression|image/i.test(a.value))) bad.push('style ' + a.value.slice(0, 40));
+					}
+					for (const a of q('a[href], [src], [xlink\\:href]')) { const v = a.getAttribute('href') || a.getAttribute('src') || ''; if (!/^#\//.test(v) && !/^attachment-/.test(v) && v !== '#main') bad.push('link ' + v.slice(0, 40)); }
+					if (q('script').length !== 2) bad.push(q('script').length + ' scripts');
+					if (document.documentElement.hasAttribute('data-dialog')) bad.push('dialog ' + document.documentElement.getAttribute('data-dialog'));
+					return bad; })()`, &bad)
+				if len(bad) > 0 {
+					return fail("route %s: %v", r, bad)
+				}
+			}
+			return nil
+		})
 	}
 }

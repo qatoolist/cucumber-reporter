@@ -62,7 +62,7 @@ func TestRenderDirWritesPrivateNewDirectory(t *testing.T) {
 		t.Skip("POSIX permission bits")
 	}
 	dir := runDir(t, minimalText(t))
-	out, err := RenderDir(dir, Options{Version: 1})
+	out, err := RenderDir(dir, Options{Version: OptionsVersion})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,13 +80,13 @@ func TestRenderDirWritesPrivateNewDirectory(t *testing.T) {
 	if err != nil || len(data) == 0 {
 		t.Fatalf("index.html: %d bytes, %v", len(data), err)
 	}
-	want := mustRender(t, loadFixture(t, "minimal.json"), Options{Version: 1})
+	want := mustRender(t, loadFixture(t, "minimal.json"), Options{Version: OptionsVersion})
 	if string(data) != want {
 		t.Error("RenderDir output differs from Render output for the same input")
 	}
 
 	// A second render creates another directory and keeps the first unchanged.
-	out2, err := RenderDir(dir, Options{Version: 1})
+	out2, err := RenderDir(dir, Options{Version: OptionsVersion})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -110,7 +110,7 @@ func TestRenderDirSidecarForLargeAttachment(t *testing.T) {
 		{"name":"big.html","mime_type":"text/html","data":"` + b64("<p>"+big+"</p>") + `"},
 		{"name":"big.bin","mime_type":"application/octet-stream","data":"` + b64(big) + `"}]}]}]}]`
 	dir := runDir(t, doc)
-	out, err := RenderDir(dir, Options{Version: 1, Limits: cucumber.Limits{InlineAttachment: 1024}})
+	out, err := RenderDir(dir, Options{Version: OptionsVersion, Limits: cucumber.Limits{InlineAttachment: 1024}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -194,7 +194,7 @@ func TestRenderDirRefusesSymlinksAndOtherKinds(t *testing.T) {
 		{"run directory missing", filepath.Join(missing, "absent"), ErrNoInput},
 	}
 	for _, tt := range tests {
-		_, err := RenderDir(tt.dir, Options{Version: 1})
+		_, err := RenderDir(tt.dir, Options{Version: OptionsVersion})
 		if !errors.Is(err, tt.want) {
 			t.Errorf("%s: err = %v, want %v", tt.name, err, tt.want)
 		}
@@ -217,7 +217,7 @@ func TestRenderDirFailureLeavesNothingAndWithholdsContent(t *testing.T) {
 		``,
 	} {
 		dir := runDir(t, doc)
-		_, err := RenderDir(dir, Options{Version: 1})
+		_, err := RenderDir(dir, Options{Version: OptionsVersion})
 		if err == nil {
 			t.Fatalf("no error for %q", doc)
 		}
@@ -239,7 +239,7 @@ func TestRenderDirFailureLeavesNothingAndWithholdsContent(t *testing.T) {
 
 func TestRenderDirInputLimit(t *testing.T) {
 	dir := runDir(t, minimalText(t))
-	if _, err := RenderDir(dir, Options{Version: 1, Limits: cucumber.Limits{Input: 100}}); !errors.Is(err, cucumber.ErrTooLarge) {
+	if _, err := RenderDir(dir, Options{Version: OptionsVersion, Limits: cucumber.Limits{Input: 100}}); !errors.Is(err, cucumber.ErrTooLarge) {
 		t.Errorf("err = %v, want ErrTooLarge", err)
 	}
 }
@@ -247,7 +247,7 @@ func TestRenderDirInputLimit(t *testing.T) {
 func TestRenderDirTo(t *testing.T) {
 	dir := runDir(t, minimalText(t))
 	parent := t.TempDir()
-	out, err := RenderDirTo(dir, parent, Options{Version: 1})
+	out, err := RenderDirTo(dir, parent, Options{Version: OptionsVersion})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -264,10 +264,10 @@ func TestRenderDirTo(t *testing.T) {
 	if err := os.Symlink(parent, link); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := RenderDirTo(dir, link, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+	if _, err := RenderDirTo(dir, link, Options{Version: OptionsVersion}); !errors.Is(err, ErrNotRegular) {
 		t.Errorf("symlinked parent: %v", err)
 	}
-	if _, err := RenderDirTo(dir, filepath.Join(parent, "absent"), Options{Version: 1}); err == nil {
+	if _, err := RenderDirTo(dir, filepath.Join(parent, "absent"), Options{Version: OptionsVersion}); err == nil {
 		t.Error("missing parent accepted")
 	}
 }
@@ -288,10 +288,10 @@ func TestRenderDirRefusesSymlinkSpelledAsDirectory(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, spelling := range []string{"/", "/.", "//", "/./", "/./."} {
-		if _, err := RenderDir(link+spelling, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+		if _, err := RenderDir(link+spelling, Options{Version: OptionsVersion}); !errors.Is(err, ErrNotRegular) {
 			t.Errorf("run directory link%s: err = %v", spelling, err)
 		}
-		if _, err := RenderDirTo(realRun, outLink+spelling, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+		if _, err := RenderDirTo(realRun, outLink+spelling, Options{Version: OptionsVersion}); !errors.Is(err, ErrNotRegular) {
 			t.Errorf("output directory out%s: err = %v", spelling, err)
 		}
 	}
@@ -302,7 +302,7 @@ func TestRenderDirRefusesSymlinkSpelledAsDirectory(t *testing.T) {
 		t.Errorf("refused renders wrote into the output link target: %v", names)
 	}
 	// A real directory spelled with a trailing slash still works.
-	if out, err := RenderDir(realRun+"/", Options{Version: 1}); err != nil || filepath.Dir(out) != realRun {
+	if out, err := RenderDir(realRun+"/", Options{Version: OptionsVersion}); err != nil || filepath.Dir(out) != realRun {
 		t.Errorf("real directory with trailing slash: %q, %v", out, err)
 	}
 }
@@ -331,7 +331,7 @@ func TestReadResultsRefusesSwappedFile(t *testing.T) {
 	saved := openResults
 	t.Cleanup(func() { openResults = saved })
 	openResults = func(string) (*os.File, error) { return os.Open(other) }
-	if _, err := RenderDir(dir, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+	if _, err := RenderDir(dir, Options{Version: OptionsVersion}); !errors.Is(err, ErrNotRegular) {
 		t.Errorf("err = %v, want ErrNotRegular", err)
 	}
 }
@@ -340,7 +340,7 @@ func TestRenderFeaturesDirTo(t *testing.T) {
 	big := strings.Repeat("evidence line\n", 200)
 	features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "big.txt", MimeType: "text/plain", Data: b64(big)}))
 	parent := t.TempDir()
-	out, err := RenderFeaturesDirTo(features, parent, Options{Version: 1, Limits: cucumber.Limits{InlineAttachment: 1024}})
+	out, err := RenderFeaturesDirTo(features, parent, Options{Version: OptionsVersion, Limits: cucumber.Limits{InlineAttachment: 1024}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -350,7 +350,7 @@ func TestRenderFeaturesDirTo(t *testing.T) {
 	if got, _ := os.ReadFile(filepath.Join(out, "attachment-f1-s1-t1-a1.txt")); string(got) != big {
 		t.Error("sidecar missing")
 	}
-	if _, err := RenderFeaturesDirTo(nil, parent, Options{Version: 1}); !errors.Is(err, cucumber.ErrNoResults) {
+	if _, err := RenderFeaturesDirTo(nil, parent, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrNoResults) {
 		t.Errorf("no features: %v", err)
 	}
 	if names := entries(t, parent); len(names) != 1 {

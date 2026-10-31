@@ -61,7 +61,7 @@ func newRun(t *testing.T, content []byte) string {
 
 func writeFile(t *testing.T, content string) string {
 	t.Helper()
-	p := filepath.Join(t.TempDir(), "settings.json")
+	p := filepath.Join(t.TempDir(), "options.json")
 	if err := os.WriteFile(p, []byte(content), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -101,7 +101,7 @@ func TestRendersIntoRunDirectory(t *testing.T) {
 		}
 	}
 	doc, _ := os.ReadFile(index)
-	if !strings.Contains(string(doc), "<title>Example</title>") || !strings.Contains(string(doc), "<h1>Example results</h1>") {
+	if !strings.Contains(string(doc), `"title":"Example","name":"Example results"`) || !strings.Contains(string(doc), "<title>Example results</title>") || !strings.Contains(string(doc), "<h1><bdi>Example results</bdi></h1>") {
 		t.Error("title or name flag not applied")
 	}
 
@@ -126,23 +126,40 @@ func TestOutputParent(t *testing.T) {
 	}
 }
 
-func TestDefaultsFile(t *testing.T) {
-	dir := newRun(t, fixture(t))
-	settings := writeFile(t, `{"version":1,"charts":{"step-status":false},"theme":"dark","density":"compact","expand":"all","pageSize":"all"}`)
-	stdout, stderr, code := command(t, "-defaults", settings, dir)
+func TestOptionsFile(t *testing.T) {
+	showcase := filepath.Join("..", "..", "testdata", "synthetic", "showcase")
+	results, err := os.ReadFile(filepath.Join(showcase, "cucumber-known.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := newRun(t, results)
+	stdout, stderr, code := command(t, "-options", filepath.Join(showcase, "options-known.json"), "-name", "Overridden name", dir)
 	if code != 0 {
 		t.Fatalf("exit %d: %s", code, stderr)
 	}
 	doc, _ := os.ReadFile(reportPath(t, stdout))
-	for _, want := range []string{`data-theme="dark" data-density="compact" data-expand="all" data-page-size="0"`, `data-hidden-charts="step-status"`} {
+	for _, want := range []string{
+		`"verdict":{"label":"Passed with known failures","tone":"warn"}`,
+		`"name":"Overridden name"`,
+		`"title":"Example shop suite"`,
+		`"role":"known"`,
+		`"ref":"EX-330","title":"Expected failure: no push is sent to that customer"`,
+		`<title>Overridden name</title>`,
+	} {
 		if !strings.Contains(string(doc), want) {
 			t.Errorf("report lacks %s", want)
 		}
 	}
-	settings = writeFile(t, `{"version":1,"pageSize":25}`)
-	stdout, _, code = command(t, "-defaults", settings, dir)
-	if doc, _ := os.ReadFile(reportPath(t, stdout)); code != 0 || !strings.Contains(string(doc), `data-page-size="25"`) {
-		t.Error("numeric page size not applied")
+	opts := writeFile(t, `{"version":2,"defaults":{"theme":"dark","density":"compact","expand":"all","view":"failures","widgets":{"duration":false},"nav":{"run":false}}}`)
+	stdout, stderr, code = command(t, "-options", opts, dir)
+	if code != 0 {
+		t.Fatalf("exit %d: %s", code, stderr)
+	}
+	doc, _ = os.ReadFile(reportPath(t, stdout))
+	for _, want := range []string{`<html lang="en" data-theme="dark">`, `"defaults":{"theme":"dark","density":"compact","expand":"all","view":"failures","widgets":{`, `"duration":false`, `"run":false`} {
+		if !strings.Contains(string(doc), want) {
+			t.Errorf("report lacks %s", want)
+		}
 	}
 }
 
@@ -161,9 +178,9 @@ func TestRefusals(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	settingsLink := filepath.Join(t.TempDir(), "settings.json")
+	optionsLink := filepath.Join(t.TempDir(), "options.json")
 	if runtime.GOOS != "windows" {
-		if err := os.Symlink(writeFile(t, `{"version":1}`), settingsLink); err != nil {
+		if err := os.Symlink(writeFile(t, `{"version":2}`), optionsLink); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -181,14 +198,15 @@ func TestRefusals(t *testing.T) {
 		{"not JSON", []string{notJSON}, 1, "cucumber-report: cucumber: input is not valid cucumber JSON"},
 		{"missing run directory", []string{filepath.Join(good, "absent")}, 1, "cucumber-report: report: run directory has no cucumber.json"},
 		{"symlinked cucumber.json", []string{linkDir}, 1, "cucumber-report: report: input is a symbolic link"},
-		{"defaults with unknown version", []string{"-defaults", writeFile(t, `{"version":2}`), good}, 1, "cucumber-report: -defaults: unsupported version"},
-		{"defaults without version", []string{"-defaults", writeFile(t, `{"theme":"dark"}`), good}, 1, "cucumber-report: -defaults: unsupported version"},
-		{"defaults with unknown key", []string{"-defaults", writeFile(t, `{"version":1,"`+marker+`":1}`), good}, 1, "cucumber-report: -defaults: not a valid settings file"},
-		{"defaults with bad value", []string{"-defaults", writeFile(t, `{"version":1,"theme":"`+marker+`"}`), good}, 1, "cucumber-report: report: invalid options: defaults.theme"},
-		{"defaults with bad page size", []string{"-defaults", writeFile(t, `{"version":1,"pageSize":"some"}`), good}, 1, "cucumber-report: -defaults: not a valid settings file"},
-		{"defaults with trailing data", []string{"-defaults", writeFile(t, `{"version":1} {}`), good}, 1, "cucumber-report: -defaults: not a valid settings file"},
-		{"defaults missing", []string{"-defaults", filepath.Join(good, "absent.json"), good}, 1, "cucumber-report: -defaults: cannot read the settings file"},
-		{"defaults symlinked", []string{"-defaults", settingsLink, good}, 1, "cucumber-report: -defaults: the settings file is a symbolic link or not a regular file"},
+		{"options with version 1", []string{"-options", writeFile(t, `{"version":1}`), good}, 1, "cucumber-report: -options: unsupported version"},
+		{"options without version", []string{"-options", writeFile(t, `{"title":"x"}`), good}, 1, "cucumber-report: -options: unsupported version"},
+		{"options with unknown key", []string{"-options", writeFile(t, `{"version":2,"`+marker+`":1}`), good}, 1, "cucumber-report: -options: not a valid options file"},
+		{"options with bad value", []string{"-options", writeFile(t, `{"version":2,"defaults":{"theme":"`+marker+`"}}`), good}, 1, "cucumber-report: report: invalid options: defaults.theme"},
+		{"options with unknown scenario", []string{"-options", writeFile(t, `{"version":2,"annotations":[{"scenario":"`+marker+`","kind":"known"}]}`), good}, 1, "cucumber-report: report: invalid options: annotations[0].scenario names no scenario"},
+		{"options with wrong type", []string{"-options", writeFile(t, `{"version":2,"runFacts":"`+marker+`"}`), good}, 1, "cucumber-report: -options: not a valid options file"},
+		{"options with trailing data", []string{"-options", writeFile(t, `{"version":2} {}`), good}, 1, "cucumber-report: -options: not a valid options file"},
+		{"options missing", []string{"-options", filepath.Join(good, "absent.json"), good}, 1, "cucumber-report: -options: cannot read the options file"},
+		{"options symlinked", []string{"-options", optionsLink, good}, 1, "cucumber-report: -options: the options file is a symbolic link or not a regular file"},
 	}
 	for _, tt := range tests {
 		if runtime.GOOS == "windows" && strings.Contains(tt.name, "symlink") {
@@ -227,9 +245,9 @@ func TestRefusesSymlinkSpelledAsDirectory(t *testing.T) {
 	if err := os.Symlink(outReal, outLink); err != nil {
 		t.Fatal(err)
 	}
-	settings := writeFile(t, `{"version":1}`)
-	settingsLink := filepath.Join(base, "settings-link")
-	if err := os.Symlink(settings, settingsLink); err != nil {
+	options := writeFile(t, `{"version":2}`)
+	optionsLink := filepath.Join(base, "settings-link")
+	if err := os.Symlink(options, optionsLink); err != nil {
 		t.Fatal(err)
 	}
 	for _, args := range [][]string{
@@ -238,7 +256,7 @@ func TestRefusesSymlinkSpelledAsDirectory(t *testing.T) {
 		{runLink + "//"},
 		{"-o", outLink + "/", good},
 		{"-o", outLink + "/.", good},
-		{"-defaults", settingsLink + "/.", good},
+		{"-options", optionsLink + "/.", good},
 	} {
 		stdout, stderr, code := command(t, args...)
 		if code != 1 || stdout != "" || stderr == "" {
