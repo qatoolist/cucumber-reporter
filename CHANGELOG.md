@@ -41,3 +41,10 @@ Semantic Versioning.
 - The status legend moves under the donut when its card is narrow; labels never run into counts.
 - Needs attention keeps every group with a "+N more" link; the duration histogram colours only
   failed scenarios red; the print preview sits under its header; the timeline axis starts at 0.
+- A record that covers nothing is never counted as a known issue; the Known issues page lists it
+  under "Records not applied", and print lists it with its reason.
+- The computed headline for a failed run reads "Failed: N unexpected failures";
+  `report.ScenarioOutcomes` exposes the outcome classification.
+- `Outcome.NotApplicable`: a passed scenario whose record has only not-applicable outcomes reads
+  "not applicable in this run" instead of "the issue may be fixed".
+- Dashboard rows are fitted so no card ends in a large empty area.

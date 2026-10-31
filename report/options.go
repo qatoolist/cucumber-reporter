@@ -131,7 +131,8 @@ const (
 //     annotation is shown as context.
 //   - A passed scenario with an observed declared step is a known failure (the expected failure was
 //     recorded while the step passed). A passed scenario with only unobserved issues stays passed and
-//     is flagged "the issue may be fixed". Ambiguous, undefined, pending and skipped are unchanged.
+//     is flagged "the issue may be fixed", unless every outcome of the record is NotApplicable: then
+//     it reads "not applicable in this run". Ambiguous, undefined, pending and skipped are unchanged.
 //   - The known-failure marker sits on the declared step only: the failed step, or the observed
 //     declared steps of a passed scenario. Outcomes are listed as detail and never mark a step.
 //   - The default headline and the "As expected" figure count known failures as expected.
@@ -154,10 +155,14 @@ type Annotation struct {
 }
 
 // Outcome is one recorded known-issue outcome. Step is numbered from 1, 0 when it has no step.
+// NotApplicable marks an outcome whose condition lay outside the run's scope. When the scenario passed
+// and every outcome of its record is NotApplicable, the page shows "not applicable in this run" instead
+// of suggesting that the issue may be fixed.
 type Outcome struct {
-	Step    int    `json:"step,omitempty"`
-	Outcome string `json:"outcome"`
-	Text    string `json:"text,omitempty"`
+	Step          int    `json:"step,omitempty"`
+	Outcome       string `json:"outcome"`
+	Text          string `json:"text,omitempty"`
+	NotApplicable bool   `json:"notApplicable,omitempty"`
 }
 
 // View setting values.

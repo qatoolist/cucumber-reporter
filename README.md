@@ -161,6 +161,7 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `report.RenderDir(runDir, opt)` | Reads `cucumber.json`, writes a new `html-<digits>/index.html` in `runDir`. |
 | `report.RenderDirTo(runDir, parent, opt)` | The same, creating `html-<digits>` in `parent`. |
 | `report.RenderFeaturesDirTo(features, parent, opt)` | Writes already-parsed features the same way. |
+| `report.ScenarioOutcomes(features, annotations)` | Each scenario's effective outcome after the known-issue rules (`OutcomeKnown` or its cucumber status), indexed like `ScenarioIDs`: the classification the report shows, for callers that need the numbers. |
 | `report.FeatureIDs`, `report.ScenarioIDs` | The stable identifiers the page uses in its links and that annotations name: the slug of the feature file's base name, and `<feature id>-L<line>`, with `-2`, `-3` on collisions. |
 
 ### Options
@@ -172,7 +173,7 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `RunFacts` | Label and value pairs: the first six on the dashboard, all under Run details and on the printed cover. |
 | `TopFacts` | Up to three `RunFacts` labels shown in the top bar. Default: the first three facts. |
 | `WallClock` | Shown beside the summed test time. Cucumber JSON has no start times, so the renderer cannot compute it. |
-| `Verdict` | The headline: `Label` (required) and `Tone` (`ok`, `warn`, `fail`, `info`; empty uses the computed tone). Without it the headline is computed: Failed, Ambiguous or Undefined (fail), Passed with known failures (warn), Pending or Skipped (info), Passed (ok). |
+| `Verdict` | The headline: `Label` (required) and `Tone` (`ok`, `warn`, `fail`, `info`; empty uses the computed tone). Without it the headline is computed: "Failed: N unexpected failures" (N counts scenarios whose outcome is failed after the known-issue rules), Ambiguous or Undefined (fail), Passed with known failures (warn), Pending or Skipped (info), Passed (ok). |
 | `Sections` | Your own panels: a card on the dashboard and a full panel under Run details. `ID` is a-z, 0-9 and `-`, starting with a letter, at most 48 characters; `Tone` is `info` (default), `ok`, `warn` or `fail`; `Summary`, `Rows` and `Note` hold the content. `Role` tells the page what the section summarises: `known` (its summary and note appear on Known issues instead of a dashboard card; at most one), `skip` or `limit`. Sections with a role are left out of the printed scope sections, because their entries print from the annotations. |
 | `Annotations` | Caller knowledge per scenario, named by `ScenarioIDs`: `Kind` `known` (with `Ref`, the issue key), `skip` (why a scenario was skipped) or `limit` (not fully verified in this environment), plus `Title` and `Note`. See Known issues below. |
 | `Defaults` | Generation-time view settings: `Theme` (`auto`, `light`, `dark`), `Density` (`comfortable`, `compact`), `Expand` (attachments open at load: `failed`, `all`, `none`), `View` (start page: `dashboard`, `features`, `scenarios`, `failures`), `Widgets` and `Nav` (an entry `false` hides a dashboard widget or navigation section; `report.Widgets` and `report.NavSections` list the keys; the dashboard cannot be hidden). |
@@ -199,7 +200,9 @@ issue covers only its declared step; any other unexpected result still fails.
   unexpected failure (red); the record is shown beside it as context, with the reason.
 - A passed scenario with an observed declared step is a known failure (the expected failure was
   recorded while the step itself passed). A passed scenario whose issue was not observed stays passed
-  and is flagged "the issue may be fixed". Ambiguous, undefined, pending and skipped are unchanged.
+  and is flagged "the issue may be fixed", unless every outcome of the record has `NotApplicable`
+  set (its condition lay outside the run's scope): then it reads "not applicable in this run".
+  Ambiguous, undefined, pending and skipped are unchanged.
 - A record that covers nothing (not applied, or invalid) never counts as a known issue: the Known
   issues page lists it separately under "Records not applied" with its reason, the dashboard notes
   it apart from the known-issue list, and print lists it with its reason. The renderer decides each

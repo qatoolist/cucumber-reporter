@@ -52,6 +52,8 @@ const (
 	stateNotApplied = "not-applied"
 	// stateInvalid: StepText does not match the scenario's step at Step; the record covers nothing.
 	stateInvalid = "invalid"
+	// stateOutOfScope: the scenario passed and every recorded outcome was not applicable in this run.
+	stateOutOfScope = "not-applicable"
 )
 
 // annotationData is a caller annotation as the page receives it. State and Reason are set for known
@@ -152,9 +154,17 @@ func combine(statuses []string) string {
 }
 
 // computedVerdict is the default headline for a run status.
-func computedVerdict(run string) Verdict {
+// computedVerdict is the default headline for a run status; failed carries the number of unexpected
+// failures (scenarios whose outcome is failed after the known-issue rules).
+func computedVerdict(run string, failed int) Verdict {
 	switch run {
-	case "failed", "ambiguous", "undefined":
+	case "failed":
+		label := "Failed: " + strconv.Itoa(failed) + " unexpected failure"
+		if failed != 1 {
+			label += "s"
+		}
+		return Verdict{Label: label, Tone: ToneFail}
+	case "ambiguous", "undefined":
 		return Verdict{Label: strings.ToUpper(run[:1]) + run[1:], Tone: ToneFail}
 	case statusKnown:
 		return Verdict{Label: "Passed with known failures", Tone: ToneWarn}
@@ -193,7 +203,7 @@ func cleanAnnotation(a Annotation) Annotation {
 	if a.Outcomes != nil {
 		out := make([]Outcome, len(a.Outcomes))
 		for i, o := range a.Outcomes {
-			out[i] = Outcome{Step: o.Step, Outcome: clean(o.Outcome), Text: clean(o.Text)}
+			out[i] = Outcome{Step: o.Step, Outcome: clean(o.Outcome), Text: clean(o.Text), NotApplicable: o.NotApplicable}
 		}
 		a.Outcomes = out
 	}
@@ -262,7 +272,7 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 		all = append(all, statuses...)
 		p.Features = append(p.Features, fd)
 	}
-	p.Verdict = computedVerdict(combine(all))
+	p.Verdict = computedVerdict(combine(all), counts["failed"])
 	if v := opt.Verdict; v != nil {
 		tone := v.Tone
 		if tone == "" {
@@ -358,6 +368,15 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 	return sd, nil
 }
 
+func allNotApplicable(outcomes []Outcome) bool {
+	for _, o := range outcomes {
+		if !o.NotApplicable {
+			return false
+		}
+	}
+	return len(outcomes) > 0
+}
+
 // knownState decides whether a known-issue record covers its scenario and, when it does not, why.
 func knownState(a *annotationData, raw string, marked, failedAt int) (state, reason string) {
 	step := strconv.Itoa(a.Step)
@@ -366,6 +385,8 @@ func knownState(a *annotationData, raw string, marked, failedAt int) (state, rea
 		return stateInvalid, "Declared step " + step + " does not match the recorded step text, so this record covers nothing."
 	case a.Step > 0 && (marked == a.Step || (marked == -1 && a.Observed)):
 		return stateApplied, ""
+	case raw == "passed" && marked == 0 && allNotApplicable(a.Outcomes):
+		return stateOutOfScope, "Not applicable in this run."
 	case raw == "passed" && marked == 0:
 		return statePassed, ""
 	case raw == "passed":

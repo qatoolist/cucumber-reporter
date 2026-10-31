@@ -220,6 +220,23 @@
         }
       ],
       "stepText": "no push is sent to that customer"
+    },
+    {
+      "scenario": "accounts-L4",
+      "kind": "known",
+      "ref": "EX-501",
+      "title": "Captcha blocks registration from new regions",
+      "note": "Only applies to regions with the captcha enabled; none ran in this suite.",
+      "step": 3,
+      "stepText": "a verification email is queued",
+      "outcomes": [
+        {
+          "step": 3,
+          "outcome": "not applicable",
+          "text": "a verification email is queued",
+          "notApplicable": true
+        }
+      ]
     }
   ]
 }

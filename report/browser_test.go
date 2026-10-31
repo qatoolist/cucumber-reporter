@@ -653,7 +653,7 @@ func interactionChecks(t *testing.T, s *session) {
 			NA     []string
 		}
 		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const k = (D.annotations || []).filter((a) => a.kind === 'known');
-			return { issues: new Set(k.filter((a) => a.state === 'applied' || a.state === 'passed').map((a) => a.ref)).size, na: k.filter((a) => a.state === 'not-applied' || a.state === 'invalid').map((a) => a.ref) }; })()`, &d)
+			return { issues: new Set(k.filter((a) => a.state === 'applied' || a.state === 'passed' || a.state === 'not-applicable').map((a) => a.ref)).size, na: k.filter((a) => a.state === 'not-applied' || a.state === 'invalid').map((a) => a.ref) }; })()`, &d)
 		s.goTo("/known")
 		head := s.str(`document.querySelector('.page-s').textContent`)
 		if want := fmt.Sprintf("across %d issue", d.Issues); !strings.Contains(head, want) {
@@ -1119,4 +1119,22 @@ func TestBrowserAttachmentKinds(t *testing.T) {
 			return nil
 		})
 	}
+}
+
+// TestBrowserNotApplicable: a passed scenario whose known-issue record has only not-applicable
+// outcomes reads "Not applicable in this run" and is not flagged as possibly fixed.
+func TestBrowserNotApplicable(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	s := openSession(t, features, opt, true)
+	s.check("scenario banner and Known issues page", func() error {
+		s.goTo("/scenarios/accounts-L4")
+		if !s.is(`document.querySelector('.banner .oos') && /Not applicable in this run/.test(document.querySelector('.banner .oos').textContent) && !document.querySelector('.banner .fixed')`) {
+			return fail("banner: %s", s.str(`document.querySelector('.banner') ? document.querySelector('.banner').textContent : 'none'`))
+		}
+		s.goTo("/known")
+		if !s.is(`[...document.querySelectorAll('.grp')].some((g) => /EX-501/.test(g.textContent) && g.querySelector('.oos') && !g.querySelector('.fixed'))`) {
+			return fail("Known issues does not show EX-501 as not applicable")
+		}
+		return nil
+	})
 }

@@ -191,7 +191,7 @@ func TestKnownIssueRules(t *testing.T) {
 	if !reflect.DeepEqual(annotationsOf(d), knownAnnotations()) {
 		t.Errorf("annotations not passed through unchanged:\n%+v", d.Annotations)
 	}
-	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
+	if d.Verdict != (Verdict{Label: "Failed: 1 unexpected failure", Tone: ToneFail}) {
 		t.Errorf("verdict = %+v", d.Verdict)
 	}
 
@@ -248,7 +248,7 @@ func TestDataBlock(t *testing.T) {
 	if !reflect.DeepEqual(d.Facts, opt.RunFacts) || !reflect.DeepEqual(d.Top, []string{"2026-01-02T03:04:05Z", "0123456789ab", "go1.27.0"}) {
 		t.Errorf("facts %v, top %v", d.Facts, d.Top)
 	}
-	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
+	if d.Verdict != (Verdict{Label: "Failed: 2 unexpected failures", Tone: ToneFail}) {
 		t.Errorf("verdict %+v", d.Verdict)
 	}
 	if len(d.Sections) != 2 || d.Sections[0].Role != RoleKnownIssues || d.Sections[1].Tone != ToneInfo {
@@ -413,7 +413,7 @@ func TestKnownIssueDeclaredStep(t *testing.T) {
 	if got, want := statesOf(d), []string{"applied", "not-applied", "not-applied", "passed", "invalid"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("states %q, want %q", got, want)
 	}
-	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
+	if d.Verdict != (Verdict{Label: "Failed: 3 unexpected failures", Tone: ToneFail}) {
 		t.Errorf("verdict %+v", d.Verdict)
 	}
 	text := html.UnescapeString(noscript(t, doc))
@@ -425,5 +425,89 @@ func TestKnownIssueDeclaredStep(t *testing.T) {
 		if !strings.Contains(text, want) {
 			t.Errorf("fallback lacks %q", want)
 		}
+	}
+}
+
+// TestScenarioOutcomes: the exported classifier returns exactly the outcomes the page shows.
+func TestScenarioOutcomes(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	got, err := ScenarioOutcomes(features, opt.Annotations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, _ := dataBlock(t, mustRender(t, features, opt))
+	counts := map[string]int{}
+	for i, f := range d.Features {
+		for j, s := range f.Elements {
+			if got[i][j] != s.Status {
+				t.Errorf("%s: ScenarioOutcomes %s, page %s", s.ID, got[i][j], s.Status)
+			}
+			counts[got[i][j]]++
+		}
+	}
+	want := map[string]int{OutcomePassed: 27, OutcomeKnown: 4, OutcomeFailed: 3, OutcomePending: 2, OutcomeUndefined: 1, OutcomeAmbiguous: 1, OutcomeSkipped: 2}
+	if !reflect.DeepEqual(counts, want) {
+		t.Errorf("counts %v, want %v", counts, want)
+	}
+	// The known variant is a pass with known failures only.
+	kf, kopt := loadShowcase(t, "-known")
+	kout, err := ScenarioOutcomes(kf, kopt.Annotations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	kc := map[string]int{}
+	for _, f := range kout {
+		for _, o := range f {
+			kc[o]++
+		}
+	}
+	if !reflect.DeepEqual(kc, map[string]int{OutcomePassed: 34, OutcomeKnown: 4, OutcomeSkipped: 2}) {
+		t.Errorf("known variant counts %v", kc)
+	}
+	if _, err := ScenarioOutcomes(features, []Annotation{{Scenario: "nope", Kind: KindKnown}}); !errors.Is(err, ErrInvalidOptions) {
+		t.Errorf("unknown scenario: %v", err)
+	}
+	if _, err := ScenarioOutcomes(nil, nil); !errors.Is(err, cucumber.ErrNoResults) {
+		t.Errorf("no features: %v", err)
+	}
+}
+
+// TestComputedHeadlineCountsUnexpectedFailures: without a caller verdict a failed run is labeled with
+// its number of unexpected failures; known failures are not counted.
+func TestComputedHeadlineCountsUnexpectedFailures(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	opt.Verdict = nil
+	d, _ := dataBlock(t, mustRender(t, features, opt))
+	if d.Verdict != (Verdict{Label: "Failed: 3 unexpected failures", Tone: ToneFail}) {
+		t.Errorf("verdict %+v", d.Verdict)
+	}
+}
+
+// TestNotApplicableOutcomes: a passed scenario whose record has only not-applicable outcomes reads
+// "not applicable in this run", not "the issue may be fixed"; one applicable outcome keeps the flag.
+func TestNotApplicableOutcomes(t *testing.T) {
+	run := []cucumber.Feature{{URI: "n.feature", Keyword: "Feature", Name: "N", Elements: []cucumber.Scenario{
+		{Keyword: "Scenario", Name: "out of scope", Line: 1, Steps: []cucumber.Step{step("a", "passed", 1), step("b", "passed", 1)}},
+		{Keyword: "Scenario", Name: "mixed", Line: 2, Steps: []cucumber.Step{step("a", "passed", 1), step("b", "passed", 1)}},
+	}}}
+	anns := []Annotation{
+		{Scenario: "n-L1", Kind: KindKnown, Ref: "EX-7", Step: 2, StepText: "b", Outcomes: []Outcome{{Step: 2, Outcome: "not applicable", NotApplicable: true}}},
+		{Scenario: "n-L2", Kind: KindKnown, Ref: "EX-7", Step: 2, StepText: "b", Outcomes: []Outcome{{Step: 1, Outcome: "not applicable", NotApplicable: true}, {Step: 2, Outcome: "passed unexpectedly"}}},
+	}
+	doc := mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns})
+	d, _ := dataBlock(t, doc)
+	if got, want := statesOf(d), []string{"not-applicable", "passed"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("states %q, want %q", got, want)
+	}
+	if !d.Annotations[0].Outcomes[0].NotApplicable || d.Annotations[0].Reason != "Not applicable in this run." {
+		t.Errorf("annotation %+v", d.Annotations[0])
+	}
+	for _, s := range d.Features[0].Elements {
+		if s.Status != "passed" || len(markedSteps(s)) != 0 {
+			t.Errorf("%s: %s, marked %v", s.ID, s.Status, markedSteps(s))
+		}
+	}
+	if !strings.Contains(html.UnescapeString(noscript(t, doc)), "Known failure EX-7 (Not applicable in this run)") {
+		t.Error("fallback lacks the not-applicable note")
 	}
 }
