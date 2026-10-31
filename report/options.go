@@ -52,7 +52,9 @@ type Options struct {
 	Defaults ViewDefaults `json:"defaults"`
 	// Verdict, when set, replaces the computed headline, for example "Passed with known failures".
 	Verdict *Verdict `json:"verdict,omitempty"`
-	// Limits bound the input (RenderDir) and the inline attachment size (all renders).
+	// Limits bound the input size (RenderDir and RenderDirTo, which parse cucumber.json), the encoded
+	// size of each attachment (Embedding: every render path, checked before decoding) and the inline
+	// attachment size (all renders).
 	Limits cucumber.Limits `json:"limits"`
 }
 

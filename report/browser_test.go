@@ -710,6 +710,24 @@ func interactionChecks(t *testing.T, s *session) {
 		}
 		return nil
 	})
+	s.check("timeline axis labels never overlap", func() error {
+		defer s.size(1440, 900)
+		for _, w := range []int{390, 768, 1440} {
+			s.size(w, 900)
+			s.goTo("/timeline")
+			var r struct {
+				N       int
+				Overlap []string
+			}
+			s.eval(`(() => { const xs = [...document.querySelectorAll('.gantt-x span')].map((e) => ({ t: e.textContent, b: e.getBoundingClientRect() })); const bad = [];
+				for (let i = 1; i < xs.length; i++) if (xs[i].b.left < xs[i - 1].b.right + 2) bad.push(xs[i - 1].t + ' / ' + xs[i].t);
+				return { n: xs.length, overlap: bad }; })()`, &r)
+			if r.N < 1 || r.N > 11 || len(r.Overlap) > 0 {
+				return fail("%d px: %d labels, overlapping %v", w, r.N, r.Overlap)
+			}
+		}
+		return nil
+	})
 	s.check("status legend labels never overlap or clip", func() error {
 		defer s.size(1440, 900)
 		defer s.eval(`localStorage.clear(), true`, nil)
@@ -1182,6 +1200,15 @@ func TestBrowserReviewFixtures(t *testing.T) {
 			if n < 2 || n > 12 {
 				return fail("%d axis labels", n)
 			}
+			for _, w := range []int{390, 768} {
+				s.size(w, 900)
+				s.goTo("/timeline")
+				if s.is(`(() => { const b = [...document.querySelectorAll('.gantt-x span')].map((e) => e.getBoundingClientRect()); return b.some((r, i) => i && r.left < b[i - 1].right + 2); })()`) {
+					s.size(1440, 900)
+					return fail("axis labels overlap at %d px", w)
+				}
+			}
+			s.size(1440, 900)
 			var bad []string
 			s.eval(noNullText, &bad)
 			if len(bad) > 0 {
@@ -1224,6 +1251,25 @@ func TestBrowserReviewFixtures(t *testing.T) {
 			s.goTo("/print")
 			if !s.is(`/ROW_SENTINEL/.test(document.getElementById('print-root').textContent)`) {
 				return fail("print lacks the section row")
+			}
+			return nil
+		})
+	})
+	t.Run("raw text keeps a leading byte order mark", func(t *testing.T) {
+		const text = "\ufeff{\"bom\": true}"
+		features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "bom.json", MimeType: "application/json", Data: b64(text)}))
+		s := openSession(t, features, Options{Version: OptionsVersion}, true)
+		s.call("Page.addScriptToEvaluateOnNewDocument", map[string]any{"source": `window.__copied = []; Object.defineProperty(navigator, 'clipboard', { value: { writeText: (t) => { window.__copied.push(t); return Promise.resolve(); } } });`})
+		s.check("raw and copy", func() error {
+			s.goTo("/scenarios/" + ScenarioIDs(features)[0][0])
+			s.eval(`(() => { const b = document.querySelector('.att-h'); if (b.getAttribute('aria-expanded') !== 'true') b.click(); return true; })()`, nil)
+			s.eval(`document.querySelector('.att-x [role=radio]:last-child') && document.querySelector('.att-x [role=radio]:last-child').click()`, nil)
+			s.settle()
+			raw := s.str(`document.querySelector('.att-x .att-c pre').textContent`)
+			s.eval(`document.querySelector('.att-x .att-tools .btn:not([role])').click()`, nil)
+			s.settle()
+			if copied := s.str(`window.__copied.join('|')`); raw != text || copied != text {
+				return fail("raw %q, copied %q; want %q", raw, copied, text)
 			}
 			return nil
 		})

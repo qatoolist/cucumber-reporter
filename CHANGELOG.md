@@ -5,14 +5,15 @@ Semantic Versioning.
 
 ## [Unreleased]
 
-### v0.1.1 (not yet released)
+## [0.1.1] - 2026-10-31
 
 Fixes from the independent review of v0.1.0. No API change.
 
-- The timeline axis has at most eleven labels for any duration; a step of the largest int64 duration
-  used to make the page create millions of labels.
-- An attachment's Raw view and Copy give the original text byte for byte; re-serialised JSON had
-  rounded large integers, turned `1e400` into `null` and dropped repeated keys.
+- The timeline axis has at most eleven labels for any duration, fewer on narrow screens so labels
+  never overlap; a step of the largest int64 duration used to make the page create millions of labels.
+- An attachment's Raw view and Copy give the original text byte for byte, a leading byte order mark
+  included; re-serialised JSON had rounded large integers, turned `1e400` into `null` and dropped
+  repeated keys.
 - The virtualised scenario list measures its rows once they are in the page, so the last row is fully
   visible.
 - `Render` and the directory functions enforce `Limits.Embedding` before decoding, as `Parse` does;

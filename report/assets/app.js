@@ -853,7 +853,7 @@
     if (typeof a.data === 'string') try { u8 = decode(a.data); } catch (e) { u8 = null; }
     const mime = (a.mime || 'application/octet-stream').toLowerCase();
     const isImg = /^image\/(png|jpeg|gif|webp)$/.test(mime);
-    if (u8 && !isImg) { try { text = new TextDecoder('utf-8', { fatal: true }).decode(u8); } catch (e) { text = null; } }
+    if (u8 && !isImg) { try { text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(u8); } catch (e) { text = null; } }
     if (text != null && /json/.test(mime)) { try { json = JSON.parse(text); } catch (e) { json = undefined; } }
     const body = h('div', { class: 'att-b' });
     const tools = h('div', { class: 'att-tools' });
@@ -1019,12 +1019,27 @@
       }
     });
     const axis = h('div', { class: 'gantt-x' });
-    // Axis ticks: the smallest "nice" interval (1, 2 or 5 of a unit, or a clock unit) that needs at
-    // most ten intervals, so any duration, up to the largest int64, gets at most eleven labels.
+    // Axis ticks: the smallest "nice" interval (1, 2 or 5 of a unit, or a clock unit) that needs at most
+    // n intervals, n from the axis width (one label per 64 px, 2 to 10), never more than eleven labels.
+    // Drawn once the axis is laid out and again on resize; if labels still touch, n shrinks.
     const NICE = [1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8, 2e8, 5e8, 1e9, 2e9, 5e9, 1e10, 2e10, 3e10, 6e10, 1.2e11, 3e11, 6e11, 9e11, 1.8e12, 3.6e12, 7.2e12, 1.08e13, 2.16e13, 4.32e13, 8.64e13];
-    let stepNs = NICE.find((x) => total / x <= 10);
-    if (!stepNs) { const d = 8.64e13, k = Math.pow(10, Math.max(0, Math.floor(Math.log10(total / d / 10)))); stepNs = d * k * [1, 2, 5, 10].find((m) => total / (d * k * m) <= 10); }
-    for (let i = 0; i * stepNs <= total && i <= 10; i++) { const x = i * stepNs; axis.append(css(h('span', null, x ? dur(x) : '0'), 'left', (x / total * 100) + '%')); }
+    const ticks = (n) => {
+      let stepNs = NICE.find((x) => total / x <= n);
+      if (!stepNs) { const d = 8.64e13, k = Math.pow(10, Math.max(0, Math.floor(Math.log10(total / d / n)))); stepNs = d * k * [1, 2, 5, 10].find((m) => total / (d * k * m) <= n); }
+      axis.replaceChildren();
+      for (let i = 0; i * stepNs <= total && i <= 10; i++) { const x = i * stepNs; axis.append(css(h('span', null, x ? dur(x) : '0'), 'left', (x / total * 100) + '%')); }
+    };
+    const touching = () => { const b = [...axis.children].map((e) => e.getBoundingClientRect()); return b.some((r, i) => i && r.left < b[i - 1].right + 4); };
+    const drawAxis = () => {
+      if (!axis.isConnected) return;
+      for (let n = Math.min(10, Math.max(2, Math.floor(axis.clientWidth / 64))); ; n--) { ticks(n); if (n <= 2 || !touching()) break; }
+    };
+    ticks(10);
+    onMount(drawAxis);
+    let axisT = 0;
+    const axisResize = () => { clearTimeout(axisT); axisT = setTimeout(drawAxis, 120); };
+    W.addEventListener('resize', axisResize);
+    onCleanup(() => W.removeEventListener('resize', axisResize));
     // Step-definition profile.
     const defs = new Map();
     for (const st of STEPS) {
