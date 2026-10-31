@@ -20,11 +20,11 @@
                         "name": "an invoice exists",
                         "line": 3,
                         "match": {
-                            "location": "main_test.go:27"
+                            "location": "main_test.go:32"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 23667
+                            "duration": 44416
                         }
                     },
                     {
@@ -43,7 +43,7 @@
                         "name": "the customer receives it",
                         "line": 5,
                         "match": {
-                            "location": "main_test.go:29"
+                            "location": "main_test.go:34"
                         },
                         "result": {
                             "status": "skipped"
@@ -64,11 +64,11 @@
                         "name": "an invoice exists",
                         "line": 8,
                         "match": {
-                            "location": "main_test.go:27"
+                            "location": "main_test.go:32"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 4166
+                            "duration": 10084
                         }
                     },
                     {
@@ -141,11 +141,11 @@
                         "name": "a draft order with these lines:",
                         "line": 6,
                         "match": {
-                            "location": "main_test.go:13"
+                            "location": "main_test.go:18"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 21334
+                            "duration": 58083
                         },
                         "rows": [
                             {
@@ -180,11 +180,11 @@
                         "name": "the order is confirmed",
                         "line": 10,
                         "match": {
-                            "location": "main_test.go:17"
+                            "location": "main_test.go:22"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 8666
+                            "duration": 19417
                         },
                         "embeddings": [
                             {
@@ -214,11 +214,11 @@
                             "line": 12
                         },
                         "match": {
-                            "location": "main_test.go:24"
+                            "location": "main_test.go:29"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 8875
+                            "duration": 25625
                         }
                     }
                 ]
@@ -246,11 +246,11 @@
                         "name": "a draft order with quantity 0",
                         "line": 18,
                         "match": {
-                            "location": "main_test.go:25"
+                            "location": "main_test.go:30"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 6333
+                            "duration": 14417
                         }
                     },
                     {
@@ -258,11 +258,11 @@
                         "name": "the order is confirmed",
                         "line": 19,
                         "match": {
-                            "location": "main_test.go:17"
+                            "location": "main_test.go:22"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 6917
+                            "duration": 15791
                         },
                         "embeddings": [
                             {
@@ -287,12 +287,12 @@
                         "name": "the order is rejected",
                         "line": 20,
                         "match": {
-                            "location": "main_test.go:26"
+                            "location": "main_test.go:31"
                         },
                         "result": {
                             "status": "failed",
                             "error_message": "expected rejection, got confirmation",
-                            "duration": 7417
+                            "duration": 19709
                         }
                     }
                 ]
@@ -320,11 +320,11 @@
                         "name": "a draft order with quantity -1",
                         "line": 18,
                         "match": {
-                            "location": "main_test.go:25"
+                            "location": "main_test.go:30"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 4958
+                            "duration": 13167
                         }
                     },
                     {
@@ -332,11 +332,11 @@
                         "name": "the order is confirmed",
                         "line": 19,
                         "match": {
-                            "location": "main_test.go:17"
+                            "location": "main_test.go:22"
                         },
                         "result": {
                             "status": "passed",
-                            "duration": 8459
+                            "duration": 19250
                         },
                         "embeddings": [
                             {
@@ -361,12 +361,12 @@
                         "name": "the order is rejected",
                         "line": 20,
                         "match": {
-                            "location": "main_test.go:26"
+                            "location": "main_test.go:31"
                         },
                         "result": {
                             "status": "failed",
                             "error_message": "expected rejection, got confirmation",
-                            "duration": 7500
+                            "duration": 18500
                         }
                     }
                 ]
