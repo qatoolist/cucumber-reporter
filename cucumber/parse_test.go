@@ -336,6 +336,11 @@ func TestDecode(t *testing.T) {
 		{"YWJjZA=", 10, "", ErrInvalidBase64},      // short padding
 		{"YWJjZA===", 10, "", ErrInvalidBase64},    // extra padding
 		{"YWJjZA\r\n==", 10, "", ErrInvalidBase64}, // CRLF inside
+		// Line breaks that keep the length a multiple of four pass the length check and are skipped by
+		// Go's decoder; only the canonical re-encoding comparison refuses them.
+		{"aGk=\n\n\n\n", 10, "", ErrInvalidBase64},
+		{"aG\r\nk=\r\n", 10, "", ErrInvalidBase64},
+		{"\n\n\n\nYWJj", 10, "", ErrInvalidBase64},
 	}
 	for _, tt := range tests {
 		got, err := Embedding{Data: tt.data}.Decode(tt.max)
