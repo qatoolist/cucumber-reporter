@@ -1,14 +1,16 @@
-// Package godoggen produces testdata/synthetic/godog-v0.16.0.json: real Godog v0.16.0 cucumber
-// formatter output for invented features, covering all six step statuses, a data table, a doc string,
-// a scenario outline and text, JSON, HTML and binary attachments. It is a separate module so that the
-// reporter module itself keeps no dependencies. Regenerate with `go test ./...` in this directory and
-// copy cucumber.json over the fixture.
+// Package godoggen produces the real Godog v0.16.0 cucumber formatter output in testdata/synthetic
+// for invented features. TestFeatures writes cucumber.json (copy it to godog-v0.16.0.json): all six
+// step statuses, a data table, a doc string, a scenario outline and text, JSON, HTML and binary
+// attachments. TestStepless writes cucumber-stepless.json (copy it to godog-v0.16.0-stepless.json) and
+// Godog's own summary of it. This is a separate module so that the reporter module keeps no
+// dependencies. Regenerate with `go test ./...` in this directory.
 package godoggen
 
 import (
 	"context"
 	"errors"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/cucumber/godog"
@@ -41,4 +43,19 @@ func TestFeatures(t *testing.T) {
 	defer f.Close()
 	s := godog.TestSuite{ScenarioInitializer: steps, Options: &godog.Options{Format: "cucumber", Paths: []string{"features"}, Output: f, Strict: true}}
 	s.Run()
+}
+
+// TestStepless produces godog-v0.16.0-stepless.json: a scenario without steps, which Godog writes
+// without a "steps" key and counts as undefined, beside a passed and a pending scenario.
+func TestStepless(t *testing.T) {
+	for _, format := range []string{"cucumber:cucumber-stepless.json", "pretty:summary-stepless.txt"} {
+		name, path, _ := strings.Cut(format, ":")
+		f, err := os.Create(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		s := godog.TestSuite{ScenarioInitializer: steps, Options: &godog.Options{Format: name, Paths: []string{"features-stepless"}, Output: f, Strict: true, NoColors: true}}
+		s.Run()
+		_ = f.Close()
+	}
 }

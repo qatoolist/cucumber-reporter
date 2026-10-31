@@ -1,0 +1,75 @@
+[
+    {
+        "uri": "features-stepless/drafts.feature",
+        "id": "draft-scenarios",
+        "keyword": "Feature",
+        "name": "Draft scenarios",
+        "description": "  A scenario written before its steps.",
+        "line": 1,
+        "elements": [
+            {
+                "id": "draft-scenarios;invoice-is-listed",
+                "keyword": "Scenario",
+                "name": "Invoice is listed",
+                "description": "",
+                "line": 4,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an invoice exists",
+                        "line": 5,
+                        "match": {
+                            "location": "main_test.go:33"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 90875
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "draft-scenarios;no-steps-at-all",
+                "keyword": "Scenario",
+                "name": "No steps at all",
+                "description": "",
+                "line": 7,
+                "type": "scenario"
+            },
+            {
+                "id": "draft-scenarios;invoice-is-sent-later",
+                "keyword": "Scenario",
+                "name": "Invoice is sent later",
+                "description": "",
+                "line": 9,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an invoice exists",
+                        "line": 10,
+                        "match": {
+                            "location": "main_test.go:33"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 7084
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "the invoice is sent",
+                        "line": 11,
+                        "match": {
+                            "location": "features-stepless/drafts.feature:11"
+                        },
+                        "result": {
+                            "status": "pending"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]

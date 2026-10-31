@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -220,8 +221,8 @@ func TestParseRejects(t *testing.T) {
 		{"feature without elements", `[{"name":"F"}]`, Limits{}, ErrIncomplete, "feature[0]"},
 		{"feature with null elements", `[{"name":"F","elements":null}]`, Limits{}, ErrIncomplete, "feature[0]"},
 		{"feature with empty elements", `[{"name":"F","elements":[]}]`, Limits{}, ErrIncomplete, "feature[0]"},
-		{"second feature incomplete", `[{"name":"F","elements":[{"steps":[` + step + `]}]},{"name":"G","elements":[{"steps":[` + step + `]},{"steps":[]}]}]`, Limits{}, ErrIncomplete, "feature[1].elements[1]"},
-		{"scenario without steps", `[{"name":"F","elements":[{"name":"S"}]}]`, Limits{}, ErrIncomplete, "feature[0].elements[0]"},
+		{"second feature incomplete", `[{"name":"F","elements":[{"steps":[` + step + `]}]},{"name":"G"}]`, Limits{}, ErrIncomplete, "feature[1]"},
+		{"step of a stepless scenario's neighbor incomplete", `[{"name":"F","elements":[{"name":"S"},{"steps":[{"name":"s"}]}]}]`, Limits{}, ErrIncomplete, "feature[0].elements[1].steps[0]"},
 		{"step without result", wrap(`{"name":"s"}`), Limits{}, ErrIncomplete, "feature[0].elements[0].steps[0]"},
 		{"step with null result", wrap(`{"name":"s","result":null}`), Limits{}, ErrIncomplete, "feature[0].elements[0].steps[0]"},
 		{"step without status", wrap(`{"name":"s","result":{"duration":5}}`), Limits{}, ErrIncomplete, "feature[0].elements[0].steps[0]"},
@@ -358,7 +359,7 @@ func TestValidate(t *testing.T) {
 		{"nil", nil, ErrNoResults, ""},
 		{"valid", []Feature{{Elements: []Scenario{{Steps: []Step{ok}}}}}, nil, ""},
 		{"no scenarios", []Feature{{}}, ErrIncomplete, "feature[0]"},
-		{"no steps", []Feature{{Elements: []Scenario{{}}}}, ErrIncomplete, "feature[0].elements[0]"},
+		{"stepless scenario (Godog writes it as undefined)", []Feature{{Elements: []Scenario{{}}}}, nil, ""},
 		{"bad status", []Feature{{Elements: []Scenario{{Steps: []Step{ok, {Result: Result{Status: "x"}}}}}}}, ErrInvalid, "feature[0].elements[0].steps[1].result.status"},
 		{"missing status", []Feature{{Elements: []Scenario{{Steps: []Step{{}}}}}}, ErrIncomplete, "feature[0].elements[0].steps[0]"},
 	}
@@ -371,6 +372,108 @@ func TestValidate(t *testing.T) {
 		var pe *ParseError
 		if errors.As(err, &pe) && pe.Path != tt.path {
 			t.Errorf("%s: path = %q, want %q", tt.name, pe.Path, tt.path)
+		}
+	}
+}
+
+// TestParseSteplessScenario reads real Godog v0.16.0 output for a scenario without steps. Godog writes
+// it with no "steps" key and its own summary (testdata/synthetic/godog-gen, TestStepless) reads
+// "3 scenarios (1 passed, 1 pending, 1 undefined)" and "3 steps (2 passed, 1 pending)".
+func TestParseSteplessScenario(t *testing.T) {
+	features, err := Parse(strings.NewReader(string(readFixture(t, "godog-v0.16.0-stepless.json"))), Limits{})
+	if err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+	if len(features) != 1 || len(features[0].Elements) != 3 {
+		t.Fatalf("want 1 feature with 3 scenarios, got %+v", features)
+	}
+	scenarios := map[Status]int{}
+	steps := map[Status]int{}
+	for _, sc := range features[0].Elements {
+		scenarios[sc.Status()]++
+		for _, st := range sc.Steps {
+			steps[st.Result.Status]++
+		}
+	}
+	if scenarios[StatusPassed] != 1 || scenarios[StatusPending] != 1 || scenarios[StatusUndefined] != 1 {
+		t.Errorf("scenarios = %v, want Godog's 1 passed, 1 pending, 1 undefined", scenarios)
+	}
+	if steps[StatusPassed] != 2 || steps[StatusPending] != 1 || len(steps) != 2 {
+		t.Errorf("steps = %v, want Godog's 2 passed, 1 pending", steps)
+	}
+	if sc := features[0].Elements[1]; sc.Name != "No steps at all" || len(sc.Steps) != 0 || sc.Status() != StatusUndefined {
+		t.Errorf("stepless scenario = %+v, status %s", sc, sc.Status())
+	}
+	if got := features[0].Status(); got != StatusUndefined {
+		t.Errorf("feature status = %s, want undefined", got)
+	}
+	for _, in := range []string{`[{"name":"F","elements":[{"name":"S","steps":null}]}]`, `[{"name":"F","elements":[{"name":"S","steps":[]}]}]`} {
+		f, err := Parse(strings.NewReader(in), Limits{})
+		if err != nil || f[0].Elements[0].Status() != StatusUndefined {
+			t.Errorf("%s: err %v", in, err)
+		}
+	}
+}
+
+// TestCombine follows multiple-cucumber-html-reporter's feature rule: failed, then ambiguous, then
+// undefined if any scenario has that status; pending only when every scenario is pending; skipped only
+// when every scenario is skipped or pending; otherwise passed.
+func TestCombine(t *testing.T) {
+	tests := []struct {
+		in   []Status
+		want Status
+	}{
+		{[]Status{"passed", "skipped"}, StatusPassed},
+		{[]Status{"skipped", "skipped"}, StatusSkipped},
+		{[]Status{"skipped", "pending"}, StatusSkipped},
+		{[]Status{"pending", "pending"}, StatusPending},
+		{[]Status{"passed", "pending"}, StatusPassed},
+		{[]Status{"passed", "pending", "skipped"}, StatusPassed},
+		{[]Status{"passed", "undefined", "skipped"}, StatusUndefined},
+		{[]Status{"pending", "ambiguous"}, StatusAmbiguous},
+		{[]Status{"undefined", "ambiguous"}, StatusAmbiguous},
+		{[]Status{"skipped", "failed", "ambiguous"}, StatusFailed},
+		{[]Status{"passed"}, StatusPassed},
+		{[]Status{"skipped"}, StatusSkipped},
+		{nil, StatusPassed},
+	}
+	for _, tt := range tests {
+		if got := Combine(tt.in...); got != tt.want {
+			t.Errorf("Combine(%v) = %s, want %s", tt.in, got, tt.want)
+		}
+	}
+	sc := func(s Status) Scenario { return Scenario{Steps: []Step{{Result: Result{Status: s}}}} }
+	f := Feature{Elements: []Scenario{sc("passed"), sc("skipped")}}
+	if got := f.Status(); got != StatusPassed {
+		t.Errorf("feature with a passed and a skipped scenario = %s, want passed", got)
+	}
+	run := []Feature{f, {Elements: []Scenario{sc("pending")}}}
+	if got := RunStatus(run); got != StatusPassed {
+		t.Errorf("RunStatus = %s, want passed (a pending scenario does not make the run pending)", got)
+	}
+	if got := RunStatus([]Feature{{Elements: []Scenario{sc("skipped"), sc("pending")}}}); got != StatusSkipped {
+		t.Errorf("RunStatus of skipped and pending = %s, want skipped", got)
+	}
+}
+
+// TestParseKeepsTextExactly: the model holds text exactly as given, including leading newlines,
+// carriage returns, trailing spaces and multi-line descriptions; display decisions belong to renderers.
+func TestParseKeepsTextExactly(t *testing.T) {
+	const text = "\nfirst line was empty\r\n  indented  \n\ttab\u202eend "
+	quoted := strconv.Quote(text)
+	in := `[{"name":` + quoted + `,"description":` + quoted + `,"elements":[{"name":` + quoted + `,"description":` + quoted + `,"steps":[
+		{"keyword":"Then ","name":` + quoted + `,"doc_string":{"value":` + quoted + `},"rows":[{"cells":[` + quoted + `]}],
+		 "result":{"status":"failed","error_message":` + quoted + `}}]}]}]`
+	f := mustParse(t, in)
+	sc := f[0].Elements[0]
+	st := sc.Steps[0]
+	for name, got := range map[string]string{
+		"feature name": f[0].Name, "feature description": f[0].Description, "scenario name": sc.Name,
+		"scenario description": sc.Description, "step name": st.Name, "doc string": st.DocString.Value,
+		"cell": st.Rows[0].Cells[0], "error": st.Result.Error,
+	} {
+		if got != text {
+			t.Errorf("%s = %q, want %q", name, got, text)
 		}
 	}
 }

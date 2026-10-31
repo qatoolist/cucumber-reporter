@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-// FuzzParse: Parse never panics, honours its input limit, returns only the documented errors and,
+// FuzzParse: Parse never panics, honors its input limit, returns only the documented errors and,
 // when it succeeds, returns a model that passes Validate.
 func FuzzParse(f *testing.F) {
 	f.Add(readFixture(f, "godog-v0.16.0.json"))

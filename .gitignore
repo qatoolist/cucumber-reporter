@@ -16,3 +16,5 @@ testdata/synthetic/godog-gen/cucumber.json
 .DS_Store
 .idea/
 .vscode/
+testdata/synthetic/godog-gen/cucumber-stepless.json
+testdata/synthetic/godog-gen/summary-stepless.txt

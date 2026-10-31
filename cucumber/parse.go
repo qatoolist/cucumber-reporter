@@ -20,8 +20,9 @@ var (
 	// ErrInvalidJSON: the input is not one JSON array of features, has a value of the wrong type,
 	// a duplicate object key, nesting deeper than 64 levels or data after the array.
 	ErrInvalidJSON = errors.New("cucumber: input is not valid cucumber JSON")
-	// ErrIncomplete: a feature has no scenarios, a scenario has no steps or a step has no status.
-	ErrIncomplete = errors.New("cucumber: input contains a feature without scenarios, a scenario without steps or a step without a status")
+	// ErrIncomplete: a feature has no scenarios or a step has no status. (A scenario without steps is
+	// accepted: Godog writes it that way and counts it as undefined.)
+	ErrIncomplete = errors.New("cucumber: input contains a feature without scenarios or a step without a status")
 	// ErrInvalid: a status outside the six Godog statuses, or a negative duration.
 	ErrInvalid = errors.New("cucumber: input contains an invalid value")
 	// ErrTooLarge: the input or one attachment exceeds its limit.
@@ -122,8 +123,8 @@ type (
 )
 
 // Parse reads legacy Cucumber JSON as written by Godog's cucumber formatter. It is strict: the input
-// must be one non-empty array of complete features (every feature has scenarios, every scenario has
-// steps and every step has one of the six statuses), with no duplicate object keys and nothing after
+// must be one non-empty array of complete features (every feature has scenarios and every step has one
+// of the six statuses; a scenario without steps is kept and is undefined), with no duplicate object keys and nothing after
 // the array. Unknown fields, such as Godog's feature comments or other runners' hooks, are ignored.
 // Attachment data is kept as given and checked when it is decoded.
 func Parse(r io.Reader, lim Limits) ([]Feature, error) {
@@ -135,11 +136,11 @@ func Parse(r io.Reader, lim Limits) ([]Feature, error) {
 	if int64(len(data)) > lim.Input {
 		return nil, ErrTooLarge
 	}
-	if err := checkSyntax(data); err != nil {
+	if err = checkSyntax(data); err != nil {
 		return nil, err
 	}
 	var wire *[]wireFeature
-	if err := json.Unmarshal(data, &wire); err != nil {
+	if err = json.Unmarshal(data, &wire); err != nil {
 		var typeErr *json.UnmarshalTypeError
 		if errors.As(err, &typeErr) {
 			return nil, atOffset(ErrInvalidJSON, typeErr.Offset)
@@ -245,11 +246,15 @@ func convert(wire []wireFeature, lim Limits) ([]Feature, error) {
 		f.Elements = make([]Scenario, len(*wf.Elements))
 		for j, ws := range *wf.Elements {
 			sc := Scenario{ID: ws.ID, Keyword: ws.Keyword, Name: ws.Name, Description: ws.Description, Type: ws.Type, Line: ws.Line, Tags: tags(ws.Tags)}
-			if ws.Steps == nil || len(*ws.Steps) == 0 {
-				return nil, atPath(ErrIncomplete, "feature[%d].elements[%d]", i, j)
+			var wsteps []wireStep
+			if ws.Steps != nil {
+				wsteps = *ws.Steps
 			}
-			sc.Steps = make([]Step, len(*ws.Steps))
-			for k, wst := range *ws.Steps {
+			// Godog writes a scenario without steps with no "steps" key; it is kept, and is undefined.
+			if len(wsteps) > 0 {
+				sc.Steps = make([]Step, len(wsteps))
+			}
+			for k, wst := range wsteps {
 				st, err := convertStep(wst, lim)
 				if err != nil {
 					var pe *ParseError
@@ -318,8 +323,7 @@ func tags(wire []wireTag) []Tag {
 }
 
 // Validate checks a model built in code or by Parse: at least one feature, every feature has
-// scenarios, every scenario has steps, every step has one of the six statuses and no duration is
-// negative. A step whose result is entirely empty counts as a step without a status (ErrIncomplete).
+// scenarios, every step has one of the six statuses and no duration is negative. A step whose result is entirely empty counts as a step without a status (ErrIncomplete).
 func Validate(features []Feature) error {
 	if len(features) == 0 {
 		return ErrNoResults
@@ -329,9 +333,6 @@ func Validate(features []Feature) error {
 			return atPath(ErrIncomplete, "feature[%d]", i)
 		}
 		for j, sc := range f.Elements {
-			if len(sc.Steps) == 0 {
-				return atPath(ErrIncomplete, "feature[%d].elements[%d]", i, j)
-			}
 			for k, st := range sc.Steps {
 				r := st.Result
 				switch {

@@ -1,11 +1,21 @@
 cucumber-reporter
 Copyright (c) 2026 qatoolist
 
-This product's report layout and status semantics follow
-multiple-cucumber-html-reporter (https://github.com/WasiqB/multiple-cucumber-html-reporter):
-the overview dashboard, the feature list, the feature page and the scenario card,
-the scenario and feature status rules, and the human-readable duration format
-("40ms", "<1ms", "1h 2m 3s", "1d 2h 3m 4s").
+This product follows these parts of multiple-cucumber-html-reporter
+(https://github.com/WasiqB/multiple-cucumber-html-reporter), version 4.5.0:
+
+- The information architecture: overview dashboard, feature list, feature page and
+  scenario card.
+- The scenario status rule: failed, then ambiguous, then undefined, then pending,
+  then skipped if any step has that status, otherwise passed.
+- The feature status rule, also used here for the run headline: failed, ambiguous or
+  undefined if any scenario has that status (in that order); pending only when every
+  scenario is pending; skipped only when every scenario is skipped or pending;
+  otherwise passed.
+- The human-readable duration format ("40ms", "<1ms", "1h 2m 3s", "1d 2h 3m 4s").
+
+One rule differs: a scenario without steps is counted as undefined, as Godog counts
+it, where multiple-cucumber-html-reporter leaves it out of the counts.
 
 No source code, templates, styles, scripts, images or fonts from that project are
 included. The templates, CSS, JavaScript and SVG charts in this repository were
