@@ -24,9 +24,10 @@ func runDir(t *testing.T, cucumberJSON string) string {
 	return dir
 }
 
-func fixtureText(t *testing.T, name string) string {
+// minimalText is testdata/synthetic/minimal.json.
+func minimalText(t *testing.T) string {
 	t.Helper()
-	data, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", name))
+	data, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", "minimal.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,7 +61,7 @@ func TestRenderDirWritesPrivateNewDirectory(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("POSIX permission bits")
 	}
-	dir := runDir(t, fixtureText(t, "minimal.json"))
+	dir := runDir(t, minimalText(t))
 	out, err := RenderDir(dir, Options{Version: 1})
 	if err != nil {
 		t.Fatal(err)
@@ -147,7 +148,7 @@ func TestRenderDirRefusesSymlinksAndOtherKinds(t *testing.T) {
 		t.Skip("symbolic links need privileges on Windows")
 	}
 	target := filepath.Join(t.TempDir(), "elsewhere.json")
-	if err := os.WriteFile(target, []byte(fixtureText(t, "minimal.json")), 0o600); err != nil {
+	if err := os.WriteFile(target, []byte(minimalText(t)), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -164,7 +165,7 @@ func TestRenderDirRefusesSymlinksAndOtherKinds(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	realRun := runDir(t, fixtureText(t, "minimal.json"))
+	realRun := runDir(t, minimalText(t))
 	runLink := filepath.Join(t.TempDir(), "run-link")
 	if err := os.Symlink(realRun, runLink); err != nil {
 		t.Fatal(err)
@@ -227,7 +228,7 @@ func TestRenderDirFailureLeavesNothingAndWithholdsContent(t *testing.T) {
 			t.Errorf("failed render left %v", names)
 		}
 	}
-	dir := runDir(t, fixtureText(t, "minimal.json"))
+	dir := runDir(t, minimalText(t))
 	if _, err := RenderDir(dir, Options{}); !errors.Is(err, ErrOptionsVersion) {
 		t.Errorf("zero options: %v", err)
 	}
@@ -237,14 +238,14 @@ func TestRenderDirFailureLeavesNothingAndWithholdsContent(t *testing.T) {
 }
 
 func TestRenderDirInputLimit(t *testing.T) {
-	dir := runDir(t, fixtureText(t, "minimal.json"))
+	dir := runDir(t, minimalText(t))
 	if _, err := RenderDir(dir, Options{Version: 1, Limits: cucumber.Limits{Input: 100}}); !errors.Is(err, cucumber.ErrTooLarge) {
 		t.Errorf("err = %v, want ErrTooLarge", err)
 	}
 }
 
 func TestRenderDirTo(t *testing.T) {
-	dir := runDir(t, fixtureText(t, "minimal.json"))
+	dir := runDir(t, minimalText(t))
 	parent := t.TempDir()
 	out, err := RenderDirTo(dir, parent, Options{Version: 1})
 	if err != nil {
@@ -268,5 +269,91 @@ func TestRenderDirTo(t *testing.T) {
 	}
 	if _, err := RenderDirTo(dir, filepath.Join(parent, "absent"), Options{Version: 1}); err == nil {
 		t.Error("missing parent accepted")
+	}
+}
+
+func TestRenderDirRefusesSymlinkSpelledAsDirectory(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symbolic links need privileges on Windows")
+	}
+	realRun := runDir(t, minimalText(t))
+	base := t.TempDir()
+	link := filepath.Join(base, "link")
+	if err := os.Symlink(realRun, link); err != nil {
+		t.Fatal(err)
+	}
+	realParent := t.TempDir()
+	outLink := filepath.Join(base, "out")
+	if err := os.Symlink(realParent, outLink); err != nil {
+		t.Fatal(err)
+	}
+	for _, spelling := range []string{"/", "/.", "//", "/./", "/./."} {
+		if _, err := RenderDir(link+spelling, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+			t.Errorf("run directory link%s: err = %v", spelling, err)
+		}
+		if _, err := RenderDirTo(realRun, outLink+spelling, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+			t.Errorf("output directory out%s: err = %v", spelling, err)
+		}
+	}
+	if names := entries(t, realRun); len(names) != 1 {
+		t.Errorf("refused renders wrote into the link target: %v", names)
+	}
+	if names := entries(t, realParent); len(names) != 0 {
+		t.Errorf("refused renders wrote into the output link target: %v", names)
+	}
+	// A real directory spelled with a trailing slash still works.
+	if out, err := RenderDir(realRun+"/", Options{Version: 1}); err != nil || filepath.Dir(out) != realRun {
+		t.Errorf("real directory with trailing slash: %q, %v", out, err)
+	}
+}
+
+func TestWriteNewRefusesExistingPath(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "index.html")
+	if err := os.WriteFile(path, []byte("earlier"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := writeNew(path, []byte("later")); err == nil {
+		t.Error("writeNew replaced an existing file")
+	}
+	if got, _ := os.ReadFile(path); string(got) != "earlier" {
+		t.Errorf("existing file changed to %q", got)
+	}
+}
+
+// TestReadResultsRefusesSwappedFile: the file opened must be the regular file that was inspected.
+// openResults is swapped to open a different file, standing in for a replacement between the checks.
+func TestReadResultsRefusesSwappedFile(t *testing.T) {
+	dir := runDir(t, minimalText(t))
+	other := filepath.Join(t.TempDir(), "other.json")
+	if err := os.WriteFile(other, []byte(minimalText(t)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	saved := openResults
+	t.Cleanup(func() { openResults = saved })
+	openResults = func(string) (*os.File, error) { return os.Open(other) }
+	if _, err := RenderDir(dir, Options{Version: 1}); !errors.Is(err, ErrNotRegular) {
+		t.Errorf("err = %v, want ErrNotRegular", err)
+	}
+}
+
+func TestRenderFeaturesDirTo(t *testing.T) {
+	big := strings.Repeat("evidence line\n", 200)
+	features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "big.txt", MimeType: "text/plain", Data: b64(big)}))
+	parent := t.TempDir()
+	out, err := RenderFeaturesDirTo(features, parent, Options{Version: 1, Limits: cucumber.Limits{InlineAttachment: 1024}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if filepath.Dir(out) != parent || !strings.HasPrefix(filepath.Base(out), "html-") {
+		t.Errorf("output %q", out)
+	}
+	if got, _ := os.ReadFile(filepath.Join(out, "attachment-f1-s1-t1-a1.txt")); string(got) != big {
+		t.Error("sidecar missing")
+	}
+	if _, err := RenderFeaturesDirTo(nil, parent, Options{Version: 1}); !errors.Is(err, cucumber.ErrNoResults) {
+		t.Errorf("no features: %v", err)
+	}
+	if names := entries(t, parent); len(names) != 1 {
+		t.Errorf("refused render left %v", names)
 	}
 }

@@ -18,7 +18,7 @@ func toneOrDefault(t string) string {
 func cleanFacts(facts []Fact) []Fact {
 	out := make([]Fact, len(facts))
 	for i, f := range facts {
-		out[i] = Fact{clean(f.Label), clean(f.Value)}
+		out[i] = Fact{Label: clean(f.Label), Value: clean(f.Value)}
 	}
 	return out
 }

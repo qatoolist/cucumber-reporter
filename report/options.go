@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 
 	"github.com/qatoolist/cucumber-reporter/cucumber"
 )
@@ -40,6 +41,9 @@ type Options struct {
 	Sections []Section
 	// Defaults are the generation-time view settings. A viewer's saved preferences override them.
 	Defaults ViewDefaults
+	// Verdict, when set, replaces the computed headline, for example "Passed with known failures".
+	// The page then also shows the result computed from the steps.
+	Verdict *Verdict
 	// Limits bound the input (RenderDir) and the inline attachment size (all renders).
 	Limits cucumber.Limits
 }
@@ -48,6 +52,21 @@ type Options struct {
 type Fact struct {
 	Label, Value string
 }
+
+// Verdict is a caller-chosen headline. Status (one of the six) sets the symbol and color; Label
+// defaults to the status name; Explanation is an optional line below the headline.
+type Verdict struct {
+	Status             cucumber.Status
+	Label, Explanation string
+}
+
+// FeatureAnchor is the stable in-page anchor (element id) of the feature at index i (zero-based) of
+// the rendered features. Callers can use it to refer to a feature's card.
+func FeatureAnchor(i int) string { return "f" + strconv.Itoa(i+1) }
+
+// ScenarioAnchor is the stable in-page anchor (element id) of scenario j (zero-based) of feature i
+// (zero-based).
+func ScenarioAnchor(i, j int) string { return FeatureAnchor(i) + "-s" + strconv.Itoa(j+1) }
 
 // Tone values for a Section or a Segment.
 const (
@@ -86,7 +105,7 @@ const MaxSegmentValue = 1_000_000_000
 type Segment struct {
 	Label string
 	Value int
-	// Tone colours the segment: ToneInfo (default), ToneOK, ToneWarn or ToneFail.
+	// Tone colors the segment: ToneInfo (default), ToneOK, ToneWarn or ToneFail.
 	Tone string
 }
 
@@ -172,6 +191,9 @@ func normalize(opt Options) (Options, error) {
 		opt.Name = opt.Title
 	}
 	opt.Limits = opt.Limits.WithDefaults()
+	if v := opt.Verdict; v != nil && !v.Status.Valid() {
+		return opt, invalid("verdict.status")
+	}
 
 	charts := map[ChartID]bool{}
 	for _, id := range BuiltinCharts {

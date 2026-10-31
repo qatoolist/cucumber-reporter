@@ -75,7 +75,7 @@ func tokenize(t testing.TB, doc string) []token {
 
 func startTag(t testing.TB, s string) (token, int) {
 	i := 1
-	for i < len(s) && (isNameByte(s[i])) {
+	for i < len(s) && isNameByte(s[i]) {
 		i++
 	}
 	if i == 1 {
@@ -245,9 +245,11 @@ func hostileRun(s string) ([]cucumber.Feature, Options) {
 	}}
 	opt := Options{
 		Version: 1, Title: s, Name: s,
-		RunFacts: []Fact{{s, s}},
-		Sections: []Section{{ID: "hostile", Title: s, Tone: ToneFail, Summary: []Fact{{s, s}}, Rows: []Fact{{s, s}}, Note: s,
-			Chart: &ChartSeries{Title: s, Segments: []Segment{{s, 1, ToneFail}, {s, 2, ToneOK}}}}},
+		RunFacts: []Fact{{Label: s, Value: s}},
+		Sections: []Section{{
+			ID: "hostile", Title: s, Tone: ToneFail, Summary: []Fact{{Label: s, Value: s}}, Rows: []Fact{{Label: s, Value: s}}, Note: s,
+			Chart: &ChartSeries{Title: s, Segments: []Segment{{s, 1, ToneFail}, {s, 2, ToneOK}}},
+		}},
 	}
 	return features, opt
 }

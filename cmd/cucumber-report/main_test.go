@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 
 func command(t *testing.T, args ...string) (stdout, stderr string, code int) {
 	t.Helper()
-	cmd := exec.Command(os.Args[0], args...)
+	cmd := exec.CommandContext(t.Context(), os.Args[0], args...)
 	cmd.Env = append(os.Environ(), "CUCUMBER_REPORT_MAIN=1")
 	var out, errOut bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &out, &errOut
@@ -210,5 +210,45 @@ func TestRefusals(t *testing.T) {
 		if len(entries) != 1 {
 			t.Errorf("%s: refused render left %d entries", dir, len(entries))
 		}
+	}
+}
+
+// TestRefusesSymlinkSpelledAsDirectory: a trailing "/" or "/." must not let a symbolic link through.
+func TestRefusesSymlinkSpelledAsDirectory(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symbolic links need privileges on Windows")
+	}
+	good := newRun(t, fixture(t))
+	base := t.TempDir()
+	runLink, outLink, outReal := filepath.Join(base, "run-link"), filepath.Join(base, "out-link"), t.TempDir()
+	if err := os.Symlink(good, runLink); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(outReal, outLink); err != nil {
+		t.Fatal(err)
+	}
+	settings := writeFile(t, `{"version":1}`)
+	settingsLink := filepath.Join(base, "settings-link")
+	if err := os.Symlink(settings, settingsLink); err != nil {
+		t.Fatal(err)
+	}
+	for _, args := range [][]string{
+		{runLink + "/"},
+		{runLink + "/."},
+		{runLink + "//"},
+		{"-o", outLink + "/", good},
+		{"-o", outLink + "/.", good},
+		{"-defaults", settingsLink + "/.", good},
+	} {
+		stdout, stderr, code := command(t, args...)
+		if code != 1 || stdout != "" || stderr == "" {
+			t.Errorf("%v: exit %d, stdout %q, stderr %q; want a refusal", args, code, stdout, stderr)
+		}
+	}
+	if entries, _ := os.ReadDir(good); len(entries) != 1 {
+		t.Errorf("refused renders wrote into the run directory: %d entries", len(entries))
+	}
+	if entries, _ := os.ReadDir(outReal); len(entries) != 0 {
+		t.Errorf("refused renders wrote into the -o link target: %d entries", len(entries))
 	}
 }

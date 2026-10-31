@@ -52,24 +52,24 @@ func sampleOptions() Options {
 		Title:   "Example suite",
 		Name:    "Example suite execution results",
 		RunFacts: []Fact{
-			{"Started", "2026-01-02T03:04:05Z"},
-			{"Revision", "0123456789ab"},
-			{"Go version", "go1.27.0"},
+			{Label: "Started", Value: "2026-01-02T03:04:05Z"},
+			{Label: "Revision", Value: "0123456789ab"},
+			{Label: "Go version", Value: "go1.27.0"},
 		},
 		Sections: []Section{
 			{
 				ID: "known-issues", Title: "Known issues", Tone: ToneWarn,
-				Summary: []Fact{{"Run status", "completed"}, {"Known failures", "2"}, {"Unexpected failures", "0"}},
+				Summary: []Fact{{Label: "Run status", Value: "completed"}, {Label: "Known failures", Value: "2"}, {Label: "Unexpected failures", Value: "0"}},
 				Rows: []Fact{
-					{"EX-101 Order processing / Reject an order with quantity 0", "known failure"},
-					{"EX-101 Order processing / Reject an order with quantity -1", "known failure"},
+					{Label: "EX-101 Order processing / Reject an order with quantity 0", Value: "known failure"},
+					{Label: "EX-101 Order processing / Reject an order with quantity -1", Value: "known failure"},
 				},
 				Note:  "Known failures are listed apart from raw step status.",
 				Chart: &ChartSeries{Title: "Known failures compared with failures", Segments: []Segment{{"Known failures", 2, ToneWarn}, {"Unexpected failures", 0, ToneFail}}},
 			},
 			{
 				ID: "skipped", Title: "Skipped scenarios", Tone: ToneInfo,
-				Rows: []Fact{{"Billing / Invoice is pending implementation", "Scenario skipped by Godog"}},
+				Rows: []Fact{{Label: "Billing / Invoice is pending implementation", Value: "Scenario skipped by Godog"}},
 			},
 		},
 		Defaults: ViewDefaults{Charts: map[ChartID]bool{ChartSlowestScenarios: false}},
@@ -282,8 +282,10 @@ func TestViewDefaultsReachThePage(t *testing.T) {
 	}
 
 	opt := sampleOptions()
-	opt.Defaults = ViewDefaults{Theme: ThemeDark, Density: DensityCompact, Expand: ExpandAll, PageSize: 25,
-		Sections: map[string]bool{"known-issues": false}, Charts: map[ChartID]bool{ChartStepStatus: false, ChartScenarioStatus: true}}
+	opt.Defaults = ViewDefaults{
+		Theme: ThemeDark, Density: DensityCompact, Expand: ExpandAll, PageSize: 25,
+		Sections: map[string]bool{"known-issues": false}, Charts: map[ChartID]bool{ChartStepStatus: false, ChartScenarioStatus: true},
+	}
 	doc = mustRender(t, features, opt)
 	for _, want := range []string{
 		`<html lang="en" data-theme="dark">`,
@@ -392,7 +394,7 @@ func syntheticRun(features, scenarios, steps int) []cucumber.Feature {
 	for f := range out {
 		out[f] = cucumber.Feature{URI: fmt.Sprintf("features/area-%02d.feature", f), Keyword: "Feature", Name: fmt.Sprintf("Area %02d", f), Line: 1}
 		for s := 0; s < scenarios; s++ {
-			sc := cucumber.Scenario{ID: fmt.Sprintf("area-%02d;case-%02d", f, s), Keyword: "Scenario", Name: fmt.Sprintf("Case %02d checks a synthetic behaviour", s), Type: "scenario", Line: 3 + s*12, Tags: []cucumber.Tag{{Name: "@synthetic", Line: 2}}}
+			sc := cucumber.Scenario{ID: fmt.Sprintf("area-%02d;case-%02d", f, s), Keyword: "Scenario", Name: fmt.Sprintf("Case %02d checks a synthetic behavior", s), Type: "scenario", Line: 3 + s*12, Tags: []cucumber.Tag{{Name: "@synthetic", Line: 2}}}
 			for k := 0; k < steps; k++ {
 				st := step(fmt.Sprintf("step %d of case %d sends request %d", k, s, f*1000+s*10+k), cucumber.StatusPassed, int64((f*7+s*13+k*17)%997)*1_000_000)
 				switch {
@@ -461,5 +463,106 @@ func TestAttachmentHeavyRun(t *testing.T) {
 	}
 	if !bytes.Contains([]byte(html.UnescapeString(doc)), payload) {
 		t.Error("pretty-printed attachment not shown exactly")
+	}
+}
+
+func scenarioOf(name string, statuses ...cucumber.Status) cucumber.Scenario {
+	sc := cucumber.Scenario{Keyword: "Scenario", Name: name, Type: "scenario"}
+	for _, s := range statuses {
+		sc.Steps = append(sc.Steps, step("s", s, -1))
+	}
+	return sc
+}
+
+// TestHeadlineFollowsFeatureRule: a skipped or pending scenario beside passed ones does not turn the
+// feature or the run headline skipped or pending; only a run that is all skipped is skipped.
+func TestHeadlineFollowsFeatureRule(t *testing.T) {
+	tests := []struct {
+		name      string
+		scenarios []cucumber.Scenario
+		verdict   string
+		tile      string
+	}{
+		{"passed and skipped", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "passed", "skipped")}, "✔</span> Passed", "1 Passed"},
+		{"passed and pending", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "pending")}, "✔</span> Passed", "1 Passed"},
+		{"all skipped", []cucumber.Scenario{scenarioOf("a", "skipped"), scenarioOf("b", "passed", "skipped")}, "↷</span> Skipped", "1 Skipped"},
+		{"skipped and pending", []cucumber.Scenario{scenarioOf("a", "skipped"), scenarioOf("b", "pending")}, "↷</span> Skipped", "1 Skipped"},
+		{"all pending", []cucumber.Scenario{scenarioOf("a", "pending"), scenarioOf("b", "passed", "pending")}, "…</span> Pending", "1 Pending"},
+		{"undefined among passed", []cucumber.Scenario{scenarioOf("a", "passed"), scenarioOf("b", "undefined")}, "?</span> Undefined", "1 Undefined"},
+	}
+	for _, tt := range tests {
+		doc := mustRender(t, []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: tt.scenarios}}, Options{Version: 1})
+		if !strings.Contains(doc, `<h2 class="verdict`) || !strings.Contains(doc, tt.verdict+"</h2>") {
+			t.Errorf("%s: headline is not %q", tt.name, tt.verdict)
+		}
+		tile := regexp.MustCompile(`data-kind="features">.*?</ul>`).FindString(doc)
+		if !strings.Contains(tile, tt.tile) {
+			t.Errorf("%s: feature tile %q lacks %q", tt.name, tile, tt.tile)
+		}
+	}
+}
+
+func TestSteplessScenarioRendersUndefined(t *testing.T) {
+	doc := mustRender(t, loadFixture(t, "godog-v0.16.0-stepless.json"), Options{Version: 1})
+	for _, want := range []string{
+		`<div class="tile" data-kind="scenarios"><h3>Scenarios</h3><p class="total">3</p>`,
+		`<div class="tile" data-kind="steps"><h3>Steps</h3><p class="total">3</p>`,
+		`<details class="scenario pg-item" id="f1-s2" data-status="undefined">`,
+	} {
+		if !strings.Contains(doc, want) {
+			t.Errorf("missing %s", want)
+		}
+	}
+}
+
+func TestVerdictOverride(t *testing.T) {
+	features := loadFixture(t, "godog-v0.16.0.json")
+	opt := sampleOptions()
+	opt.Verdict = &Verdict{Status: cucumber.StatusPassed, Label: "Passed with known failures", Explanation: "Both failures are declared known issues.\nNo unexpected failure."}
+	doc := mustRender(t, features, opt)
+	for _, want := range []string{
+		`<h2 class="verdict st-passed"><span class="glyph" aria-hidden="true">✔</span> Passed with known failures</h2>`,
+		"<p class=\"verdict-note\">Both failures are declared known issues.\nNo unexpected failure.</p>",
+		`<p class="note">Computed from step results: <span class="st-failed"><span class="glyph" aria-hidden="true">✘</span> Failed</span></p>`,
+	} {
+		if !strings.Contains(doc, want) {
+			t.Errorf("missing %s", want)
+		}
+	}
+	opt.Verdict = &Verdict{Status: cucumber.StatusPending}
+	doc = mustRender(t, features, opt)
+	if !strings.Contains(doc, `<h2 class="verdict st-pending"><span class="glyph" aria-hidden="true">…</span> Pending</h2>`) || strings.Contains(doc, "verdict-note") {
+		t.Error("a verdict without a label should use the status label and no explanation")
+	}
+	for _, bad := range []cucumber.Status{"", "green"} {
+		opt.Verdict = &Verdict{Status: bad, Label: "x"}
+		if _, err := Render(features, opt); !errors.Is(err, ErrInvalidOptions) {
+			t.Errorf("verdict status %q: err = %v", bad, err)
+		}
+	}
+	doc = mustRender(t, features, sampleOptions())
+	if strings.Contains(doc, "Computed from step results") {
+		t.Error("the computed line appears only when the caller sets a verdict")
+	}
+}
+
+func TestAnchorsMatchThePage(t *testing.T) {
+	doc := mustRender(t, loadFixture(t, "godog-v0.16.0.json"), sampleOptions())
+	for _, id := range []string{FeatureAnchor(0), FeatureAnchor(1), ScenarioAnchor(0, 2), ScenarioAnchor(1, 2)} {
+		if !strings.Contains(doc, ` id="`+id+`"`) {
+			t.Errorf("no element with id %q", id)
+		}
+	}
+	if FeatureAnchor(1) != "f2" || ScenarioAnchor(1, 2) != "f2-s3" {
+		t.Errorf("anchors = %s, %s; want f2, f2-s3", FeatureAnchor(1), ScenarioAnchor(1, 2))
+	}
+}
+
+func TestSectionChartTotalsDoNotOverflow(t *testing.T) {
+	opt := sampleOptions()
+	opt.Sections[0].Chart.Segments = []Segment{{"a", MaxSegmentValue, ToneOK}, {"b", MaxSegmentValue, ToneWarn}, {"c", MaxSegmentValue, ToneFail}}
+	doc := mustRender(t, loadFixture(t, "minimal.json"), opt)
+	if strings.Count(doc, "<td>33.3%</td>") != 3 {
+		t.Error("three equal maximum segments should each be 33.3%")
 	}
 }

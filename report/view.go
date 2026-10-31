@@ -42,9 +42,13 @@ type toggleView struct {
 }
 
 type pageView struct {
-	Head, Script   template.HTML
-	Title, Name    string
-	Verdict        statusView
+	Head, Script template.HTML
+	Title, Name  string
+	Verdict      statusView
+	VerdictLabel string
+	VerdictNote  string
+	// Computed is set when the caller chose the verdict: the result computed from the steps.
+	Computed       *statusView
 	Facts          []Fact
 	Tiles          []tileView
 	Sections       []sectionView
@@ -122,7 +126,7 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 		PageSize: max(d.PageSize, 0),
 	}
 	for _, f := range opt.RunFacts {
-		v.Facts = append(v.Facts, Fact{clean(f.Label), clean(f.Value)})
+		v.Facts = append(v.Facts, Fact{Label: clean(f.Label), Value: clean(f.Value)})
 	}
 	for _, s := range cucumber.Statuses {
 		v.Statuses = append(v.Statuses, statusViews[s])
@@ -179,7 +183,17 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 		fv.Search = strings.ToLower(clean(strings.Join(search, " ")))
 		v.Features = append(v.Features, fv)
 	}
-	v.Verdict = statusViews[all.Status()]
+	computed := statusViews[cucumber.RunStatus(features)]
+	v.Verdict, v.VerdictLabel = computed, computed.Label
+	if cv := opt.Verdict; cv != nil {
+		v.Verdict = statusViews[cv.Status]
+		v.VerdictLabel = v.Verdict.Label
+		if cv.Label != "" {
+			v.VerdictLabel = clean(cv.Label)
+		}
+		v.VerdictNote = clean(cv.Explanation)
+		v.Computed = &computed
+	}
 	v.Tiles = []tileView{
 		tile("features", "Features", len(features), featureCounts),
 		tile("scenarios", "Scenarios", len(all.Elements), scenarioCounts),
@@ -270,7 +284,7 @@ func buildAttachment(e cucumber.Embedding, id string, inline int64, sidecar side
 	raw, err := e.Decode(int64(len(e.Data)))
 	if err != nil {
 		a.Kind, a.Note = "invalid", "Attachment data is not valid base64; content not shown."
-		return a, nil
+		return a, nil //nolint:nilerr // one undecodable attachment is reported in the page, not as a render failure
 	}
 	a.Size = formatBytes(int64(len(raw)))
 	if !textual || !utf8.Valid(raw) {

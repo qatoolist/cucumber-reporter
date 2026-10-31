@@ -80,6 +80,7 @@ const maxSettingsBytes = 64 << 10
 // readDefaults reads the -defaults file. Its errors are fixed messages that never quote the file.
 func readDefaults(path string) (report.ViewDefaults, error) {
 	var d report.ViewDefaults
+	path = filepath.Clean(path)
 	info, err := os.Lstat(path)
 	if err != nil {
 		return d, errSettingsRead
@@ -92,7 +93,7 @@ func readDefaults(path string) (report.ViewDefaults, error) {
 		return d, errSettingsRead
 	}
 	defer func() { _ = f.Close() }() // read only
-	if opened, err := f.Stat(); err != nil || !os.SameFile(info, opened) {
+	if opened, statErr := f.Stat(); statErr != nil || !os.SameFile(info, opened) {
 		return d, errSettingsKind
 	}
 	data, err := io.ReadAll(io.LimitReader(f, maxSettingsBytes+1))

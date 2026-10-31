@@ -15,7 +15,13 @@
 <button type="button" class="js" id="open-help" hidden aria-label="Keyboard shortcuts">?</button>
 </div>
 <p class="note" id="storage-note" role="status" hidden>Preferences are not saved in this browser.</p>
-<h2 class="verdict st-{{.Verdict.Key}}"><span class="glyph" aria-hidden="true">{{.Verdict.Glyph}}</span> {{.Verdict.Label}}</h2>
+<h2 class="verdict st-{{.Verdict.Key}}"><span class="glyph" aria-hidden="true">{{.Verdict.Glyph}}</span> {{.VerdictLabel}}</h2>
+{{- if .VerdictNote}}
+<p class="verdict-note">{{.VerdictNote}}</p>
+{{- end}}
+{{- with .Computed}}
+<p class="note">Computed from step results: <span class="st-{{.Key}}"><span class="glyph" aria-hidden="true">{{.Glyph}}</span> {{.Label}}</span></p>
+{{- end}}
 {{- if .Facts}}
 <dl class="facts">{{range .Facts}}<div><dt>{{.Label}}</dt><dd>{{.Value}}</dd></div>{{end}}</dl>
 {{- end}}

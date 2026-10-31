@@ -5,7 +5,7 @@ package report
 // Headless browser check of the page script (make browser-check). It needs a local Chrome, Chromium
 // or Edge, found through $CHROME or the usual install locations; no module dependency is involved.
 // Each case renders a report, removes the CSP meta tag so a test prelude and postlude script may run
-// around the unchanged report script, and inspects the DOM that the browser serialises.
+// around the unchanged report script, and inspects the DOM that the browser serializes.
 
 import (
 	"context"

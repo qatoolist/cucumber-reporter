@@ -18,19 +18,20 @@ type chartView struct {
 	Hidden bool
 	// Summary is the text alternative of a donut or stack.
 	Summary string
-	Total   int
-	Donut   []donutSegment
-	Legend  []legendItem
-	Bars    []barView
-	Stack   []rectSegment
-	Note    string
+	// Total and N are int64 so that sums of caller values cannot overflow on 32-bit platforms.
+	Total  int64
+	Donut  []donutSegment
+	Legend []legendItem
+	Bars   []barView
+	Stack  []rectSegment
+	Note   string
 }
 
 type donutSegment struct{ Class, Dash, Offset string }
 
 type legendItem struct {
 	Class, Glyph, Label string
-	N                   int
+	N                   int64
 	Percent             string
 }
 
@@ -56,7 +57,7 @@ func num(v float64) string {
 	return s
 }
 
-func percent(n, total int) string {
+func percent(n, total int64) string {
 	if total == 0 {
 		return "0%"
 	}
@@ -67,9 +68,9 @@ func percent(n, total int) string {
 func donut(id ChartID, title, unit string, counts map[cucumber.Status]int) chartView {
 	c := chartView{ID: string(id), Title: title, Kind: "donut"}
 	for _, s := range cucumber.Statuses {
-		c.Total += counts[s]
+		c.Total += int64(counts[s])
 	}
-	c.Summary = title + ": " + strconv.Itoa(c.Total) + " " + unit
+	c.Summary = title + ": " + strconv.FormatInt(c.Total, 10) + " " + unit
 	done := 0.0
 	for _, s := range cucumber.Statuses {
 		n := counts[s]
@@ -82,7 +83,7 @@ func donut(id ChartID, title, unit string, counts map[cucumber.Status]int) chart
 			Class: "st-" + sv.Key, Dash: num(share) + " " + num(100-share), Offset: num(25 - done),
 		})
 		done += share
-		c.Legend = append(c.Legend, legendItem{Class: "st-" + sv.Key, Glyph: sv.Glyph, Label: sv.Label, N: n, Percent: percent(n, c.Total)})
+		c.Legend = append(c.Legend, legendItem{Class: "st-" + sv.Key, Glyph: sv.Glyph, Label: sv.Label, N: int64(n), Percent: percent(int64(n), c.Total)})
 		c.Summary += ", " + strconv.Itoa(n) + " " + sv.Label
 	}
 	return c
@@ -166,13 +167,13 @@ func sectionChart(s Section) chartView {
 	}
 	c := chartView{ID: string(SectionChartID(s.ID)), Title: title, Kind: "stack", Summary: title}
 	for _, seg := range s.Chart.Segments {
-		c.Total += seg.Value
+		c.Total += int64(seg.Value)
 	}
 	x := 0.0
 	for _, seg := range s.Chart.Segments {
 		class := "tone-" + toneOrDefault(seg.Tone)
 		label := clean(seg.Label)
-		c.Legend = append(c.Legend, legendItem{Class: class, Label: label, N: seg.Value, Percent: percent(seg.Value, c.Total)})
+		c.Legend = append(c.Legend, legendItem{Class: class, Label: label, N: int64(seg.Value), Percent: percent(int64(seg.Value), c.Total)})
 		c.Summary += ", " + strconv.Itoa(seg.Value) + " " + label
 		if seg.Value == 0 {
 			continue

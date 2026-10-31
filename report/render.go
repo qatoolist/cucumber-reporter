@@ -50,7 +50,8 @@ func assetElements() (template.HTML, template.HTML) {
 	h := `<meta http-equiv="Content-Security-Policy" content="` + csp + `">` + "\n" +
 		`<meta name="referrer" content="no-referrer">` + "\n" +
 		"<style>" + styleSource + "</style>"
-	return template.HTML(h), template.HTML("<script>" + scriptSource + "</script>")
+	// Built only from the embedded assets and their hashes; no report data reaches these values.
+	return template.HTML(h), template.HTML("<script>" + scriptSource + "</script>") //nolint:gosec // G203: constant embedded assets, never data
 }
 
 // sidecarFunc stores an oversize text attachment beside the page under a renderer-chosen name.
@@ -68,7 +69,7 @@ func render(features []cucumber.Feature, opt Options, sidecar sidecarFunc) ([]by
 	if err != nil {
 		return nil, err
 	}
-	if err := cucumber.Validate(features); err != nil {
+	if err = cucumber.Validate(features); err != nil {
 		return nil, err
 	}
 	view, err := buildPage(features, opt, sidecar)
@@ -92,27 +93,46 @@ func RenderDir(runDir string, opt Options) (string, error) {
 }
 
 // RenderDirTo reads <runDir>/cucumber.json and writes a new <parentDir>/html-XXXXXX/index.html,
-// returning the new directory. Neither runDir, parentDir nor cucumber.json may be a symbolic link,
-// and cucumber.json must be a regular file. The report is written into a temporary directory inside
-// parentDir (mode 0700, files 0600) and then renamed; earlier reports are never replaced, and a
-// failed render leaves nothing behind. Oversize text attachments are written beside index.html as
-// .txt or .json files and linked.
+// returning the new directory. Neither runDir nor cucumber.json may be a symbolic link, and
+// cucumber.json must be a regular file. See RenderFeaturesDirTo for the output rules.
 func RenderDirTo(runDir, parentDir string, opt Options) (string, error) {
 	opt, err := normalize(opt)
 	if err != nil {
 		return "", err
 	}
-	if err := requireDir(runDir); err != nil {
+	runDir = filepath.Clean(runDir)
+	if err = requireDir(runDir); err != nil {
 		return "", err
 	}
-	if err := requireDir(parentDir); err != nil {
+	if err = requireDir(filepath.Clean(parentDir)); err != nil {
 		return "", err
 	}
 	features, err := readResults(filepath.Join(runDir, "cucumber.json"), opt.Limits)
 	if err != nil {
 		return "", err
 	}
+	return RenderFeaturesDirTo(features, parentDir, opt)
+}
 
+// RenderFeaturesDirTo writes already-parsed features as a new <parentDir>/html-XXXXXX/index.html and
+// returns the new directory. parentDir may not be a symbolic link (however it is spelled; the path is
+// cleaned first, so "link/" and "link/." are refused too). The report is written into a temporary
+// directory inside parentDir (mode 0700, files 0600) and then renamed; earlier reports are never
+// replaced, and a failed render leaves nothing behind. Oversize text attachments are written beside
+// index.html as .txt or .json files and linked. Symbolic links in parent components of the path are
+// followed.
+func RenderFeaturesDirTo(features []cucumber.Feature, parentDir string, opt Options) (string, error) {
+	opt, err := normalize(opt)
+	if err != nil {
+		return "", err
+	}
+	parentDir = filepath.Clean(parentDir)
+	if err = requireDir(parentDir); err != nil {
+		return "", err
+	}
+	if err = cucumber.Validate(features); err != nil {
+		return "", err
+	}
 	tmp, err := os.MkdirTemp(parentDir, ".html-report-")
 	if err != nil {
 		return "", fmt.Errorf("report: create output directory: %w", err)
@@ -123,7 +143,7 @@ func RenderDirTo(runDir, parentDir string, opt Options) (string, error) {
 			_ = os.RemoveAll(tmp)
 		}
 	}()
-	if err := os.Chmod(tmp, 0o700); err != nil {
+	if err = os.Chmod(tmp, 0o700); err != nil { //nolint:gosec // G302: a directory needs its execute bit; 0700 is owner-only
 		return "", fmt.Errorf("report: create output directory: %w", err)
 	}
 	doc, err := render(features, opt, func(name string, data []byte) error {
@@ -147,6 +167,9 @@ func RenderDirTo(runDir, parentDir string, opt Options) (string, error) {
 	published = true
 	return final, nil
 }
+
+// openResults opens cucumber.json; tests replace it to simulate a file swapped after inspection.
+var openResults = os.Open
 
 func requireDir(dir string) error {
 	info, err := os.Lstat(dir)
@@ -173,7 +196,7 @@ func readResults(path string, lim cucumber.Limits) ([]cucumber.Feature, error) {
 	case !info.Mode().IsRegular():
 		return nil, fmt.Errorf("%w: %s", ErrNotRegular, path)
 	}
-	f, err := os.Open(path)
+	f, err := openResults(path)
 	if err != nil {
 		return nil, fmt.Errorf("report: open cucumber.json: %w", err)
 	}
