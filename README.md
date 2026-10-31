@@ -286,9 +286,9 @@ identifiers) into the committed `.min` files that are embedded. Measured for thi
 
 | Item | Readable | Embedded (minified) | Minified, gzip |
 | --- | --- | --- | --- |
-| `app.js` | 99,564 B | 81,103 B | 26,257 B |
-| `app.css` | 57,293 B | 48,975 B | 10,955 B |
-| Report of one feature with two steps | | 132,592 B | 38,201 B |
+| `app.js` | 104,624 B | 84,211 B | 27,195 B |
+| `app.css` | 58,245 B | 49,704 B | 11,095 B |
+| Report of one feature with two steps | | 136,429 B | 39,256 B |
 | Report of 5,000 steps (1,000 scenarios) | | about 1.6 MB | |
 
 Attachments dominate larger reports: an attachment costs about 1.03 times its base64 size.
