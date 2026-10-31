@@ -604,6 +604,31 @@ func interactionChecks(t *testing.T, s *session) {
 		}
 		return nil
 	})
+	s.check("status legend labels never overlap or clip", func() error {
+		defer s.size(1440, 900)
+		defer s.eval(`localStorage.clear(), true`, nil)
+		for _, theme := range []string{"light", "dark"} {
+			s.eval(`localStorage.setItem('cucumber-reporter:v2:prefs', JSON.stringify({ v: 2, theme: '`+theme+`' })), true`, nil)
+			for _, w := range []int{1440, 1366, 1280, 1180, 1024, 900, 720, 390} {
+				s.size(w, 900)
+				s.goTo("/dashboard")
+				var bad []string
+				s.eval(`(() => { const bad = [];
+					for (const leg of document.querySelectorAll('.legend .leg')) {
+						const l = leg.querySelector('.leg-l'), n = leg.querySelector('.leg-n'), p = leg.querySelector('.leg-p');
+						const lr = l.getBoundingClientRect(), nr = n.getBoundingClientRect(), pr = p.getBoundingClientRect();
+						if (lr.right > nr.left + 0.5 || nr.right > pr.left + 0.5) bad.push(l.textContent + ' overlaps');
+						if (l.scrollWidth > l.clientWidth + 1) bad.push(l.textContent + ' is clipped');
+						if (pr.right > leg.getBoundingClientRect().right + 0.5) bad.push(l.textContent + ' overflows its row');
+					}
+					return bad; })()`, &bad)
+				if len(bad) > 0 {
+					return fail("%s, %d px: %v", theme, w, bad)
+				}
+			}
+		}
+		return nil
+	})
 	s.check("no CSP violations or console errors across the run", func() error {
 		if p := s.b.Problems(); len(p) > 0 {
 			return fail("%v", p)
