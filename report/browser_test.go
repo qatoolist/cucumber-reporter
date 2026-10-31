@@ -595,17 +595,28 @@ func interactionChecks(t *testing.T, s *session) {
 		}
 		return nil
 	})
-	s.check("dashboard columns end together (1440 and 1280 px)", func() error {
+	s.check("dashboard rows end together without large empty areas", func() error {
 		defer s.size(1440, 900)
-		for _, w := range []int{1440, 1280} {
+		for _, w := range []int{1440, 1366, 1280} {
 			s.size(w, 900)
-			s.goTo("/")
-			var d []int
-			s.eval(`[...document.querySelectorAll('.v-dash .pair')].map((p) => { const b = [...p.children].map((c) => c.getBoundingClientRect().bottom); return Math.round(Math.max(...b) - Math.min(...b)); })`, &d)
-			for _, x := range d {
-				if x > 4 {
-					return fail("width %d: column differences %v", w, d)
+			s.goTo("/dashboard")
+			var d []string
+			s.eval(`(() => { const bad = [];
+				for (const p of document.querySelectorAll('.v-dash .pair')) {
+					const b = [...p.children].map((c) => c.getBoundingClientRect().bottom);
+					if (Math.max(...b) - Math.min(...b) > 4) bad.push('columns differ by ' + Math.round(Math.max(...b) - Math.min(...b)));
+					for (const c of p.children) {
+						// Empty space between a card's last content and its bottom edge.
+						const inner = c.classList.contains('c-feat') ? c.querySelector('.fbars').lastElementChild : c.lastElementChild;
+						const parts = inner.children.length ? [...inner.children] : [inner];
+						const gap = c.getBoundingClientRect().bottom - Math.max(...parts.map((x) => x.getBoundingClientRect().bottom));
+						const atMinimum = c.classList.contains('c-attn') && !c.querySelector('.att-g + li + li:not(.att-g):not(.att-more)');
+						if (gap > 72 && !atMinimum) bad.push(c.className + ' ends ' + Math.round(gap) + ' px above its edge');
+					}
 				}
+				return bad; })()`, &d)
+			if len(d) > 0 {
+				return fail("width %d: %v", w, d)
 			}
 		}
 		return nil

@@ -391,8 +391,9 @@
   };
   const qs = (q) => { const s = q.toString().replace(/%40/g, '@').replace(/%2C/g, ','); return s ? '?' + s : ''; };
   const setQ = (q) => { const { parts } = parse(); history.replaceState(null, '', '#/' + parts.map(encodeURIComponent).join('/') + qs(q)); };
-  let cleanups = [], lastPath = null, CTX = null;
+  let cleanups = [], mounts = [], lastPath = null, CTX = null;
   const onCleanup = (f) => cleanups.push(f);
+  const onMount = (f) => mounts.push(f); // runs once the view is in the document
   const markNav = () => {
     const { parts } = parse();
     const k = parts[0] === 'features' && parts[1] ? 'f:' + parts[1] : parts[0] === 'scenarios' && parts[1] && SB[parts[1]] ? 'f:' + SB[parts[1]].f.id : (parts[0] || P.view);
@@ -418,6 +419,7 @@
     let node;
     try { node = (VIEWS[name] || VIEWS.missing)(parts.slice(1), q); } catch (e) { node = h('div', { class: 'view' }, empty('alert', 'This view could not be shown', String(e && e.message || e))); console.error(e); }
     main.replaceChildren(node);
+    for (const f of mounts.splice(0)) f();
     markNav();
     const t = $('.page-t', node);
     doc.title = (t ? t.textContent + ' · ' : '') + (D.name || D.title || 'Test report');
@@ -566,11 +568,75 @@
         kpi(HEAD.href, HEAD.label, HEAD.value, fpct, HEAD.sub, null, 'check'),
         kpi('#/scenarios?sort=slowest', 'Test time', T.dur, (v) => dur(Math.round(v)), (D.wallClock ? 'wall clock ' + D.wallClock + ' · ' : '') + (slow ? 'slowest ' + dur(slow.dur) : ''), null, 'clock')));
     }
-    const pair = (a, b) => { if (a && b) g.append(h('div', { class: 'pair' }, a, b)); else if (a || b) g.append(a || b); };
-    pair(w.status && statusCard(), w.features && featureCard());
+    // Two cards that share a row are fitted once laid out: the first card's list takes as many rows
+    // (from most down to fewest) as fit beside the second, so neither column ends in a large empty area.
+    // Narrow layouts stack the cards and keep the most rows.
+    const fitted = (build, other, most, fewest, builtFirst, slack) => {
+      let cur = build(most);
+      const row = h('div', { class: 'pair' }, builtFirst ? [cur, other] : [other, cur]);
+      const fit = () => {
+        if (!row.isConnected || getComputedStyle(row).gridTemplateColumns.split(' ').length < 2) return;
+        row.classList.add('fit');
+        for (let n = most; ; n--) {
+          const c = build(n);
+          row.replaceChild(c, cur);
+          cur = c;
+          if (n <= fewest || c.offsetHeight <= other.offsetHeight + slack) break;
+        }
+        row.classList.remove('fit');
+      };
+      onMount(fit);
+      let rt = 0;
+      const resized = () => { clearTimeout(rt); rt = setTimeout(fit, 120); };
+      W.addEventListener('resize', resized);
+      onCleanup(() => W.removeEventListener('resize', resized));
+      return row;
+    };
+    const sc = w.status && statusCard();
+    if (w.features && sc) {
+      // The feature list keeps its rows unless it would leave a large gap beside the status card.
+      g.append(fitted(featureCard, sc, 12, 1, false, 96));
+    } else if (sc || w.features) g.append(sc || featureCard());
     const kc = w.known && knownCard();
-    if (w.attention && kc) g.append(h('div', { class: 'pair r2' }, attentionCard(), kc)); else if (w.attention) g.append(attentionCard()); else if (kc) g.append(kc);
     const secs = w.sections && sectionsCard();
+    if (w.attention && kc) {
+      // Needs attention beside a column of the known-failures card and, while they fit, the first
+      // section cards: the column takes sections until it is about as tall as the full attention list,
+      // then the list sheds rows (down to one per group) to end with the column.
+      const side = h('div', { class: 'stack' }, kc);
+      let att = attentionCard(12);
+      const row = h('div', { class: 'pair r2' }, att, side);
+      const fit = () => {
+        if (!row.isConnected) return;
+        if (secs) secs.prepend(...[...side.children].slice(1));
+        if (getComputedStyle(row).gridTemplateColumns.split(' ').length < 2) return;
+        row.classList.add('fit');
+        const swap = (n) => { const c = attentionCard(n); row.replaceChild(c, att); att = c; };
+        // Try 0, 1, 2 … section cards beside the known card; for each, shed attention rows until the list
+        // ends with the column; keep the arrangement whose columns end closest together.
+        const pool = secs ? [...secs.children] : [];
+        let best = null;
+        for (let k = 0; k <= pool.length; k++) {
+          side.append(...pool.slice(0, k));
+          swap(12);
+          let n = 12;
+          while (n > 1 && att.offsetHeight > side.offsetHeight + 8) swap(--n);
+          const d = Math.abs(att.offsetHeight - side.offsetHeight);
+          if (!best || d < best.d) best = { k, n, d };
+          if (secs) secs.prepend(...pool.slice(0, k));
+          if (side.offsetHeight > att.offsetHeight + 200) break;
+        }
+        side.append(...pool.slice(0, best.k));
+        swap(best.n);
+        row.classList.remove('fit');
+      };
+      onMount(fit);
+      let rt = 0;
+      const resized = () => { clearTimeout(rt); rt = setTimeout(fit, 120); };
+      W.addEventListener('resize', resized);
+      onCleanup(() => W.removeEventListener('resize', resized));
+      g.append(row);
+    } else if (w.attention) g.append(attentionCard()); else if (kc) g.append(kc);
     if (secs) g.append(secs);
     if (w.duration) g.append(durationCard());
     if (!g.children.length || (g.children.length === 1 && !w.hero)) g.append(empty('sliders', 'Every dashboard widget is hidden', 'Open Settings to choose what the dashboard shows.'));
@@ -593,7 +659,8 @@
     return card('c-status', 'Status breakdown', 'Select a segment to list those scenarios', seg('Count', [['sc', 'Scenarios'], ['st', 'Steps']], mode, (v) => { mode = v; draw(); }), body);
   };
 
-  const featureCard = () => {
+  const featureCard = (rows) => {
+    rows = rows || 12;
     let mode = 'share';
     const hide = new Set();
     const list = h('div', { class: 'fbars' });
@@ -603,7 +670,7 @@
     const draw = () => {
       legend.replaceChildren(...keys.map((k) => h('button', { type: 'button', class: 'leg mini s-' + k, 'aria-pressed': String(!hide.has(k)), onclick: () => { hide.has(k) ? hide.delete(k) : hide.add(k); draw(); } }, h('span', { class: 'sw f-' + k }), ST[k][0])));
       const sorted = F.slice().sort((a, b) => SEV.indexOf(a.status) - SEV.indexOf(b.status) || a.sc.length - b.sc.length * 0 || 0);
-      list.replaceChildren(...sorted.slice(0, 12).map((f, i) => {
+      list.replaceChildren(...sorted.slice(0, rows).map((f, i) => {
         const bar = sbar(f.n, { hide, link: (k) => '#/features/' + encodeURIComponent(f.id) + '?status=' + k, of: f.name, delay: 80 + i * 40 });
         const holder = h('div', { class: 'fb-bar' }, bar);
         if (mode === 'count') css(bar, 'width', (f.sc.length / max * 100) + '%');
@@ -611,7 +678,7 @@
         return h('div', { class: 'fb-row' }, h('a', { class: 'fb-n', href: '#/features/' + encodeURIComponent(f.id) }, glyph(f.status), bdi(f.name)), holder,
           h('span', { class: 'fb-m' }, h('b', null, num(f.n.passed)), '/' + num(f.sc.length), bad ? h('span', { class: 'bad' }, ' · ' + bad + ' failing') : f.n.known ? h('span', { class: 'kn' }, ' · ' + f.n.known + ' known') : null));
       }));
-      if (F.length > 12) list.append(h('a', { class: 'more', href: '#/features' }, 'All ' + F.length + ' features', icon('arrow')));
+      if (F.length > rows) list.append(h('a', { class: 'more', href: '#/features' }, 'All ' + F.length + ' features', icon('arrow')));
     };
     draw();
     return card('c-feat', 'Results per feature', 'Scenarios by outcome, most affected first', seg('Scale', [['share', 'Share'], ['count', 'Count']], mode, (v) => { mode = v; draw(); }), legend, list);
@@ -637,8 +704,8 @@
     }
     return out;
   };
-  const attentionCard = () => {
-    const items = attnList(8);
+  const attentionCard = (limit) => {
+    const items = attnList(limit || 8);
     const total = T.sc.failed + blocking + T.sc.known + T.sc.pending;
     return card('c-attn', 'Needs attention', total ? 'Unexpected failures first' : null, total ? h('a', { class: 'link', href: '#/failures' }, 'All failures', icon('arrow')) : null,
       items.length ? h('ul', { class: 'attn' }, items) : empty('check', 'Nothing needs attention', 'Every executed scenario passed.', 'ok'));
