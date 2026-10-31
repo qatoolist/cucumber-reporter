@@ -33,6 +33,9 @@
     return el;
   };
   const h = (t, a, ...k) => add(set(doc.createElement(t), a), k);
+  // Like el.replaceChildren(...k), but skipping null and false as h() does (the native call would insert
+  // the text "null").
+  const fill = (el, ...k) => { el.replaceChildren(); return add(el, k); };
   const NS = 'http://www.w3.org/2000/svg';
   const sv = (t, a, ...k) => add(set(doc.createElementNS(NS, t), a), k);
   const $ = (s, r) => (r || doc).querySelector(s);
@@ -441,10 +444,16 @@
     if (items.length <= 150) { box.replaceChildren(...items.map(row)); return; }
     const pad = h('div', { class: 'vl' }), win = h('div', { class: 'vl-w' });
     pad.append(win); box.replaceChildren(pad);
-    win.append(row(items[0]));
-    const rh = win.firstChild.getBoundingClientRect().height || 56;
-    css(pad, 'height', items.length * rh + 'px');
-    let a0 = -1, b0 = -1, raf = 0;
+    // The row height is measured on a row in the document (a detached row measures 0); it is measured
+    // again on resize, since density and width change it.
+    let rh = 56, a0 = -1, b0 = -1, raf = 0;
+    const measure = () => {
+      if (!pad.isConnected) return;
+      const probe = win.firstElementChild || win.appendChild(row(items[0]));
+      const m = probe.getBoundingClientRect().height;
+      if (m > 0 && m !== rh) { rh = m; a0 = b0 = -1; }
+      css(pad, 'height', items.length * rh + 'px');
+    };
     const upd = () => {
       raf = 0;
       const r = pad.getBoundingClientRect();
@@ -457,10 +466,11 @@
       if (f) { const el = win.querySelector('[data-id="' + CSS.escape(f) + '"]'); if (el) el.focus({ preventScroll: true }); }
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(upd); };
+    const resized = () => { measure(); on(); };
     W.addEventListener('scroll', on, { passive: true });
-    W.addEventListener('resize', on);
-    onCleanup(() => { W.removeEventListener('scroll', on); W.removeEventListener('resize', on); });
-    upd();
+    W.addEventListener('resize', resized);
+    onCleanup(() => { W.removeEventListener('scroll', on); W.removeEventListener('resize', resized); });
+    if (pad.isConnected) { measure(); upd(); } else onMount(() => { measure(); upd(); });
   };
 
   /* ---------- scenario list with filters ---------- */
@@ -511,7 +521,7 @@
       if (st.dur) rm('Duration: ' + st.dur.split('-').map((x) => (x === '' ? '∞' : dur(+x * 1e6))).join(' – '), () => { st.dur = ''; });
       if (st.q) rm('Text: ' + st.q, () => { st.q = ''; search.value = ''; });
       const filtered = af.length || st.status.size;
-      active.replaceChildren(h('span', { class: 'count' }, list.length === pool.length ? plural(pool.length, 'scenario') : num(list.length) + ' of ' + plural(pool.length, 'scenario')), ...af,
+      fill(active, h('span', { class: 'count' }, list.length === pool.length ? plural(pool.length, 'scenario') : num(list.length) + ' of ' + plural(pool.length, 'scenario')), ...af,
         filtered ? h('button', { type: 'button', class: 'linkbtn', onclick: () => { st.q = ''; search.value = ''; st.status.clear(); st.tag = ''; st.feature = ''; st.dur = ''; for (const s of tools.querySelectorAll('select')) if (s.getAttribute('aria-label') !== 'Sort') s.value = ''; upd(); } }, 'Clear filters') : null);
       CTX = { ids: list.map((s) => s.id), label: filtered ? 'filtered list' : fixedFeature ? fixedFeature.name : 'all scenarios' };
       if (!list.length) { box.replaceChildren(empty('search', 'No scenarios match these filters', 'Remove a filter or clear the search to see more.')); return; }
@@ -836,9 +846,11 @@
     const t = v === null ? 'null' : typeof v;
     return h('li', { class: 'jl' }, key, h('span', { class: 'jv j-' + t }, t === 'string' ? JSON.stringify(v) : String(v)));
   };
+  const treeNote = () => h('p', { class: 'muted att-note' }, 'Tree shows values as JavaScript reads them; Raw and Copy keep the original text.');
   const attachment = (a, open) => {
     let u8 = null, text = null, json;
-    if (a.data) try { u8 = decode(a.data); } catch (e) { u8 = null; }
+    // a.data is absent when the content is not carried, and "" for an empty attachment.
+    if (typeof a.data === 'string') try { u8 = decode(a.data); } catch (e) { u8 = null; }
     const mime = (a.mime || 'application/octet-stream').toLowerCase();
     const isImg = /^image\/(png|jpeg|gif|webp)$/.test(mime);
     if (u8 && !isImg) { try { text = new TextDecoder('utf-8', { fatal: true }).decode(u8); } catch (e) { text = null; } }
@@ -846,11 +858,14 @@
     const body = h('div', { class: 'att-b' });
     const tools = h('div', { class: 'att-tools' });
     const content = h('div', { class: 'att-c' });
-    const raw = () => h('pre', { class: 'code' }, json !== undefined ? JSON.stringify(json, null, 2) : text);
-    if (json !== undefined) tools.append(seg('View', [['tree', 'Tree'], ['raw', 'Raw']], 'tree', (v) => content.replaceChildren(v === 'tree' ? h('ul', { class: 'jt root' }, jnode(null, json, 0)) : raw())));
-    if (text != null) tools.append(btn('Copy', 'copy', () => copy(json !== undefined ? JSON.stringify(json, null, 2) : text, 'Attachment'), 'sm'));
+    // Raw and Copy always use the original text: re-serialising parsed JSON would round large numbers,
+    // turn 1e400 into null and drop repeated keys. Only the tree view shows parsed values.
+    const raw = () => h('pre', { class: 'code' }, text);
+    if (json !== undefined) tools.append(seg('View', [['tree', 'Tree'], ['raw', 'Raw']], 'tree', (v) => content.replaceChildren(...(v === 'tree' ? [treeNote(), h('ul', { class: 'jt root' }, jnode(null, json, 0))] : [raw()]))));
+    if (text != null) tools.append(btn('Copy', 'copy', () => copy(text, 'Attachment'), 'sm'));
     if (u8) tools.append(btn('Save', 'save', () => { const url = URL.createObjectURL(new Blob([u8], { type: mime })); const l = h('a', { href: url, download: a.name || 'attachment' }); doc.body.append(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); }, 'sm'));
-    if (json !== undefined) content.append(h('ul', { class: 'jt root' }, jnode(null, json, 0)));
+    if (u8 && u8.length === 0) content.append(h('p', { class: 'muted' }, 'Empty attachment (0 bytes).'));
+    else if (json !== undefined) content.append(treeNote(), h('ul', { class: 'jt root' }, jnode(null, json, 0)));
     else if (text != null) content.append(raw());
     else if (isImg && u8) content.append(h('img', { class: 'att-img', alt: a.name || 'attachment', src: 'data:' + mime + ';base64,' + a.data }));
     else if (u8) content.append(h('p', { class: 'muted' }, 'Binary content is not shown. Use Save to keep the file.'));
@@ -859,7 +874,7 @@
     body.append(tools, content);
     const id = 'a' + Math.random().toString(36).slice(2, 8);
     const b = h('button', { type: 'button', class: 'att-h', 'aria-expanded': String(!!open), 'aria-controls': id },
-      icon('clip'), h('span', { class: 'att-n' }, bdi(a.name || 'attachment')), h('span', { class: 'att-k' }, mime + (a.size ? ' · ' + bytes(a.size) : '')), icon('down', 'chev'));
+      icon('clip'), h('span', { class: 'att-n' }, bdi(a.name || 'attachment')), h('span', { class: 'att-k' }, mime + (a.size || u8 ? ' · ' + bytes(a.size || 0) : '')), icon('down', 'chev'));
     const wrap = h('div', { class: 'acc', id }, h('div', { class: 'acc-i' }, body));
     b.addEventListener('click', () => { const o = b.getAttribute('aria-expanded') !== 'true'; b.setAttribute('aria-expanded', String(o)); });
     return h('div', { class: 'att-x' }, b, wrap);
@@ -1004,8 +1019,12 @@
       }
     });
     const axis = h('div', { class: 'gantt-x' });
-    const stepNs = [1e6, 1e7, 1e8, 1e9, 5e9, 1e10, 3e10, 6e10, 1.2e11, 3e11, 6e11, 1.8e12, 3.6e12].find((x) => total / x <= 8) || 3.6e12;
-    for (let x = 0; x <= total; x += stepNs) axis.append(css(h('span', null, x ? dur(x) : '0'), 'left', (x / total * 100) + '%'));
+    // Axis ticks: the smallest "nice" interval (1, 2 or 5 of a unit, or a clock unit) that needs at
+    // most ten intervals, so any duration, up to the largest int64, gets at most eleven labels.
+    const NICE = [1e6, 2e6, 5e6, 1e7, 2e7, 5e7, 1e8, 2e8, 5e8, 1e9, 2e9, 5e9, 1e10, 2e10, 3e10, 6e10, 1.2e11, 3e11, 6e11, 9e11, 1.8e12, 3.6e12, 7.2e12, 1.08e13, 2.16e13, 4.32e13, 8.64e13];
+    let stepNs = NICE.find((x) => total / x <= 10);
+    if (!stepNs) { const d = 8.64e13, k = Math.pow(10, Math.max(0, Math.floor(Math.log10(total / d / 10)))); stepNs = d * k * [1, 2, 5, 10].find((m) => total / (d * k * m) <= 10); }
+    for (let i = 0; i * stepNs <= total && i <= 10; i++) { const x = i * stepNs; axis.append(css(h('span', null, x ? dur(x) : '0'), 'left', (x / total * 100) + '%')); }
     // Step-definition profile.
     const defs = new Map();
     for (const st of STEPS) {
@@ -1029,7 +1048,7 @@
       rows.sort((a, b) => (sortK === 'text' ? a.text.localeCompare(b.text) : b[sortK] - a[sortK]) * (asc ? -1 : 1));
       thead.replaceChildren(h('tr', null, cols.map(([k, l]) => h('th', { scope: 'col', 'aria-sort': k === sortK ? (asc ? 'ascending' : 'descending') : null, class: k === 'text' ? '' : 'num' }, h('button', { type: 'button', class: 'th-b', onclick: () => { if (sortK === k) asc = !asc; else { sortK = k; asc = false; } draw(); } }, l, k === sortK ? icon(asc ? 'down' : 'down', asc ? 'up' : '') : null)))));
       const lim = toks.length ? 300 : limit;
-      moreRow.replaceChildren(rows.length > lim && lim < 300 ? btn('Show all ' + num(rows.length) + ' step definitions', 'down', () => { limit = 300; draw(); }, 'sm ghost') : null);
+      fill(moreRow, rows.length > lim && lim < 300 ? btn('Show all ' + num(rows.length) + ' step definitions', 'down', () => { limit = 300; draw(); }, 'sm ghost') : null);
       tbody.replaceChildren(...rows.slice(0, lim).map((d) => h('tr', null,
         h('td', null, h('a', { href: '#/scenarios/' + encodeURIComponent(d.ex.sc.id) + '?step=' + d.ex.k }, bdi(hl(d.text, toks))), h('div', { class: 'loc mono' }, bdi(d.k)),
           sv('svg', { class: 'sbar thin', viewBox: '0 0 100 10', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, sv('rect', { class: 'f-accent', x: 0, y: 0, width: Math.max(0.5, d.tot / maxTot * 100), height: 10 }))),
@@ -1112,7 +1131,8 @@
       h('h3', null, 'Skipped, pending and not verified (' + (sk.length + LIMITS.length) + ')'),
       !sk.length && !LIMITS.length ? h('p', null, 'None.') : h('table', { class: 'pr-t full' }, h('tbody', null, sk.map((s) => h('tr', null, h('td', null, glyphTxt(s.status), ' ', ST[s.status][0]), h('td', null, bdi(s.f.name + ' / ' + s.name)), h('td', null, bdi((s.ann.find((a) => a.kind === 'skip') || {}).title || (s.bad && s.bad.error ? firstLine(s.bad.error) : ''))))),
         LIMITS.filter((a) => SB[a.scenario]).map((a) => h('tr', null, h('td', null, '◌ Not verified'), h('td', null, bdi(SB[a.scenario].f.name + ' / ' + SB[a.scenario].name)), h('td', null, bdi(a.title)))))),
-      (D.sections || []).filter((s) => !s.role).map((s) => h('div', { class: 'pr-secbox' }, h('h3', null, bdi(s.title)), h('p', null, (s.summary || []).map((f) => f.label + ': ' + f.value).join(' · ')), s.note ? h('p', null, bdi(s.note)) : null)));
+      (D.sections || []).filter((s) => !s.role).map((s) => h('div', { class: 'pr-secbox' }, h('h3', null, bdi(s.title)), (s.summary || []).length ? h('p', null, s.summary.map((f) => f.label + ': ' + f.value).join(' · ')) : null,
+        (s.rows || []).length ? h('table', { class: 'pr-t' }, h('tbody', null, s.rows.map((r) => h('tr', null, h('th', null, bdi(r.label)), h('td', null, bdi(r.value)))))) : null, s.note ? h('p', null, bdi(s.note)) : null)));
     const P3 = h('section', { class: 'pr-sec' }, h('h2', null, 'Features and scenarios'), F.map((f) => h('div', { class: 'pr-f' },
       h('h3', null, glyphTxt(f.status), ' ', bdi(f.name), h('span', { class: 'pr-m' }, '  ' + f.uri + ' · ' + plural(f.sc.length, 'scenario') + ' · ' + dur(f.dur))),
       f.desc ? h('p', { class: 'pr-note' }, bdi(f.desc)) : null,

@@ -891,6 +891,7 @@ func TestBrowserPDF(t *testing.T) {
 		{"showcase", showcase, showcaseOpt, true},
 		{"known", known, knownOpt, true},
 		{"minimal", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion}, false},
+		{"review", loadFixture(t, "review/input/cucumber.json"), loadOptions(t, "review/input/options.json"), false},
 	} {
 		t.Run(p.name, func(t *testing.T) {
 			s := openSession(t, p.features, p.opt, true)
@@ -923,7 +924,10 @@ func TestBrowserPDF(t *testing.T) {
 			if !strings.Contains(text, "Page 1 of") || !strings.Contains(text, "End of report") {
 				t.Error("PDF lacks the page footer or the end marker")
 			}
-			if p.name != "minimal" && !strings.Contains(text, "EX-330: Expected failure: no push is sent to that customer (step 3)") {
+			if p.name == "review" && !strings.Contains(text, "Coverage ROW_SENTINEL") {
+				t.Error("PDF lacks the section row (Coverage: ROW_SENTINEL)")
+			}
+			if (p.name == "showcase" || p.name == "known") && !strings.Contains(text, "EX-330: Expected failure: no push is sent to that customer (step 3)") {
 				t.Error("PDF lacks the declared known-issue outcome")
 			}
 		})
@@ -1146,5 +1150,111 @@ func TestBrowserNotApplicable(t *testing.T) {
 			return fail("dashboard note %q", note)
 		}
 		return nil
+	})
+}
+
+// loadOptions reads an options file (the command's -options format) from testdata/synthetic.
+func loadOptions(t testing.TB, name string) Options {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", name))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var opt Options
+	if err := json.Unmarshal(raw, &opt); err != nil {
+		t.Fatal(err)
+	}
+	return opt
+}
+
+// noNullText is a page expression that lists text nodes reading exactly "null" or "undefined".
+const noNullText = `(() => { const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); const bad = [];
+	for (let n = w.nextNode(); n; n = w.nextNode()) if (/^(null|undefined)$/.test(n.data.trim())) bad.push(n.parentNode.className || n.parentNode.tagName);
+	return bad; })()`
+
+// TestBrowserReviewFixtures replays the v0.1.0 review's fixtures (testdata/synthetic/review).
+func TestBrowserReviewFixtures(t *testing.T) {
+	t.Run("maximum duration keeps the timeline axis short", func(t *testing.T) {
+		s := openSession(t, loadFixture(t, "review/duration/cucumber.json"), Options{Version: OptionsVersion}, true)
+		s.check("axis labels", func() error {
+			s.goTo("/timeline")
+			n := s.num(`document.querySelectorAll('.gantt-x span').length`)
+			if n < 2 || n > 12 {
+				return fail("%d axis labels", n)
+			}
+			var bad []string
+			s.eval(noNullText, &bad)
+			if len(bad) > 0 {
+				return fail("null text in %v", bad)
+			}
+			return nil
+		})
+	})
+	t.Run("attachments keep their original text", func(t *testing.T) {
+		s := openSession(t, loadFixture(t, "review/input/cucumber.json"), loadOptions(t, "review/input/options.json"), true)
+		s.call("Page.addScriptToEvaluateOnNewDocument", map[string]any{"source": `window.__copied = []; Object.defineProperty(navigator, 'clipboard', { value: { writeText: (t) => { window.__copied.push(t); return Promise.resolve(); } } });`})
+		const original = `{"id":9007199254740993,"value":1e400,"repeat":1,"repeat":2}`
+		s.check("raw view and copy of JSON", func() error {
+			s.goTo("/scenarios/review-L1")
+			s.eval(`(() => { const b = [...document.querySelectorAll('.att-h')].find((x) => /evidence\.json/.test(x.textContent)); if (b.getAttribute('aria-expanded') !== 'true') b.click(); return true; })()`, nil)
+			acc := `[...document.querySelectorAll('.att-x')].find((x) => /evidence\.json/.test(x.textContent))`
+			s.eval(acc+`.querySelector('[role=radio]:last-child').click()`, nil)
+			s.settle()
+			raw := s.str(acc + `.querySelector('.att-c pre').textContent`)
+			s.eval(acc+`.querySelector('.att-tools .btn:not([role])').click()`, nil)
+			s.settle()
+			copied := s.str(`window.__copied.join('|')`)
+			if raw != original || copied != original {
+				return fail("raw %q, copied %q; want %q", raw, copied, original)
+			}
+			return nil
+		})
+		s.check("empty attachment", func() error {
+			s.goTo("/scenarios/review-L1")
+			acc := `[...document.querySelectorAll('.att-x')].find((x) => /empty\.txt/.test(x.textContent))`
+			s.eval(acc+`.querySelector('.att-h').click()`, nil)
+			s.settle()
+			got := s.str(acc + `.textContent`)
+			if strings.Contains(got, "could not be decoded") || !strings.Contains(got, "Empty attachment") || s.num(acc+`.querySelectorAll('.att-tools .btn').length`) != 2 {
+				return fail("empty attachment shows %q", got)
+			}
+			return nil
+		})
+		s.check("print keeps section rows", func() error {
+			s.goTo("/print")
+			if !s.is(`/ROW_SENTINEL/.test(document.getElementById('print-root').textContent)`) {
+				return fail("print lacks the section row")
+			}
+			return nil
+		})
+	})
+	t.Run("the last virtualised row is fully visible", func(t *testing.T) {
+		s := openSession(t, loadFixture(t, "review/stress/cucumber.json"), Options{Version: OptionsVersion}, true)
+		for _, density := range []string{"comfortable", "compact"} {
+			for _, w := range []int{1440, 768, 390} {
+				s.check(fmt.Sprintf("%s at %d px", density, w), func() error {
+					s.size(w, 900)
+					defer s.size(1440, 900)
+					s.eval(`localStorage.setItem('cucumber-reporter:v2:prefs', JSON.stringify({ v: 2, density: '`+density+`' })), true`, nil)
+					s.goTo("/scenarios")
+					s.eval(`window.scrollTo(0, document.documentElement.scrollHeight), true`, nil)
+					s.settle()
+					s.eval(`window.scrollTo(0, document.documentElement.scrollHeight), true`, nil)
+					s.settle()
+					var r struct {
+						Found                          bool
+						Top, Bottom, ClipBottom, Inner float64
+						Null                           []string
+					}
+					s.eval(`(() => { const row = [...document.querySelectorAll('.rows .row')].find((x) => /Case 1000/.test(x.textContent)); if (!row) return { found: false };
+						const b = row.getBoundingClientRect(), pad = document.querySelector('.rows .vl') || document.querySelector('.rows');
+						return { found: true, top: b.top, bottom: b.bottom, clipBottom: pad.getBoundingClientRect().bottom, inner: window.innerHeight, null: `+noNullText+` }; })()`, &r)
+					if !r.Found || r.Top < 0 || r.Bottom > r.Inner+0.5 || r.Bottom > r.ClipBottom+0.5 || len(r.Null) > 0 {
+						return fail("%+v", r)
+					}
+					return nil
+				})
+			}
+		}
 	})
 }
