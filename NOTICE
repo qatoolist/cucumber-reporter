@@ -1,0 +1,37 @@
+cucumber-reporter
+Copyright (c) 2026 qatoolist
+
+This product's report layout and status semantics follow
+multiple-cucumber-html-reporter (https://github.com/WasiqB/multiple-cucumber-html-reporter):
+the overview dashboard, the feature list, the feature page and the scenario card,
+the scenario and feature status rules, and the human-readable duration format
+("40ms", "<1ms", "1h 2m 3s", "1d 2h 3m 4s").
+
+No source code, templates, styles, scripts, images or fonts from that project are
+included. The templates, CSS, JavaScript and SVG charts in this repository were
+written for it. No fragment has been copied; if one is ever copied, its source file
+and line range will be listed here.
+
+multiple-cucumber-html-reporter is distributed under the following licence:
+
+MIT License
+
+Copyright (c) 2023 Wasiq Bhamla
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

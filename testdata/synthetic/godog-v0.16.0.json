@@ -1,0 +1,376 @@
+[
+    {
+        "uri": "features/billing.feature",
+        "id": "billing",
+        "keyword": "Feature",
+        "name": "Billing",
+        "description": "",
+        "line": 1,
+        "elements": [
+            {
+                "id": "billing;invoice-is-pending-implementation",
+                "keyword": "Scenario",
+                "name": "Invoice is pending implementation",
+                "description": "",
+                "line": 2,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an invoice exists",
+                        "line": 3,
+                        "match": {
+                            "location": "main_test.go:27"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 23667
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "the invoice is sent",
+                        "line": 4,
+                        "match": {
+                            "location": "features/billing.feature:4"
+                        },
+                        "result": {
+                            "status": "pending"
+                        }
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the customer receives it",
+                        "line": 5,
+                        "match": {
+                            "location": "main_test.go:29"
+                        },
+                        "result": {
+                            "status": "skipped"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "billing;unknown-step",
+                "keyword": "Scenario",
+                "name": "Unknown step",
+                "description": "",
+                "line": 7,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an invoice exists",
+                        "line": 8,
+                        "match": {
+                            "location": "main_test.go:27"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 4166
+                        }
+                    },
+                    {
+                        "keyword": "And ",
+                        "name": "something nobody implemented",
+                        "line": 9,
+                        "match": {
+                            "location": "features/billing.feature:9"
+                        },
+                        "result": {
+                            "status": "undefined"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "billing;ambiguous-step",
+                "keyword": "Scenario",
+                "name": "Ambiguous step",
+                "description": "",
+                "line": 11,
+                "type": "scenario",
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "an ambiguous step",
+                        "line": 12,
+                        "match": {
+                            "location": "features/billing.feature:12"
+                        },
+                        "result": {
+                            "status": "ambiguous",
+                            "error_message": "ambiguous step definition, step text: an ambiguous step\n    matches:\n        ^an ambiguous step$\n        ^an ambiguous (step)$"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "uri": "features/orders.feature",
+        "id": "order-processing",
+        "keyword": "Feature",
+        "name": "Order processing",
+        "description": "  Orders move from draft to confirmed.",
+        "line": 2,
+        "tags": [
+            {
+                "name": "@orders",
+                "line": 1
+            }
+        ],
+        "elements": [
+            {
+                "id": "order-processing;confirm-a-draft-order",
+                "keyword": "Scenario",
+                "name": "Confirm a draft order",
+                "description": "",
+                "line": 5,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@orders",
+                        "line": 1
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a draft order with these lines:",
+                        "line": 6,
+                        "match": {
+                            "location": "main_test.go:13"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 21334
+                        },
+                        "rows": [
+                            {
+                                "cells": [
+                                    "sku",
+                                    "qty"
+                                ]
+                            },
+                            {
+                                "cells": [
+                                    "A-100",
+                                    "2"
+                                ]
+                            },
+                            {
+                                "cells": [
+                                    "B-200",
+                                    "1"
+                                ]
+                            }
+                        ],
+                        "embeddings": [
+                            {
+                                "name": "lines.txt",
+                                "mime_type": "text/plain",
+                                "data": "bGluZXMgYWNjZXB0ZWQK"
+                            }
+                        ]
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "the order is confirmed",
+                        "line": 10,
+                        "match": {
+                            "location": "main_test.go:17"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 8666
+                        },
+                        "embeddings": [
+                            {
+                                "name": "order.json",
+                                "mime_type": "application/json",
+                                "data": "eyJvcmRlciI6Ik9SRC0xIiwic3RhdGUiOiJjb25maXJtZWQifQ=="
+                            },
+                            {
+                                "name": "page.html",
+                                "mime_type": "text/html",
+                                "data": "PGI+Ym9sZDwvYj4="
+                            },
+                            {
+                                "name": "pixel.png",
+                                "mime_type": "image/png",
+                                "data": "iVBORwABAg=="
+                            }
+                        ]
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the confirmation message is:",
+                        "line": 11,
+                        "doc_string": {
+                            "value": "{\"state\": \"confirmed\"}",
+                            "content_type": "application/json",
+                            "line": 12
+                        },
+                        "match": {
+                            "location": "main_test.go:24"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 8875
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "order-processing;reject-an-order-with-quantity-0;invalid-quantities;2",
+                "keyword": "Scenario Outline",
+                "name": "Reject an order with quantity 0",
+                "description": "",
+                "line": 24,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@orders",
+                        "line": 1
+                    },
+                    {
+                        "name": "@slow",
+                        "line": 16
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a draft order with quantity 0",
+                        "line": 18,
+                        "match": {
+                            "location": "main_test.go:25"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 6333
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "the order is confirmed",
+                        "line": 19,
+                        "match": {
+                            "location": "main_test.go:17"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 6917
+                        },
+                        "embeddings": [
+                            {
+                                "name": "order.json",
+                                "mime_type": "application/json",
+                                "data": "eyJvcmRlciI6Ik9SRC0xIiwic3RhdGUiOiJjb25maXJtZWQifQ=="
+                            },
+                            {
+                                "name": "page.html",
+                                "mime_type": "text/html",
+                                "data": "PGI+Ym9sZDwvYj4="
+                            },
+                            {
+                                "name": "pixel.png",
+                                "mime_type": "image/png",
+                                "data": "iVBORwABAg=="
+                            }
+                        ]
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the order is rejected",
+                        "line": 20,
+                        "match": {
+                            "location": "main_test.go:26"
+                        },
+                        "result": {
+                            "status": "failed",
+                            "error_message": "expected rejection, got confirmation",
+                            "duration": 7417
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "order-processing;reject-an-order-with-quantity--1;invalid-quantities;3",
+                "keyword": "Scenario Outline",
+                "name": "Reject an order with quantity -1",
+                "description": "",
+                "line": 25,
+                "type": "scenario",
+                "tags": [
+                    {
+                        "name": "@orders",
+                        "line": 1
+                    },
+                    {
+                        "name": "@slow",
+                        "line": 16
+                    }
+                ],
+                "steps": [
+                    {
+                        "keyword": "Given ",
+                        "name": "a draft order with quantity -1",
+                        "line": 18,
+                        "match": {
+                            "location": "main_test.go:25"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 4958
+                        }
+                    },
+                    {
+                        "keyword": "When ",
+                        "name": "the order is confirmed",
+                        "line": 19,
+                        "match": {
+                            "location": "main_test.go:17"
+                        },
+                        "result": {
+                            "status": "passed",
+                            "duration": 8459
+                        },
+                        "embeddings": [
+                            {
+                                "name": "order.json",
+                                "mime_type": "application/json",
+                                "data": "eyJvcmRlciI6Ik9SRC0xIiwic3RhdGUiOiJjb25maXJtZWQifQ=="
+                            },
+                            {
+                                "name": "page.html",
+                                "mime_type": "text/html",
+                                "data": "PGI+Ym9sZDwvYj4="
+                            },
+                            {
+                                "name": "pixel.png",
+                                "mime_type": "image/png",
+                                "data": "iVBORwABAg=="
+                            }
+                        ]
+                    },
+                    {
+                        "keyword": "Then ",
+                        "name": "the order is rejected",
+                        "line": 20,
+                        "match": {
+                            "location": "main_test.go:26"
+                        },
+                        "result": {
+                            "status": "failed",
+                            "error_message": "expected rejection, got confirmation",
+                            "duration": 7500
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+]
