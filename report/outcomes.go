@@ -1,6 +1,10 @@
 package report
 
-import "github.com/qatoolist/cucumber-reporter/cucumber"
+import (
+	"math"
+
+	"github.com/qatoolist/cucumber-reporter/cucumber"
+)
 
 // Scenario outcomes returned by ScenarioOutcomes: the six cucumber statuses, as strings, and
 // OutcomeKnown.
@@ -47,8 +51,8 @@ func ScenarioOutcomes(features []cucumber.Feature, annotations []Annotation) ([]
 	for i, f := range features {
 		out[i] = make([]string, len(f.Elements))
 		for j, sc := range f.Elements {
-			// Attachments play no part in the outcome: an inline limit of zero keeps none.
-			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, -1, nil)
+			// Attachments play no part in the outcome: an inline limit below zero keeps none.
+			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, cucumber.Limits{Embedding: math.MaxInt64, InlineAttachment: -1}, nil)
 			if err != nil {
 				return nil, err
 			}

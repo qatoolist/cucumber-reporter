@@ -1,0 +1,1 @@
+[{"uri": "duration.feature", "name": "Duration bound", "elements": [{"name": "One maximum duration", "line": 1, "steps": [{"name": "slow", "result": {"status": "passed", "duration": 9223372036854775807}}]}]}]

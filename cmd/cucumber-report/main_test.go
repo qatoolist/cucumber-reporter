@@ -204,6 +204,7 @@ func TestRefusals(t *testing.T) {
 		{"options with bad value", []string{"-options", writeFile(t, `{"version":2,"defaults":{"theme":"`+marker+`"}}`), good}, 1, "cucumber-report: report: invalid options: defaults.theme"},
 		{"options with unknown scenario", []string{"-options", writeFile(t, `{"version":2,"annotations":[{"scenario":"`+marker+`","kind":"known"}]}`), good}, 1, "cucumber-report: report: invalid options: annotations[0].scenario names no scenario"},
 		{"options with wrong type", []string{"-options", writeFile(t, `{"version":2,"runFacts":"`+marker+`"}`), good}, 1, "cucumber-report: -options: not a valid options file"},
+		{"attachment over the embedding limit", []string{"-options", writeFile(t, `{"version":2,"limits":{"embedding":4}}`), good}, 1, "cucumber-report: cucumber: input exceeds a size limit"},
 		{"options with trailing data", []string{"-options", writeFile(t, `{"version":2} {}`), good}, 1, "cucumber-report: -options: not a valid options file"},
 		{"options missing", []string{"-options", filepath.Join(good, "absent.json"), good}, 1, "cucumber-report: -options: cannot read the options file"},
 		{"options symlinked", []string{"-options", optionsLink, good}, 1, "cucumber-report: -options: the options file is a symbolic link or not a regular file"},

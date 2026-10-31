@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"html"
+	"math"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -509,5 +511,49 @@ func TestNotApplicableOutcomes(t *testing.T) {
 	}
 	if fb := html.UnescapeString(noscript(t, doc)); !strings.Contains(fb, "<p>Known issue EX-7 · not applicable in this run</p>") || strings.Contains(fb, "Known failure EX-7") {
 		t.Error("fallback lacks the not-applicable note or calls a passed scenario a known failure")
+	}
+}
+
+// TestEmbeddingLimitOnEveryPath: Limits.Embedding bounds the encoded attachment text on the direct
+// render paths too, before anything is decoded, as Parse bounds it for JSON input.
+func TestEmbeddingLimitOnEveryPath(t *testing.T) {
+	const secret = "long attachment SECRET-CONTENT"
+	features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "probe", MimeType: "text/plain", Data: b64(secret)}))
+	opt := Options{Version: OptionsVersion, Limits: cucumber.Limits{Embedding: 4}}
+	if _, err := Render(features, opt); !errors.Is(err, cucumber.ErrTooLarge) || strings.Contains(err.Error(), "SECRET") {
+		t.Errorf("Render: %v", err)
+	}
+	parent := t.TempDir()
+	if _, err := RenderFeaturesDirTo(features, parent, opt); !errors.Is(err, cucumber.ErrTooLarge) {
+		t.Errorf("RenderFeaturesDirTo: %v", err)
+	}
+	if entries, _ := os.ReadDir(parent); len(entries) != 0 {
+		t.Errorf("a refused render left %d entries", len(entries))
+	}
+	// At the limit the attachment is accepted.
+	opt.Limits.Embedding = int64(len(b64(secret)))
+	if _, err := Render(features, opt); err != nil {
+		t.Errorf("at the limit: %v", err)
+	}
+}
+
+// TestScenarioDurationSaturates: the fallback's scenario duration saturates like
+// cucumber.Scenario.Duration instead of overflowing.
+func TestScenarioDurationSaturates(t *testing.T) {
+	features := one(step("a", "passed", math.MaxInt64), step("b", "passed", math.MaxInt64))
+	if got := features[0].Elements[0].Duration(); got != math.MaxInt64 {
+		t.Fatalf("cucumber duration %d", got)
+	}
+	doc := mustRender(t, features, Options{Version: OptionsVersion})
+	if !strings.Contains(noscript(t, doc), "Scenario: <bdi>S</bdi> · "+formatNS(math.MaxInt64)) {
+		t.Errorf("fallback scenario duration is not the saturated maximum %q", formatNS(math.MaxInt64))
+	}
+}
+
+// TestEmptyAttachmentIsContent: an empty attachment is carried as empty data, not as missing data.
+func TestEmptyAttachmentIsContent(t *testing.T) {
+	doc := mustRender(t, one(step("s", "passed", 1, cucumber.Embedding{Name: "empty.txt", MimeType: "text/plain", Data: ""})), Options{Version: OptionsVersion})
+	if _, raw := dataBlock(t, doc); !strings.Contains(raw, `{"name":"empty.txt","mime":"text/plain","data":""}`) {
+		t.Errorf("empty attachment not carried as empty data")
 	}
 }

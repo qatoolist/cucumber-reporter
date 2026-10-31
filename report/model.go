@@ -115,12 +115,12 @@ type docData struct {
 // attData is one attachment. Data is the canonical base64 text when the decoded content fits the inline
 // limit; otherwise Href names a sidecar file beside the page, or Note says why the content is absent.
 type attData struct {
-	Name string `json:"name"`
-	Mime string `json:"mime"`
-	Size int64  `json:"size,omitempty"`
-	Data string `json:"data,omitempty"`
-	Href string `json:"href,omitempty"`
-	Note string `json:"note,omitempty"`
+	Name string  `json:"name"`
+	Mime string  `json:"mime"`
+	Size int64   `json:"size,omitempty"`
+	Data *string `json:"data,omitempty"` // nil: content not carried; "" is an empty attachment
+	Href string  `json:"href,omitempty"`
+	Note string  `json:"note,omitempty"`
 }
 
 // combine merges display statuses by the feature rule of cucumber.Combine, with known failures ranked
@@ -260,7 +260,7 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 		}
 		var statuses []string
 		for j, sc := range f.Elements {
-			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, opt.Limits.InlineAttachment, sidecar)
+			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, opt.Limits, sidecar)
 			if err != nil {
 				return nil, err
 			}
@@ -311,7 +311,7 @@ func topFacts(opt Options) []string {
 
 // buildScenario applies the known-issue rules documented on Annotation and marks known issues whose
 // declared step text does not match as invalid.
-func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, si int, inline int64, sidecar sidecarFunc) (scenarioData, error) {
+func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, si int, lim cucumber.Limits, sidecar sidecarFunc) (scenarioData, error) {
 	sd := scenarioData{
 		ID: id, Keyword: clean(sc.Keyword), Name: clean(sc.Name), Description: clean(strings.TrimSpace(sc.Description)),
 		Line: sc.Line, Tags: tagNames(sc.Tags), Status: string(sc.Status()),
@@ -355,13 +355,13 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 		sd.Notes = append(sd.Notes, annotationNote(a))
 	}
 	for k, st := range sc.Steps {
-		d, err := buildStep(st, fi, si, k, inline, sidecar)
+		d, err := buildStep(st, fi, si, k, lim, sidecar)
 		if err != nil {
 			return sd, err
 		}
 		d.Known = marked == k+1 || (marked == -1 && observed[k+1])
 		if d.Duration != nil {
-			sd.Duration += *d.Duration
+			sd.Duration = saturatingAdd(sd.Duration, *d.Duration)
 		}
 		sd.Steps = append(sd.Steps, d)
 	}
@@ -424,7 +424,16 @@ func annotationNote(a *annotationData) string {
 	return label
 }
 
-func buildStep(st cucumber.Step, fi, si, ti int, inline int64, sidecar sidecarFunc) (stepData, error) {
+// saturatingAdd adds non-negative durations, stopping at the largest int64 as
+// cucumber.Scenario.Duration does.
+func saturatingAdd(a, b int64) int64 {
+	if b > math.MaxInt64-a {
+		return math.MaxInt64
+	}
+	return a + b
+}
+
+func buildStep(st cucumber.Step, fi, si, ti int, lim cucumber.Limits, sidecar sidecarFunc) (stepData, error) {
 	d := stepData{
 		Keyword: clean(st.Keyword), Name: clean(st.Name), Match: clean(st.Match.Location),
 		Status: string(st.Result.Status), Error: clean(st.Result.Error),
@@ -445,7 +454,12 @@ func buildStep(st cucumber.Step, fi, si, ti int, inline int64, sidecar sidecarFu
 	}
 	for ai, e := range st.Embeddings {
 		name := fmt.Sprintf("attachment-f%d-s%d-t%d-a%d", fi+1, si+1, ti+1, ai+1)
-		a, err := buildAttachment(e, name, inline, sidecar)
+		// Limits.Embedding bounds the encoded text before anything is decoded, on every render path, as
+		// Parse bounds it for JSON input.
+		if int64(len(e.Data)) > lim.Embedding {
+			return d, &cucumber.ParseError{Path: fmt.Sprintf("feature[%d].elements[%d].steps[%d].embeddings[%d]", fi, si, ti, ai), Offset: -1, Err: cucumber.ErrTooLarge}
+		}
+		a, err := buildAttachment(e, name, lim.InlineAttachment, sidecar)
 		if err != nil {
 			return d, err
 		}
@@ -474,7 +488,8 @@ func buildAttachment(e cucumber.Embedding, name string, inline int64, sidecar si
 	}
 	a.Size = int64(len(raw))
 	if a.Size <= inline {
-		a.Data = e.Data
+		data := e.Data
+		a.Data = &data
 		return a, nil
 	}
 	mt := mediaType(e.MimeType)
