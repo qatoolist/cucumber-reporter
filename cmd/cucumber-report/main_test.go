@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -28,7 +29,8 @@ func command(t *testing.T, args ...string) (stdout, stderr string, code int) {
 	cmd.Stdout, cmd.Stderr = &out, &errOut
 	err := cmd.Run()
 	code = 0
-	if exitErr, ok := err.(*exec.ExitError); ok {
+	var exitErr *exec.ExitError
+	if errors.As(err, &exitErr) {
 		code = exitErr.ExitCode()
 	} else if err != nil {
 		t.Fatal(err)

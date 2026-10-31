@@ -181,7 +181,7 @@ func checkSafe(t testing.TB, tokens []token) {
 			case a.name == "style":
 				t.Errorf("style attribute on <%s>", tk.name)
 			case a.name == "href" || a.name == "src" || a.name == "xlink:href" || a.name == "action" || a.name == "formaction":
-				if a.name != "href" || !(strings.HasPrefix(a.value, "#") || strings.HasPrefix(a.value, "attachment-")) {
+				if a.name != "href" || (!strings.HasPrefix(a.value, "#") && !strings.HasPrefix(a.value, "attachment-")) {
 					t.Errorf("<%s %s=%q> is not an in-page anchor or renderer-chosen sidecar", tk.name, a.name, a.value)
 				}
 			}

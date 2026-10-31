@@ -27,7 +27,7 @@ func loadFixture(t testing.TB, name string) []cucumber.Feature {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	features, err := cucumber.Parse(f, cucumber.Limits{})
 	if err != nil {
 		t.Fatalf("parse %s: %v", name, err)
@@ -122,8 +122,8 @@ var cspPattern = regexp.MustCompile(`<meta http-equiv="Content-Security-Policy" 
 
 func inlineElement(t *testing.T, doc, tag string) string {
 	t.Helper()
-	open, close := "<"+tag+">", "</"+tag+">"
-	if strings.Count(doc, "<"+tag) != 1 || strings.Count(doc, close) != 1 {
+	open, end := "<"+tag+">", "</"+tag+">"
+	if strings.Count(doc, "<"+tag) != 1 || strings.Count(doc, end) != 1 {
 		t.Fatalf("want exactly one <%s> element", tag)
 	}
 	start := strings.Index(doc, open)
@@ -131,7 +131,7 @@ func inlineElement(t *testing.T, doc, tag string) string {
 		t.Fatalf("<%s> has attributes; want a bare element", tag)
 	}
 	start += len(open)
-	return doc[start : start+strings.Index(doc[start:], close)]
+	return doc[start : start+strings.Index(doc[start:], end)]
 }
 
 func hashSource(s string) string {

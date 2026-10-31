@@ -31,7 +31,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	defaults := fs.String("defaults", "", "JSON settings file with the report's view defaults")
 	parent := fs.String("o", "", "directory to create html-XXXXXX in (default: the run directory)")
 	if err := fs.Parse(args); err != nil || fs.NArg() != 1 {
-		fmt.Fprint(stderr, usage)
+		_, _ = fmt.Fprint(stderr, usage)
 		return 2
 	}
 	runDir := fs.Arg(0)
@@ -40,7 +40,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if *defaults != "" {
 		d, err := readDefaults(*defaults)
 		if err != nil {
-			fmt.Fprintf(stderr, "cucumber-report: -defaults: %v\n", err)
+			_, _ = fmt.Fprintf(stderr, "cucumber-report: -defaults: %v\n", err)
 			return 1
 		}
 		opt.Defaults = d
@@ -51,10 +51,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	dir, err := report.RenderDirTo(runDir, out, opt)
 	if err != nil {
-		fmt.Fprintf(stderr, "cucumber-report: %v\n", err)
+		_, _ = fmt.Fprintf(stderr, "cucumber-report: %v\n", err)
 		return 1
 	}
-	fmt.Fprintf(stdout, "HTML report: %s\n", filepath.Join(dir, "index.html"))
+	_, _ = fmt.Fprintf(stdout, "HTML report: %s\n", filepath.Join(dir, "index.html"))
 	return 0
 }
 
@@ -91,7 +91,7 @@ func readDefaults(path string) (report.ViewDefaults, error) {
 	if err != nil {
 		return d, errSettingsRead
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }() // read only
 	if opened, err := f.Stat(); err != nil || !os.SameFile(info, opened) {
 		return d, errSettingsKind
 	}

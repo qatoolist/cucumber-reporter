@@ -177,7 +177,7 @@ func readResults(path string, lim cucumber.Limits) ([]cucumber.Feature, error) {
 	if err != nil {
 		return nil, fmt.Errorf("report: open cucumber.json: %w", err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }() // read only
 	opened, err := f.Stat()
 	if err != nil {
 		return nil, fmt.Errorf("report: inspect cucumber.json: %w", err)

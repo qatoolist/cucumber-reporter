@@ -291,7 +291,7 @@ func convertStep(wst wireStep, lim Limits) (Step, error) {
 	if len(wst.Rows) > 0 {
 		st.Rows = make([]Row, len(wst.Rows))
 		for r, row := range wst.Rows {
-			st.Rows[r] = Row{Cells: row.Cells}
+			st.Rows[r] = Row(row)
 		}
 	}
 	if len(wst.Embeddings) > 0 {
@@ -300,7 +300,7 @@ func convertStep(wst wireStep, lim Limits) (Step, error) {
 			if int64(len(we.Data)) > lim.Embedding {
 				return Step{}, rel(ErrTooLarge, fmt.Sprintf(".embeddings[%d]", e))
 			}
-			st.Embeddings[e] = Embedding{Name: we.Name, MimeType: we.MimeType, Data: we.Data}
+			st.Embeddings[e] = Embedding(we)
 		}
 	}
 	return st, nil
@@ -312,7 +312,7 @@ func tags(wire []wireTag) []Tag {
 	}
 	out := make([]Tag, len(wire))
 	for i, t := range wire {
-		out[i] = Tag{Name: t.Name, Line: t.Line}
+		out[i] = Tag(t)
 	}
 	return out
 }
