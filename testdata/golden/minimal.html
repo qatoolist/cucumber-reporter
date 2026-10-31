@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-FkRp+O8ByR15WTXLjTlaaJ2KhcdNPl4+xPe5uzIABhg='; style-src 'sha256-696+85YbH8TSb24ZAUDtJ4iIGlh279yRK1LDI3F/IzE='; img-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-YNvJWoHI7Vf1SI/JUtnDz48Wq/H6XAuDYAJ2k1C75+A='; style-src 'sha256-wgffoTXI8brKg1o57twL/hjmOMA03/e4BMUxFXMFMoU='; img-src data:; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="no-referrer">
 <style>:root{--bg:#f6f7f9;--fg:#1b1f24;--mu:#57606a;--sf:#fff;--bd:#d0d7de;--ac:#0550ae;--ok:#1a7f37;--ko:#cf222e;--sk:#57606a;--pe:#9a6700;--un:#8250df;--am:#bc4c00;--in:#0969da;--wa:#9a6700;--ring:#e6e9ed;--pad:1rem;color-scheme:light}
 :root[data-theme=dark]{--bg:#0d1117;--fg:#e6edf3;--mu:#9ba5b0;--sf:#161b22;--bd:#30363d;--ac:#58a6ff;--ok:#3fb950;--ko:#ff7b72;--sk:#9ba5b0;--pe:#d29922;--un:#bc8cff;--am:#f0883e;--in:#58a6ff;--wa:#d29922;--ring:#21262d;color-scheme:dark}
@@ -23,10 +23,10 @@ a{color:var(--ac)}
 button,select,input{font:inherit;color:inherit;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.25rem .6rem}
 button{cursor:pointer}button:hover{border-color:var(--ac)}
 .verdict{margin:.5rem 0;font-size:1.25rem}
-.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.25rem 1rem;margin:.5rem 0}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(14rem,100%),1fr));gap:.25rem 1rem;margin:.5rem 0}
 .facts div{display:flex;gap:.5rem}.facts dt{color:var(--mu)}.facts dd{margin:0;font-weight:600}
 .note,.meta,.loc,.dur{color:var(--mu)}.note{margin:.25rem 0}.meta,.loc{font-size:.85em}
-.tiles,.charts{align-items:start;display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:var(--pad);margin:var(--pad) 0}
+.tiles,.charts{align-items:start;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:var(--pad);margin:var(--pad) 0}
 .tile,.card,.chart,.feature{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:var(--pad)}
 .tile h3{color:var(--mu);font-weight:500}.total{font-size:2rem;font-weight:700;margin:0}
 .counts{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.25rem .75rem}
@@ -98,14 +98,14 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
 <figure class="chart" id="chart-scenario-status" data-chart="scenario-status">
 <figcaption>Scenarios by status</figcaption>
 <div class="donut-wrap">
-<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="chart-scenario-status-t"><title id="chart-scenario-status-t">Scenarios by status: 1 scenarios, 1 Passed</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle><circle class="st-passed" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="100 0" stroke-dashoffset="25"></circle><text x="21" y="23.5" text-anchor="middle" class="donut-total">1</text></svg>
+<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="title-chart-scenario-status"><title id="title-chart-scenario-status">Scenarios by status: 1 scenarios, 1 Passed</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle><circle class="st-passed" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="100 0" stroke-dashoffset="25"></circle><text x="21" y="23.5" text-anchor="middle" class="donut-total">1</text></svg>
 <table class="legend"><tbody><tr><th scope="row"><span class="key st-passed" aria-hidden="true">✔</span> Passed</th><td>1</td><td>100.0%</td></tr></tbody></table>
 </div>
 </figure>
 <figure class="chart" id="chart-step-status" data-chart="step-status">
 <figcaption>Steps by status</figcaption>
 <div class="donut-wrap">
-<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="chart-step-status-t"><title id="chart-step-status-t">Steps by status: 2 steps, 2 Passed</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle><circle class="st-passed" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="100 0" stroke-dashoffset="25"></circle><text x="21" y="23.5" text-anchor="middle" class="donut-total">2</text></svg>
+<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="title-chart-step-status"><title id="title-chart-step-status">Steps by status: 2 steps, 2 Passed</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle><circle class="st-passed" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="100 0" stroke-dashoffset="25"></circle><text x="21" y="23.5" text-anchor="middle" class="donut-total">2</text></svg>
 <table class="legend"><tbody><tr><th scope="row"><span class="key st-passed" aria-hidden="true">✔</span> Passed</th><td>2</td><td>100.0%</td></tr></tbody></table>
 </div>
 </figure>
@@ -192,8 +192,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
 <dl class="facts"><div><dt><kbd>/</kbd></dt><dd>Search features</dd></div><div><dt><kbd>f</kbd></dt><dd>Show failed only, or all</dd></div><div><dt><kbd>?</kbd></dt><dd>This help</dd></div><div><dt><kbd>Esc</kbd></dt><dd>Close a dialog</dd></div></dl>
 <div class="bar-row"><button type="button" data-close>Close</button></div>
 </dialog>
-<script>// cucumber-reporter page behaviour: settings, filters, sorting, paging and copy buttons.
-// Reads only data-* attributes and DOM text; writes only classes, attributes and textContent.
+<script>// cucumber-reporter page script: never writes markup, only classes, attributes and text.
 (function () {
   'use strict';
   var KEY = 'cucumber-reporter:v1:prefs';
@@ -201,13 +200,14 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
   var CHOICES = { theme: ['auto', 'light', 'dark'], density: ['comfortable', 'compact'], expand: ['failed', 'none', 'all'], pageSize: ['25', '50', '100', '0'] };
   function all(sel, el) { return Array.prototype.slice.call((el || d).querySelectorAll(sel)); }
   function byId(id) { return d.getElementById(id); }
+  function obj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
   function words(s) { return (s || '').split(' ').filter(Boolean); }
 
   var defaults = { theme: ds.theme, density: ds.density, expand: ds.expand, pageSize: ds.pageSize, hidden: {} };
   words(ds.hiddenCharts).forEach(function (id) { defaults.hidden['chart:' + id] = true; });
   words(ds.hiddenSections).forEach(function (id) { defaults.hidden['section:' + id] = true; });
 
-  // Storage: every access is guarded; blocked storage falls back to the report defaults.
+  // Storage access is guarded; blocked storage means report defaults.
   var storageOK = true;
   function storage() { try { return window.localStorage; } catch (e) { return null; } }
   function load() {
@@ -215,8 +215,8 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     try { raw = s ? s.getItem(KEY) : null; if (!s) storageOK = false; } catch (e) { storageOK = false; }
     var p = null;
     try { p = raw ? JSON.parse(raw) : null; } catch (e) { p = null; }
-    if (!p || typeof p !== 'object' || Array.isArray(p)) p = {};
-    if (!p.show || typeof p.show !== 'object' || Array.isArray(p.show)) p.show = {};
+    if (!obj(p)) p = {};
+    if (!obj(p.show)) p.show = {};
     return p;
   }
   function save() {
@@ -230,7 +230,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
   }
   var prefs = load();
 
-  // pref returns the viewer's valid choice, else the report default. Unknown values are ignored.
+  // Valid saved choice, else the report default.
   function pref(name) {
     var v = prefs[name];
     return CHOICES[name].indexOf(String(v)) >= 0 ? String(v) : defaults[name];
@@ -252,11 +252,11 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     all('[data-section]').forEach(function (el) { el.hidden = !shown('section:' + el.dataset.section); });
     all('[data-toggle]').forEach(function (el) { el.checked = shown(el.dataset.toggle); });
     all('[data-pref]').forEach(function (el) { el.value = pref(el.dataset.pref); });
-    all('[data-pager]').forEach(function (box) { box.limit = 0; page(box); });
+    all('[data-pager]').forEach(page);
     byId('storage-note').hidden = storageOK;
   }
 
-  // Paging: show the first page of matching items; "Show more" adds a page.
+  // Paging.
   function page(box) {
     var size = +pref('pageSize'), limit = box.limit || size, n = 0, rest = 0;
     all(':scope > .pg-item', box).forEach(function (el) {
@@ -277,7 +277,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     more.textContent = 'Show ' + Math.min(rest, size) + ' more of ' + rest;
   }
 
-  // Filtering by text and status applies to the feature table and the feature sections.
+  // Filter table rows and feature sections.
   var search = byId('search'), status = byId('status-filter'), tbody = d.querySelector('.ftable tbody');
   function filter() {
     var q = search.value.trim().toLowerCase(), st = status.value, n = 0;
@@ -295,7 +295,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
   search.addEventListener('input', filter);
   status.addEventListener('change', filter);
 
-  // Sorting: each header becomes a button; numbers sort by data-v, text by content.
+  // Sorting.
   all('.ftable th[data-sort]').forEach(function (th, col) {
     var b = d.createElement('button');
     b.type = 'button';
@@ -326,6 +326,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     el.addEventListener('change', function () {
       prefs[el.dataset.pref] = el.value;
       save();
+      if (el.dataset.pref === 'pageSize') all('[data-pager]').forEach(function (b) { b.limit = 0; });
       apply();
       if (el.dataset.pref === 'expand') applyExpand();
     });
@@ -335,7 +336,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
   byId('open-help').addEventListener('click', function () { help.showModal(); });
   all('[data-close]').forEach(function (b) { b.addEventListener('click', function () { b.closest('dialog').close(); }); });
 
-  // Copy buttons copy the attachment text; if the clipboard is unavailable the text is selected.
+  // Copy, or select when the clipboard is unavailable.
   all('button.copy').forEach(function (b) {
     b.addEventListener('click', function () {
       var pre = byId(b.dataset.copy);
@@ -355,7 +356,7 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     });
   });
 
-  // Keyboard shortcuts: / search, f failed only, ? help. Ignored while typing or with modifiers.
+  // Shortcuts: / search, f failed only, ? help.
   d.addEventListener('keydown', function (e) {
     var t = e.target.tagName;
     if (e.ctrlKey || e.metaKey || e.altKey || t === 'INPUT' || t === 'SELECT' || t === 'TEXTAREA' || d.querySelector('dialog[open]')) return;
@@ -364,10 +365,24 @@ kbd{border:1px solid var(--bd);border-radius:4px;padding:0 .3rem;font-family:ui-
     else if (e.key === '?') { help.showModal(); }
   });
 
+  // Show a link target that paging hid.
+  function reveal() {
+    var t = byId(decodeURIComponent(location.hash.slice(1))), item = t && t.closest('.pg-item'), box = item && item.parentNode;
+    if (!item) return;
+    if (item.hidden && !item.classList.contains('filtered')) {
+      box.limit = all(':scope > .pg-item:not(.filtered)', box).indexOf(item) + 1;
+      page(box);
+    }
+    if (t.tagName === 'DETAILS') t.open = true;
+    t.scrollIntoView();
+  }
+  window.addEventListener('hashchange', reveal);
+
   all('.js').forEach(function (el) { el.hidden = false; });
   apply();
   if (pref('expand') !== ds.expand) applyExpand();
   filter();
+  if (location.hash) reveal();
 })();
 </script>
 </body>

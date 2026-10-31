@@ -179,6 +179,12 @@ report as text. Remove secrets before they are attached.
   ignored, so hooks are not shown.
 - Images and video are not shown in this release.
 - One run per report; there is no merging of runs and no trend over time.
+- Page size applies to the feature table and to each feature's scenario list; feature sections
+  themselves are filtered but not paged. A link to a card that paging hid shows and opens it.
+- `Parse` holds the whole input in memory and walks it twice; peak memory is a few times the input
+  size. Lower `Limits.Input` where memory is tight.
+- The symbolic-link checks apply to `cucumber.json` and to the final element of the run and output
+  directory paths; links in parent directories of those paths are followed.
 - Pretty-printed JSON is written with HTML entities for quotes, so a report of mostly JSON
   attachments is about 1.4 to 1.5 times the decoded attachment size.
 
@@ -187,7 +193,8 @@ report as text. Remove secrets before they are attached.
 ```sh
 make verify          # gofmt check, go vet, golangci-lint, go test -race
 make fuzz-smoke      # each fuzz target for FUZZTIME (default 30s)
-make browser-check   # page script in a local headless Chrome, Chromium or Edge
+make browser-check   # page script in a local headless Chrome, Chromium or Edge (not part of
+                     # verify, because it needs a browser; run it after changing report.js)
 make golden-update   # rewrite expected HTML after an intended change; review the diff
 ```
 

@@ -16,10 +16,10 @@ a{color:var(--ac)}
 button,select,input{font:inherit;color:inherit;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:.25rem .6rem}
 button{cursor:pointer}button:hover{border-color:var(--ac)}
 .verdict{margin:.5rem 0;font-size:1.25rem}
-.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.25rem 1rem;margin:.5rem 0}
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(14rem,100%),1fr));gap:.25rem 1rem;margin:.5rem 0}
 .facts div{display:flex;gap:.5rem}.facts dt{color:var(--mu)}.facts dd{margin:0;font-weight:600}
 .note,.meta,.loc,.dur{color:var(--mu)}.note{margin:.25rem 0}.meta,.loc{font-size:.85em}
-.tiles,.charts{align-items:start;display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:var(--pad);margin:var(--pad) 0}
+.tiles,.charts{align-items:start;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:var(--pad);margin:var(--pad) 0}
 .tile,.card,.chart,.feature{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:var(--pad)}
 .tile h3{color:var(--mu);font-weight:500}.total{font-size:2rem;font-weight:700;margin:0}
 .counts{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.25rem .75rem}

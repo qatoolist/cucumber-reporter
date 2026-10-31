@@ -79,7 +79,10 @@ type ChartSeries struct {
 	Segments []Segment
 }
 
-// Segment is one part of a ChartSeries. Value must not be negative.
+// MaxSegmentValue bounds Segment.Value so that a series total cannot overflow.
+const MaxSegmentValue = 1_000_000_000
+
+// Segment is one part of a ChartSeries. Value is between 0 and MaxSegmentValue.
 type Segment struct {
 	Label string
 	Value int
@@ -191,8 +194,8 @@ func normalize(opt Options) (Options, error) {
 		}
 		if s.Chart != nil {
 			for j, seg := range s.Chart.Segments {
-				if seg.Value < 0 {
-					return opt, invalid("sections[%d].chart.segments[%d].value is negative", i, j)
+				if seg.Value < 0 || seg.Value > MaxSegmentValue {
+					return opt, invalid("sections[%d].chart.segments[%d].value is outside 0 to MaxSegmentValue", i, j)
 				}
 				if !validTone(seg.Tone) {
 					return opt, invalid("sections[%d].chart.segments[%d].tone", i, j)

@@ -1,5 +1,4 @@
-// cucumber-reporter page behaviour: settings, filters, sorting, paging and copy buttons.
-// Reads only data-* attributes and DOM text; writes only classes, attributes and textContent.
+// cucumber-reporter page script: never writes markup, only classes, attributes and text.
 (function () {
   'use strict';
   var KEY = 'cucumber-reporter:v1:prefs';
@@ -7,13 +6,14 @@
   var CHOICES = { theme: ['auto', 'light', 'dark'], density: ['comfortable', 'compact'], expand: ['failed', 'none', 'all'], pageSize: ['25', '50', '100', '0'] };
   function all(sel, el) { return Array.prototype.slice.call((el || d).querySelectorAll(sel)); }
   function byId(id) { return d.getElementById(id); }
+  function obj(x) { return !!x && typeof x === 'object' && !Array.isArray(x); }
   function words(s) { return (s || '').split(' ').filter(Boolean); }
 
   var defaults = { theme: ds.theme, density: ds.density, expand: ds.expand, pageSize: ds.pageSize, hidden: {} };
   words(ds.hiddenCharts).forEach(function (id) { defaults.hidden['chart:' + id] = true; });
   words(ds.hiddenSections).forEach(function (id) { defaults.hidden['section:' + id] = true; });
 
-  // Storage: every access is guarded; blocked storage falls back to the report defaults.
+  // Storage access is guarded; blocked storage means report defaults.
   var storageOK = true;
   function storage() { try { return window.localStorage; } catch (e) { return null; } }
   function load() {
@@ -21,8 +21,8 @@
     try { raw = s ? s.getItem(KEY) : null; if (!s) storageOK = false; } catch (e) { storageOK = false; }
     var p = null;
     try { p = raw ? JSON.parse(raw) : null; } catch (e) { p = null; }
-    if (!p || typeof p !== 'object' || Array.isArray(p)) p = {};
-    if (!p.show || typeof p.show !== 'object' || Array.isArray(p.show)) p.show = {};
+    if (!obj(p)) p = {};
+    if (!obj(p.show)) p.show = {};
     return p;
   }
   function save() {
@@ -36,7 +36,7 @@
   }
   var prefs = load();
 
-  // pref returns the viewer's valid choice, else the report default. Unknown values are ignored.
+  // Valid saved choice, else the report default.
   function pref(name) {
     var v = prefs[name];
     return CHOICES[name].indexOf(String(v)) >= 0 ? String(v) : defaults[name];
@@ -58,11 +58,11 @@
     all('[data-section]').forEach(function (el) { el.hidden = !shown('section:' + el.dataset.section); });
     all('[data-toggle]').forEach(function (el) { el.checked = shown(el.dataset.toggle); });
     all('[data-pref]').forEach(function (el) { el.value = pref(el.dataset.pref); });
-    all('[data-pager]').forEach(function (box) { box.limit = 0; page(box); });
+    all('[data-pager]').forEach(page);
     byId('storage-note').hidden = storageOK;
   }
 
-  // Paging: show the first page of matching items; "Show more" adds a page.
+  // Paging.
   function page(box) {
     var size = +pref('pageSize'), limit = box.limit || size, n = 0, rest = 0;
     all(':scope > .pg-item', box).forEach(function (el) {
@@ -83,7 +83,7 @@
     more.textContent = 'Show ' + Math.min(rest, size) + ' more of ' + rest;
   }
 
-  // Filtering by text and status applies to the feature table and the feature sections.
+  // Filter table rows and feature sections.
   var search = byId('search'), status = byId('status-filter'), tbody = d.querySelector('.ftable tbody');
   function filter() {
     var q = search.value.trim().toLowerCase(), st = status.value, n = 0;
@@ -101,7 +101,7 @@
   search.addEventListener('input', filter);
   status.addEventListener('change', filter);
 
-  // Sorting: each header becomes a button; numbers sort by data-v, text by content.
+  // Sorting.
   all('.ftable th[data-sort]').forEach(function (th, col) {
     var b = d.createElement('button');
     b.type = 'button';
@@ -132,6 +132,7 @@
     el.addEventListener('change', function () {
       prefs[el.dataset.pref] = el.value;
       save();
+      if (el.dataset.pref === 'pageSize') all('[data-pager]').forEach(function (b) { b.limit = 0; });
       apply();
       if (el.dataset.pref === 'expand') applyExpand();
     });
@@ -141,7 +142,7 @@
   byId('open-help').addEventListener('click', function () { help.showModal(); });
   all('[data-close]').forEach(function (b) { b.addEventListener('click', function () { b.closest('dialog').close(); }); });
 
-  // Copy buttons copy the attachment text; if the clipboard is unavailable the text is selected.
+  // Copy, or select when the clipboard is unavailable.
   all('button.copy').forEach(function (b) {
     b.addEventListener('click', function () {
       var pre = byId(b.dataset.copy);
@@ -161,7 +162,7 @@
     });
   });
 
-  // Keyboard shortcuts: / search, f failed only, ? help. Ignored while typing or with modifiers.
+  // Shortcuts: / search, f failed only, ? help.
   d.addEventListener('keydown', function (e) {
     var t = e.target.tagName;
     if (e.ctrlKey || e.metaKey || e.altKey || t === 'INPUT' || t === 'SELECT' || t === 'TEXTAREA' || d.querySelector('dialog[open]')) return;
@@ -170,8 +171,22 @@
     else if (e.key === '?') { help.showModal(); }
   });
 
+  // Show a link target that paging hid.
+  function reveal() {
+    var t = byId(decodeURIComponent(location.hash.slice(1))), item = t && t.closest('.pg-item'), box = item && item.parentNode;
+    if (!item) return;
+    if (item.hidden && !item.classList.contains('filtered')) {
+      box.limit = all(':scope > .pg-item:not(.filtered)', box).indexOf(item) + 1;
+      page(box);
+    }
+    if (t.tagName === 'DETAILS') t.open = true;
+    t.scrollIntoView();
+  }
+  window.addEventListener('hashchange', reveal);
+
   all('.js').forEach(function (el) { el.hidden = false; });
   apply();
   if (pref('expand') !== ds.expand) applyExpand();
   filter();
+  if (location.hash) reveal();
 })();

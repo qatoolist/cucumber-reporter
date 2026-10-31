@@ -212,6 +212,7 @@ func TestOptionsValidation(t *testing.T) {
 		{"bad tone", ok(func(o *Options) { o.Sections[0].Tone = "red" }), ErrInvalidOptions},
 		{"bad segment tone", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Tone = "x" }), ErrInvalidOptions},
 		{"negative segment", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Value = -1 }), ErrInvalidOptions},
+		{"oversize segment", ok(func(o *Options) { o.Sections[0].Chart.Segments[0].Value = 1_000_000_001 }), ErrInvalidOptions},
 		{"unknown chart", ok(func(o *Options) { o.Defaults.Charts = map[ChartID]bool{"pie": true} }), ErrInvalidOptions},
 		{"chart of a section without one", ok(func(o *Options) { o.Defaults.Charts = map[ChartID]bool{SectionChartID("skipped"): true} }), ErrInvalidOptions},
 		{"unknown section", ok(func(o *Options) { o.Defaults.Sections = map[string]bool{"other": false} }), ErrInvalidOptions},
@@ -268,7 +269,7 @@ func TestViewDefaultsReachThePage(t *testing.T) {
 		`data-hidden-charts="slowest-scenarios" data-hidden-sections=""`,
 		`<figure class="chart" id="chart-slowest-scenarios" data-chart="slowest-scenarios" hidden>`,
 		`<figure class="chart" id="chart-section-known-issues" data-chart="section-known-issues">`,
-		`<section class="card tone-warn" id="sec-known-issues" data-section="known-issues" aria-labelledby="sec-known-issues-h">`,
+		`<section class="card tone-warn" id="sec-known-issues" data-section="known-issues" aria-labelledby="hd-sec-known-issues">`,
 		`data-toggle="chart:slowest-scenarios"`,
 		`data-toggle="section:skipped" checked`,
 	} {
@@ -289,7 +290,7 @@ func TestViewDefaultsReachThePage(t *testing.T) {
 		`<body class="compact"`,
 		`data-theme="dark" data-density="compact" data-expand="all" data-page-size="25"`,
 		`data-hidden-charts="step-status" data-hidden-sections="known-issues"`,
-		`id="sec-known-issues" data-section="known-issues" aria-labelledby="sec-known-issues-h" hidden>`,
+		`id="sec-known-issues" data-section="known-issues" aria-labelledby="hd-sec-known-issues" hidden>`,
 		`data-toggle="section:known-issues">`,
 	} {
 		if !strings.Contains(doc, want) {

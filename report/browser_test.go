@@ -16,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/qatoolist/cucumber-reporter/cucumber"
 )
 
 func findBrowser(t *testing.T) string {
@@ -199,6 +201,14 @@ func TestBrowserPagingFilteringAndShortcuts(t *testing.T) {
 	dom = dumpDOM(t, doc, "localStorage.clear();", post)
 	if !regexp.MustCompile(`<select id="status-filter"[^>]*>`).MatchString(dom) || !strings.Contains(dom, `30 of 30 features`) {
 		t.Error("f twice should return to all features")
+	}
+
+	// A link to a scenario that paging hid extends the page and opens the card.
+	one := []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: syntheticRun(1, 30, 1)[0].Elements}}
+	post = `history.replaceState(null, '', '#f1-s28'); window.dispatchEvent(new HashChangeEvent('hashchange'));`
+	dom = dumpDOM(t, mustRender(t, one, opt), "localStorage.clear();", post)
+	if hiddenAttr(t, dom, "f1-s28") || !regexp.MustCompile(`id="f1-s28"[^>]* open=""`).MatchString(dom) || !hiddenAttr(t, dom, "f1-s29") {
+		t.Error("link target hidden by paging was not shown and opened")
 	}
 
 	post = `document.querySelector('th[data-sort=num]:nth-child(8) button').click(); document.querySelector('th[data-sort=num]:nth-child(8) button').click();`

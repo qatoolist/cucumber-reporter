@@ -3,11 +3,11 @@
 <figcaption>{{.Title}}</figcaption>
 {{- if eq .Kind "donut"}}
 <div class="donut-wrap">
-<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="chart-{{.ID}}-t"><title id="chart-{{.ID}}-t">{{.Summary}}</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle>{{range .Donut}}<circle class="{{.Class}}" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="{{.Dash}}" stroke-dashoffset="{{.Offset}}"></circle>{{end}}<text x="21" y="23.5" text-anchor="middle" class="donut-total">{{.Total}}</text></svg>
+<svg class="donut" viewBox="0 0 42 42" role="img" aria-labelledby="title-chart-{{.ID}}"><title id="title-chart-{{.ID}}">{{.Summary}}</title><circle class="ring" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6"></circle>{{range .Donut}}<circle class="{{.Class}}" cx="21" cy="21" r="15.9155" fill="none" stroke-width="6" stroke-dasharray="{{.Dash}}" stroke-dashoffset="{{.Offset}}"></circle>{{end}}<text x="21" y="23.5" text-anchor="middle" class="donut-total">{{.Total}}</text></svg>
 {{template "legend" .}}
 </div>
 {{- else if eq .Kind "stack"}}
-<svg class="stack" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-labelledby="chart-{{.ID}}-t"><title id="chart-{{.ID}}-t">{{.Summary}}</title>{{range .Stack}}<rect class="{{.Class}}" x="{{.X}}" y="0" width="{{.Width}}" height="8"></rect>{{end}}</svg>
+<svg class="stack" viewBox="0 0 100 8" preserveAspectRatio="none" role="img" aria-labelledby="title-chart-{{.ID}}"><title id="title-chart-{{.ID}}">{{.Summary}}</title>{{range .Stack}}<rect class="{{.Class}}" x="{{.X}}" y="0" width="{{.Width}}" height="8"></rect>{{end}}</svg>
 {{template "legend" .}}
 {{- end}}
 {{- if .Bars}}
@@ -28,8 +28,8 @@
 {{- end}}
 
 {{define "section" -}}
-<section class="card tone-{{.Tone}}" id="sec-{{.ID}}" data-section="{{.ID}}" aria-labelledby="sec-{{.ID}}-h"{{if .Hidden}} hidden{{end}}>
-<h3 id="sec-{{.ID}}-h">{{.Title}}</h3>
+<section class="card tone-{{.Tone}}" id="sec-{{.ID}}" data-section="{{.ID}}" aria-labelledby="hd-sec-{{.ID}}"{{if .Hidden}} hidden{{end}}>
+<h3 id="hd-sec-{{.ID}}">{{.Title}}</h3>
 {{- if .Summary}}
 <dl class="facts">{{range .Summary}}<div><dt>{{.Label}}</dt><dd>{{.Value}}</dd></div>{{end}}</dl>
 {{- end}}
