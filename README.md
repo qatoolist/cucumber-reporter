@@ -213,6 +213,9 @@ issue covers only its declared step; any other unexpected result still fails.
   scenario is (in that order); pending only when every scenario is pending; skipped only when every
   scenario is skipped or pending; otherwise passed. A skipped scenario beside passed ones leaves the
   run passed.
+- This is multiple-cucumber-html-reporter's feature rule, kept deliberately: a feature with five
+  passed scenarios and one skipped one shows as passed (green), and its skipped scenario still
+  counts and shows as skipped in every list, chart and count. Only an all-skipped feature is skipped.
 
 ## Attachments
 
@@ -276,9 +279,9 @@ identifiers) into the committed `.min` files that are embedded. Measured for thi
 
 | Item | Readable | Embedded (minified) | Minified, gzip |
 | --- | --- | --- | --- |
-| `app.js` | 97,801 B | 80,061 B | 25,952 B |
-| `app.css` | 56,664 B | 48,619 B | 10,881 B |
-| Report of one feature with two steps | | 131,196 B | 37,826 B |
+| `app.js` | 99,564 B | 81,103 B | 26,257 B |
+| `app.css` | 57,293 B | 48,975 B | 10,955 B |
+| Report of one feature with two steps | | 132,592 B | 38,201 B |
 | Report of 5,000 steps (1,000 scenarios) | | about 1.6 MB | |
 
 Attachments dominate larger reports: an attachment costs about 1.03 times its base64 size.
@@ -308,7 +311,14 @@ make browser-check   # interaction, print and stress checks in local headless Ch
 make golden-update   # rewrite expected HTML after an intended change; review the diff
 ```
 
-Linting needs golangci-lint v2 built with Go 1.27 or newer; set `GOLANGCI_LINT` to choose the binary.
+Linting needs golangci-lint v2 built with Go 1.27 or newer; a binary built with an older Go stops
+with "the Go language version ... is lower than the targeted Go version". Set `GOLANGCI_LINT` to
+choose the binary, for example `make verify GOLANGCI_LINT=/path/to/golangci-lint`.
+
+A checkout inside a directory tree that has a `go.work` file (for example a workspace that also
+holds a project using this module) is built as part of that workspace, and the `make` targets can
+then fail on the workspace's other modules. Run them with `GOWORK=off`, for example
+`GOWORK=off make verify`.
 
 `testdata/synthetic/godog-v0.16.0.json` and `godog-v0.16.0-stepless.json` are real Godog v0.16.0
 output for invented features; `testdata/synthetic/godog-gen` regenerates them.

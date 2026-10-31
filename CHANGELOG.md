@@ -34,3 +34,10 @@ Semantic Versioning.
 - Browser checks (`make browser-check`) drive headless Chrome over the DevTools protocol with a
   standard-library client (`internal/cdp`) and check print output with Ghostscript.
 - Linting uses a strict golangci-lint v2 configuration.
+- Route and id lookups in the page have no object prototype, so links such as `#/constructor`
+  show "Not found".
+- A known issue covers only its declared step (`Annotation.StepText` is checked against it); a
+  failure anywhere else stays an unexpected failure.
+- The status legend moves under the donut when its card is narrow; labels never run into counts.
+- Needs attention keeps every group with a "+N more" link; the duration histogram colours only
+  failed scenarios red; the print preview sits under its header; the timeline axis starts at 0.
