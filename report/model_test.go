@@ -507,7 +507,7 @@ func TestNotApplicableOutcomes(t *testing.T) {
 			t.Errorf("%s: %s, marked %v", s.ID, s.Status, markedSteps(s))
 		}
 	}
-	if !strings.Contains(html.UnescapeString(noscript(t, doc)), "Known failure EX-7 (Not applicable in this run)") {
-		t.Error("fallback lacks the not-applicable note")
+	if fb := html.UnescapeString(noscript(t, doc)); !strings.Contains(fb, "<p>Known issue EX-7 · not applicable in this run</p>") || strings.Contains(fb, "Known failure EX-7") {
+		t.Error("fallback lacks the not-applicable note or calls a passed scenario a known failure")
 	}
 }

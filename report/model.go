@@ -406,13 +406,19 @@ func annotationNote(a *annotationData) string {
 	if a.State == stateNotApplied || a.State == stateInvalid {
 		label = "Known issue, not applied"
 	}
+	if a.State == stateOutOfScope || a.State == statePassed {
+		label = "Known issue" // the scenario passed: no failure to call known
+	}
 	if a.Ref != "" {
 		label += " " + a.Ref
+	}
+	if a.State == stateOutOfScope {
+		label += " · not applicable in this run"
 	}
 	if a.Title != "" {
 		label += ": " + a.Title
 	}
-	if a.Reason != "" {
+	if a.Reason != "" && a.State != stateOutOfScope {
 		label += " (" + strings.TrimSuffix(a.Reason, ".") + ")"
 	}
 	return label

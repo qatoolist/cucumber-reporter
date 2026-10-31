@@ -1128,12 +1128,22 @@ func TestBrowserNotApplicable(t *testing.T) {
 	s := openSession(t, features, opt, true)
 	s.check("scenario banner and Known issues page", func() error {
 		s.goTo("/scenarios/accounts-L4")
-		if !s.is(`document.querySelector('.banner .oos') && /Not applicable in this run/.test(document.querySelector('.banner .oos').textContent) && !document.querySelector('.banner .fixed')`) {
-			return fail("banner: %s", s.str(`document.querySelector('.banner') ? document.querySelector('.banner').textContent : 'none'`))
+		heading := s.str(`[...document.querySelectorAll('.banner .banner-t')].map((b) => b.textContent).filter((t) => /EX-501/.test(t)).join('|')`)
+		if heading != "Known issueEX-501· not applicable in this run" || s.is(`document.querySelector('.banner .fixed')`) {
+			return fail("banner heading %q", heading)
 		}
 		s.goTo("/known")
 		if !s.is(`[...document.querySelectorAll('.grp')].some((g) => /EX-501/.test(g.textContent) && g.querySelector('.oos') && !g.querySelector('.fixed'))`) {
 			return fail("Known issues does not show EX-501 as not applicable")
+		}
+		s.goTo("/print")
+		pr := s.str(`document.getElementById('print-root').textContent`)
+		if !strings.Contains(pr, "Known issue EX-501 · not applicable in this run: Captcha blocks registration from new regions") || strings.Contains(pr, "Known failure EX-501") {
+			return fail("print does not show EX-501 as not applicable")
+		}
+		s.goTo("/dashboard")
+		if note := s.str(`document.querySelector('.c-known .note.na').textContent`); note != "1 known-issue record not applied; its scenario keeps its own result." {
+			return fail("dashboard note %q", note)
 		}
 		return nil
 	})
