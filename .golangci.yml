@@ -1,15 +1,88 @@
+# The project's lint configuration: a fixed set of linters, settings and formatters. The goimports
+# local prefix and the gofumpt module path name this module. Requires golangci-lint v2 built with
+# Go 1.27 or newer.
 version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
 linters:
-  default: standard
+  default: none
   enable:
-    - bodyclose
+    - errcheck
     - errorlint
-    - gocritic
+    - gosec
+    - govet
+    - ineffassign
     - misspell
+    - nilerr
+    - noctx
     - revive
+    - staticcheck
     - unconvert
-    - usestdlibvars
+    - unparam
+    - unused
+  settings:
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: true
+    govet:
+      enable:
+        - nilness
+        - shadow
+    misspell:
+      locale: US
+    revive:
+      rules:
+        - name: exported
+          arguments:
+            - checkPrivateReceivers
+        - name: package-comments
+        - name: unused-parameter
+        - name: context-as-argument
+        - name: error-strings
+        - name: error-return
+        - name: errorf
+        - name: var-naming
+        - name: receiver-naming
+        - name: indent-error-flow
+        - name: blank-imports
+        - name: dot-imports
+        - name: increment-decrement
+        - name: superfluous-else
+        - name: unreachable-code
+    staticcheck:
+      checks:
+        - all
+  exclusions:
+    generated: lax
+    presets:
+      - std-error-handling
+      - common-false-positives
+    rules:
+      # Tests may ignore Close errors and use weaker patterns freely.
+      - path: _test\.go
+        linters:
+          - gosec
+          - errcheck
+
 formatters:
   enable:
-    - gofmt
+    - gofumpt
     - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/qatoolist/cucumber-reporter
+    gofumpt:
+      module-path: github.com/qatoolist/cucumber-reporter
+      extra:
+        group-params: true
+  exclusions:
+    generated: lax
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

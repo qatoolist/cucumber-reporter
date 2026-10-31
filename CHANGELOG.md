@@ -16,3 +16,16 @@ Semantic Versioning.
 - Settings dialog with per-viewer preferences in `localStorage` over generation-time defaults.
 - Hash-pinned inline CSS and JavaScript under a strict Content-Security-Policy.
 - `cucumber-report` command with `-title`, `-name`, `-defaults` and `-o`.
+- A scenario without steps, which Godog writes with no `steps` key, is accepted and counted as
+  undefined, as Godog counts it.
+- Feature and run status follow multiple-cucumber-html-reporter's feature rule (`cucumber.Combine`,
+  `cucumber.RunStatus`): a skipped or pending scenario beside passed ones no longer makes the
+  feature or the headline skipped or pending.
+- `Options.Verdict` lets the caller set the headline (status, label, explanation); the computed
+  result is still shown.
+- `report.RenderFeaturesDirTo` writes already-parsed features to a new directory;
+  `report.FeatureAnchor` and `report.ScenarioAnchor` give the stable card ids.
+- Run, output and `-defaults` paths are cleaned before the symbolic-link check, so `link/` and
+  `link/.` are refused.
+- Chart totals use int64.
+- Linting uses the project's golangci-lint v2 configuration.

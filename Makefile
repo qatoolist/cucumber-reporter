@@ -7,8 +7,8 @@ FUZZTIME ?= 30s
 help: ## List targets
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-14s %s\n", $$1, $$2}'
 
-fmt: ## Format the Go sources
-	gofmt -w .
+fmt: ## Format the Go sources (gofumpt and goimports through golangci-lint)
+	$(GOLANGCI_LINT) fmt ./...
 
 fmt-check: ## Fail when a Go file is not gofmt-formatted
 	@out=$$(gofmt -l .); if [ -n "$$out" ]; then echo "not formatted:"; echo "$$out"; exit 1; fi
@@ -17,7 +17,8 @@ vet: ## Run go vet, including the browser check
 	$(GO) vet ./...
 	$(GO) vet -tags browser ./...
 
-lint: ## Run golangci-lint (it must be built with Go 1.27 or newer)
+lint: ## Run golangci-lint v2 with the project's lint configuration (the binary must be built with Go 1.27 or newer)
+	@$(GOLANGCI_LINT) version
 	$(GOLANGCI_LINT) run ./...
 	$(GOLANGCI_LINT) run --build-tags browser ./...
 

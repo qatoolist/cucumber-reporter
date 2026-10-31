@@ -26,12 +26,12 @@ Go 1.27 or newer is required.
 cucumber-report [-title T] [-name N] [-defaults settings.json] [-o parent-dir] <run-dir>
 ```
 
-The command reads `<run-dir>/cucumber.json` and writes a new `<run-dir>/html-XXXXXX/index.html`
-(or `<parent-dir>/html-XXXXXX/index.html` with `-o`). Every render creates a new directory; earlier
+The command reads `<run-dir>/cucumber.json` and writes a new `<run-dir>/html-<random digits>/index.html`
+(or `<parent-dir>/html-<random digits>/index.html` with `-o`). Every render creates a new directory; earlier
 reports are never replaced. On success it prints one line:
 
 ```
-HTML report: /path/to/run/html-a1B2c3/index.html
+HTML report: /path/to/run/html-4032146169/index.html
 ```
 
 | Flag | Meaning |
@@ -39,7 +39,7 @@ HTML report: /path/to/run/html-a1B2c3/index.html
 | `-title` | Document title. Default `Cucumber report`. |
 | `-name` | Heading shown on the page. Default: the title. |
 | `-defaults` | JSON file with the report's view defaults (below). |
-| `-o` | Directory in which to create `html-XXXXXX`. Default: the run directory. |
+| `-o` | Directory in which to create `html-<digits>`. Default: the run directory. |
 
 Exit status is 0 on success, 1 when the input or settings are refused and 2 for a usage error.
 
@@ -102,8 +102,11 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `Embedding.Decode(max)` | Attachment bytes; canonical standard base64 only. |
 | `cucumber.FormatDuration(d)` | `40ms`, `<1ms`, `1h 2m 3s`. |
 | `report.Render(features, opt)` | One HTML document as bytes. Deterministic: same input, same bytes. |
-| `report.RenderDir(runDir, opt)` | Reads `cucumber.json`, writes a new `html-XXXXXX/index.html` in `runDir`. |
-| `report.RenderDirTo(runDir, parent, opt)` | The same, creating `html-XXXXXX` in `parent`. |
+| `report.RenderDir(runDir, opt)` | Reads `cucumber.json`, writes a new `html-<digits>/index.html` in `runDir`. |
+| `report.RenderDirTo(runDir, parent, opt)` | The same, creating `html-<digits>` in `parent`. |
+| `report.RenderFeaturesDirTo(features, parent, opt)` | Writes already-parsed features the same way, so a caller that parsed `cucumber.json` to build sections does not parse it twice. |
+| `report.FeatureAnchor(i)`, `report.ScenarioAnchor(i, j)` | Stable element ids (`f1`, `f1-s2`) of the feature and scenario cards, zero-based indexes. |
+| `cucumber.Combine(statuses...)`, `cucumber.RunStatus(features)` | The feature rule below, for a set of scenario statuses or a whole run. |
 
 ### Options
 
@@ -114,12 +117,21 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `RunFacts` | Label and value pairs shown in the header, in order. |
 | `Sections` | Your own panels, shown in order on the dashboard. `ID` (a-z, 0-9, `-`, starting with a letter, at most 48 characters) names the section in settings. `Tone` is `info`, `ok`, `warn` or `fail`. A section may add a stacked bar chart through `Chart`. |
 | `Defaults` | Generation-time view settings (same meaning as the defaults file; `Sections` hides caller sections by ID; `PageSize` uses `report.PageSizeAll` for all). |
+| `Verdict` | Optional caller headline: `Status` (symbol and colour), `Label` (for example "Passed with known failures") and `Explanation`. When set, the page also shows the result computed from the steps. |
 | `Limits` | `Input` (default 512 MiB), `Embedding` (base64 characters per attachment, default 64 MiB) and `InlineAttachment` (default 4 MiB). |
 
 Errors are sentinel values for `errors.Is`: `cucumber.ErrNoResults`, `ErrInvalidJSON`,
 `ErrIncomplete`, `ErrInvalid`, `ErrTooLarge`, `ErrInvalidBase64`, and `report.ErrOptionsVersion`,
 `ErrInvalidOptions`, `ErrNoInput`, `ErrNotRegular`, `ErrEmptyOutput`. Parse errors give a location
 such as `feature[3].elements[1].steps[7]` or a byte offset, never input content.
+
+## Status rules
+
+- A scenario takes the most severe step status: failed, ambiguous, undefined, pending, skipped,
+  passed. A scenario without steps is undefined, as Godog counts it.
+- A feature, and the run headline, is failed, ambiguous or undefined if any scenario is (in that
+  order); pending only when every scenario is pending; skipped only when every scenario is skipped
+  or pending; otherwise passed. A skipped scenario beside passed ones leaves the run passed.
 
 ## What the report shows
 
@@ -163,9 +175,11 @@ never act as markup, style or script:
   only `data-*` attributes and page text.
 - Links are built only for anchors within the page and for attachment files whose names the renderer
   chooses. Links in the data are shown as text.
-- `RenderDir` writes directories with mode 0700 and files with mode 0600, writes into a temporary
-  directory that is then renamed, never overwrites, refuses a `cucumber.json`, run directory or
-  output directory that is a symbolic link, and writes nothing outside the output directory.
+- `RenderDir`, `RenderDirTo` and `RenderFeaturesDirTo` write directories with mode 0700 and files
+  with mode 0600. They write into a temporary directory that is then renamed, never overwrite, and
+  write nothing outside the output directory. They refuse a `cucumber.json`, run directory or output
+  directory that is a symbolic link, however the path is spelled (`link`, `link/`, `link/.`), and
+  check that the `cucumber.json` they open is the regular file they inspected.
 - Error messages never include input content.
 
 The report adds no redaction. Anything in `cucumber.json`, including attachments, appears in the
@@ -173,8 +187,8 @@ report as text. Remove secrets before they are attached.
 
 ## Limits
 
-- Input: Godog's legacy Cucumber JSON. Every feature needs a scenario, every scenario a step and
-  every step one of `passed`, `failed`, `skipped`, `pending`, `undefined`, `ambiguous`. Duplicate
+- Input: Godog's legacy Cucumber JSON. Every feature needs a scenario (a feature without scenarios
+  is refused), and every step one of `passed`, `failed`, `skipped`, `pending`, `undefined`, `ambiguous`. Duplicate
   keys and data after the array are refused. Unknown fields (such as hooks from other runners) are
   ignored, so hooks are not shown.
 - Images and video are not shown in this release.
@@ -183,8 +197,9 @@ report as text. Remove secrets before they are attached.
   themselves are filtered but not paged. A link to a card that paging hid shows and opens it.
 - `Parse` holds the whole input in memory and walks it twice; peak memory is a few times the input
   size. Lower `Limits.Input` where memory is tight.
-- The symbolic-link checks apply to `cucumber.json` and to the final element of the run and output
-  directory paths; links in parent directories of those paths are followed.
+- The symbolic-link checks apply to `cucumber.json`, the `-defaults` file and the final element of
+  the run and output directory paths, after the path is cleaned (so `link/` and `link/.` are refused
+  as well as `link`); links in parent directories of those paths are followed.
 - Pretty-printed JSON is written with HTML entities for quotes, so a report of mostly JSON
   attachments is about 1.4 to 1.5 times the decoded attachment size.
 
@@ -198,8 +213,13 @@ make browser-check   # page script in a local headless Chrome, Chromium or Edge 
 make golden-update   # rewrite expected HTML after an intended change; review the diff
 ```
 
-`testdata/synthetic/godog-v0.16.0.json` is real Godog v0.16.0 output for invented features;
-`testdata/synthetic/godog-gen` regenerates it.
+Linting uses the project's lint configuration (`.golangci.yml`) and
+needs golangci-lint v2 built with Go 1.27 or newer; a binary built with an older Go refuses this
+module ("the Go language version ... is lower than the targeted Go version"). v2.14.0 built with
+go1.27.2 was used. Set `GOLANGCI_LINT` to choose the binary.
+
+`testdata/synthetic/godog-v0.16.0.json` and `godog-v0.16.0-stepless.json` are real Godog v0.16.0
+output for invented features; `testdata/synthetic/godog-gen` regenerates them.
 
 ## Licence
 
