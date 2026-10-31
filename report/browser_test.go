@@ -863,6 +863,18 @@ func TestBrowserHostileData(t *testing.T) {
 	features, opt := hostileRun("placeholder")
 	s := openSession(t, features, opt, true)
 	s.call("Page.addScriptToEvaluateOnNewDocument", map[string]any{"source": `for (const k of ['alert', 'confirm', 'prompt', 'print']) window[k] = () => { document.documentElement.setAttribute('data-dialog', k); };`})
+	s.check("routes named after object prototype properties", func() error {
+		names := []string{"constructor", "__proto__", "toString", "hasOwnProperty", "valueOf", "isPrototypeOf", "feature", "missing"}
+		for _, n := range names {
+			for _, r := range []string{"/" + n, "/features/" + n, "/scenarios/" + n, "/scenarios?status=" + n, "/run?section=" + n} {
+				s.goTo(r)
+				if s.is(`/could not be shown|\[object/.test(document.querySelector('main').textContent)`) {
+					return fail("route %s: %s", r, s.str(`document.querySelector('main').textContent.slice(0, 120)`))
+				}
+			}
+		}
+		return nil
+	})
 	for i, h := range hostile {
 		features, opt := hostileRun(h)
 		file := filepath.Join(filepath.Dir(s.file), "hostile-"+strconv.Itoa(i)+".html")

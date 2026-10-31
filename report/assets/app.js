@@ -94,16 +94,18 @@
   /* ---------- model ---------- */
   const SEV = ['failed', 'ambiguous', 'undefined', 'known', 'pending', 'skipped', 'passed'];
   const ORDER = ['passed', 'failed', 'known', 'ambiguous', 'undefined', 'pending', 'skipped'];
-  const ST = {
+  // Lookup tables keyed by data or by the URL have no prototype, so names such as "constructor" or
+  // "__proto__" in a link match nothing.
+  const ST = Object.assign(Object.create(null), {
     passed: ['Passed', 'check', 'All steps passed.'], failed: ['Failed', 'x', 'A step failed and no known issue covers it.'],
     known: ['Known failure', 'flag', 'A step failed and a known issue covers it.'], ambiguous: ['Ambiguous', 'ambig', 'More than one step definition matches a step.'],
     undefined: ['Undefined', 'undef', 'No step definition matches a step.'], pending: ['Pending', 'pending', 'A step is marked as not yet implemented.'],
     skipped: ['Skipped', 'skip', 'The scenario did not run.']
-  };
+  });
   const zero = () => Object.fromEntries(ORDER.map((k) => [k, 0]));
-  const ANN = {};
+  const ANN = Object.create(null);
   for (const a of D.annotations || []) (ANN[a.scenario] = ANN[a.scenario] || []).push(a);
-  const F = [], S = [], STEPS = [], FB = {}, SB = {}, TAGS = new Map();
+  const F = [], S = [], STEPS = [], FB = Object.create(null), SB = Object.create(null), TAGS = new Map();
   for (const f of D.features || []) {
     const fm = { id: f.id, name: f.name || '(unnamed feature)', uri: f.uri || '', desc: f.description || '', tags: f.tags || [], sc: [], n: zero(), dur: 0, steps: 0, status: ST[f.status] ? f.status : 'passed' };
     for (const e of f.elements || []) {
@@ -525,7 +527,7 @@
     strip(s), h('span', { class: 'row-d' }, dur(s.dur)), icon('right', 'row-go'));
 
   /* ---------- views ---------- */
-  const VIEWS = {};
+  const VIEWS = Object.create(null);
   const view = (cls, ...k) => h('div', { class: 'view ' + (cls || '') }, ...k);
   const go = (path) => { location.hash = '#/' + path; };
 
@@ -718,7 +720,7 @@
       h('div', { class: 'toolbar' }, h('div', { class: 'tb-search' }, icon('search'), search), h('label', { class: 'sel' }, h('span', { class: 'sel-l' }, 'Sort'), sort)), grid);
   };
 
-  VIEWS.feature = (f, q) => {
+  const featureView = (f, q) => {
     const bad = f.n.failed + f.n.ambiguous + f.n.undefined;
     return view('', crumbs([['Dashboard', '#/'], ['Features', '#/features'], [f.name]]),
       head(f.name, null, null, chip(f.status)),
@@ -730,7 +732,7 @@
       scenarioList(f.sc, q, f));
   };
   const featureRoute = VIEWS.features;
-  VIEWS.features = (p, q) => (p[0] ? (FB[p[0]] ? VIEWS.feature(FB[p[0]], q) : VIEWS.missing()) : featureRoute(p, q));
+  VIEWS.features = (p, q) => (p[0] ? (FB[p[0]] ? featureView(FB[p[0]], q) : VIEWS.missing()) : featureRoute(p, q));
 
   VIEWS.scenarios = (p, q) => {
     if (p[0]) return SB[p[0]] ? scenarioView(SB[p[0]], q) : VIEWS.missing();
