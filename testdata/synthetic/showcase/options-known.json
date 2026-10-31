@@ -153,14 +153,18 @@
       "kind": "known",
       "ref": "EX-101",
       "title": "Zero and negative quantities are accepted on confirm",
-      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12."
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12.",
+      "step": 3,
+      "stepText": "the order is rejected with code \"INVALID_QUANTITY\""
     },
     {
       "scenario": "order-processing-L31",
       "kind": "known",
       "ref": "EX-101",
       "title": "Zero and negative quantities are accepted on confirm",
-      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12."
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12.",
+      "step": 3,
+      "stepText": "the order is rejected with code \"INVALID_QUANTITY\""
     },
     {
       "scenario": "settlement-L24",
@@ -179,7 +183,9 @@
       "kind": "known",
       "ref": "EX-214",
       "title": "Reset tokens live 60 minutes instead of 30",
-      "note": "Configuration drift in staging; product owner accepted until 2026-11-15."
+      "note": "Configuration drift in staging; product owner accepted until 2026-11-15.",
+      "step": 3,
+      "stepText": "the link is rejected as expired"
     },
     {
       "scenario": "notifications-L4",
@@ -212,7 +218,8 @@
           "outcome": "expected failure",
           "text": "no push is sent to that customer"
         }
-      ]
+      ],
+      "stepText": "no push is sent to that customer"
     }
   ]
 }

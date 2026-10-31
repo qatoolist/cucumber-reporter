@@ -3,6 +3,7 @@ package report
 import (
 	"encoding/json"
 	"errors"
+	"html"
 	"reflect"
 	"strings"
 	"testing"
@@ -14,17 +15,21 @@ import (
 // JSON into it rather than reusing the renderer's own types.
 type (
 	tData struct {
-		Schema      int          `json:"schema"`
-		Title       string       `json:"title"`
-		Name        string       `json:"name"`
-		Verdict     Verdict      `json:"verdict"`
-		Facts       []Fact       `json:"facts"`
-		Top         []string     `json:"top"`
-		WallClock   string       `json:"wallClock"`
-		Sections    []Section    `json:"sections"`
-		Annotations []Annotation `json:"annotations"`
-		Defaults    ViewDefaults `json:"defaults"`
-		Features    []tFeature   `json:"features"`
+		Schema      int           `json:"schema"`
+		Title       string        `json:"title"`
+		Name        string        `json:"name"`
+		Verdict     Verdict       `json:"verdict"`
+		Facts       []Fact        `json:"facts"`
+		Top         []string      `json:"top"`
+		WallClock   string        `json:"wallClock"`
+		Sections    []Section     `json:"sections"`
+		Annotations []tAnnotation `json:"annotations"`
+		Defaults    ViewDefaults  `json:"defaults"`
+		Features    []tFeature    `json:"features"`
+	}
+	tAnnotation struct {
+		Annotation
+		Invalid bool `json:"invalid"`
 	}
 	tFeature struct {
 		ID, URI, Name, Description, Status string
@@ -129,13 +134,21 @@ func knownRun() []cucumber.Feature {
 
 func knownAnnotations() []Annotation {
 	return []Annotation{
-		{Scenario: "k-L3", Kind: KindKnown, Ref: "EX-1", Title: "raw"},
-		{Scenario: "k-L9", Kind: KindKnown, Ref: "EX-2", Title: "declared", Step: 3, Observed: true, Outcomes: []Outcome{{Step: 2, Outcome: "not applicable"}, {Step: 3, Outcome: "expected failure", Text: "c"}}},
-		{Scenario: "k-L15", Kind: KindKnown, Ref: "EX-3", Step: 1},
+		{Scenario: "k-L3", Kind: KindKnown, Ref: "EX-1", Title: "raw", Step: 2, StepText: "b"},
+		{Scenario: "k-L9", Kind: KindKnown, Ref: "EX-2", Title: "declared", Step: 3, StepText: "c", Observed: true, Outcomes: []Outcome{{Step: 2, Outcome: "not applicable"}, {Step: 3, Outcome: "expected failure", Text: "c"}}},
+		{Scenario: "k-L15", Kind: KindKnown, Ref: "EX-3", Step: 1, StepText: "a"},
 		{Scenario: "k-L20", Kind: KindKnown, Ref: "EX-4"},
-		{Scenario: "k-L25", Kind: KindKnown, Ref: "EX-5", Step: 1, Observed: true},
+		{Scenario: "k-L25", Kind: KindKnown, Ref: "EX-5", Step: 1, StepText: "a", Observed: true},
 		{Scenario: "k-L15", Kind: KindSkip, Title: "why"},
 	}
+}
+
+func annotationsOf(d tData) []Annotation {
+	out := make([]Annotation, len(d.Annotations))
+	for i, a := range d.Annotations {
+		out[i] = a.Annotation
+	}
+	return out
 }
 
 func TestKnownIssueRules(t *testing.T) {
@@ -149,7 +162,7 @@ func TestKnownIssueRules(t *testing.T) {
 		{"k-L9", "known", []int{3}},
 		{"k-L15", "passed", nil},
 		{"k-L20", "undefined", nil},
-		{"k-L25", "known", []int{2}},
+		{"k-L25", "failed", nil}, // failed at step 2, declared step 1: unexpected
 	} {
 		s := scenarioByID(t, d, tc.id)
 		if s.Status != tc.status || !reflect.DeepEqual(markedSteps(s), tc.marked) {
@@ -161,22 +174,22 @@ func TestKnownIssueRules(t *testing.T) {
 			}
 		}
 	}
-	if d.Features[0].Status != "undefined" {
-		t.Errorf("feature status %s; undefined outranks known", d.Features[0].Status)
+	if d.Features[0].Status != "failed" {
+		t.Errorf("feature status %s; an unexpected failure outranks known", d.Features[0].Status)
 	}
-	if !reflect.DeepEqual(d.Annotations, knownAnnotations()) {
+	if !reflect.DeepEqual(annotationsOf(d), knownAnnotations()) {
 		t.Errorf("annotations not passed through unchanged:\n%+v", d.Annotations)
 	}
-	if d.Verdict != (Verdict{Label: "Undefined", Tone: ToneFail}) {
+	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
 		t.Errorf("verdict = %+v", d.Verdict)
 	}
 
-	// Without the undefined scenario the run passes with known failures.
+	// Without the undefined and the unexpectedly failed scenarios the run passes with known failures.
 	run := knownRun()
-	run[0].Elements = append(run[0].Elements[:3], run[0].Elements[4])
+	run[0].Elements = run[0].Elements[:3]
 	var anns []Annotation
 	for _, a := range knownAnnotations() {
-		if a.Scenario != "k-L20" {
+		if a.Scenario != "k-L20" && a.Scenario != "k-L25" {
 			anns = append(anns, a)
 		}
 	}
@@ -194,6 +207,8 @@ func TestAnnotationValidation(t *testing.T) {
 		"negative step":          {Scenario: "k-L3", Kind: KindKnown, Step: -1},
 		"outcome step too large": {Scenario: "k-L3", Kind: KindKnown, Outcomes: []Outcome{{Step: 9, Outcome: "x"}}},
 		"observed without step":  {Scenario: "k-L3", Kind: KindKnown, Observed: true},
+		"step without text":      {Scenario: "k-L3", Kind: KindKnown, Step: 2},
+		"text without step":      {Scenario: "k-L3", Kind: KindKnown, StepText: "b"},
 		"step on a skip":         {Scenario: "k-L3", Kind: KindSkip, Step: 1},
 	}
 	for name, a := range cases {
@@ -317,10 +332,10 @@ func TestKnownIssueRuleEdges(t *testing.T) {
 		{Keyword: "Scenario", Name: "skipped", Line: 12, Steps: []cucumber.Step{step("a", "skipped", -1)}},
 	}}}
 	anns := []Annotation{
-		{Scenario: "e-L2", Kind: KindKnown, Ref: "EX-1", Step: 1},
-		{Scenario: "e-L2", Kind: KindKnown, Ref: "EX-2", Step: 3, Observed: true},
-		{Scenario: "e-L8", Kind: KindKnown, Ref: "EX-3", Step: 2, Observed: true},
-		{Scenario: "e-L12", Kind: KindKnown, Ref: "EX-4", Step: 1, Observed: true},
+		{Scenario: "e-L2", Kind: KindKnown, Ref: "EX-1", Step: 1, StepText: "a"},
+		{Scenario: "e-L2", Kind: KindKnown, Ref: "EX-2", Step: 3, StepText: "c", Observed: true},
+		{Scenario: "e-L8", Kind: KindKnown, Ref: "EX-3", Step: 2, StepText: "b", Observed: true},
+		{Scenario: "e-L12", Kind: KindKnown, Ref: "EX-4", Step: 1, StepText: "a", Observed: true},
 	}
 	d, _ := dataBlock(t, mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns}))
 	for _, tc := range []struct {
@@ -330,6 +345,73 @@ func TestKnownIssueRuleEdges(t *testing.T) {
 		s := scenarioByID(t, d, tc.id)
 		if s.Status != tc.status || !reflect.DeepEqual(markedSteps(s), tc.marked) {
 			t.Errorf("%s: status %s, marked %v; want %s, %v", tc.id, s.Status, markedSteps(s), tc.status, tc.marked)
+		}
+	}
+}
+
+// TestKnownIssueDeclaredStep: a known issue covers only its declared step. A failure there is known;
+// a failure at an earlier or a later step is unexpected; a passed scenario stays passed; a record whose
+// step text does not match is invalid and covers nothing.
+func TestKnownIssueDeclaredStep(t *testing.T) {
+	steps := func(failAt int) []cucumber.Step {
+		var out []cucumber.Step
+		for i, name := range []string{"open", "submit", "verify", "close"} {
+			st := step(name, "passed", 1)
+			switch {
+			case i+1 == failAt:
+				st.Result.Status, st.Result.Error = "failed", "boom"
+			case failAt > 0 && i+1 > failAt:
+				st.Result.Status, st.Result.Duration = "skipped", nil
+			}
+			out = append(out, st)
+		}
+		return out
+	}
+	run := []cucumber.Feature{{URI: "d.feature", Keyword: "Feature", Name: "D", Elements: []cucumber.Scenario{
+		{Keyword: "Scenario", Name: "at declared", Line: 1, Steps: steps(3)},
+		{Keyword: "Scenario", Name: "earlier", Line: 2, Steps: steps(1)},
+		{Keyword: "Scenario", Name: "later", Line: 3, Steps: steps(4)},
+		{Keyword: "Scenario", Name: "passed", Line: 4, Steps: steps(0)},
+		{Keyword: "Scenario", Name: "text mismatch", Line: 5, Steps: steps(3)},
+	}}}
+	var anns []Annotation
+	for _, id := range []string{"d-L1", "d-L2", "d-L3", "d-L4"} {
+		anns = append(anns, Annotation{Scenario: id, Kind: KindKnown, Ref: "EX-9", Title: "verify is broken", Step: 3, StepText: "verify"})
+	}
+	anns = append(anns, Annotation{Scenario: "d-L5", Kind: KindKnown, Ref: "EX-9", Step: 3, StepText: "submit"})
+	doc := mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns})
+	d, _ := dataBlock(t, doc)
+	for _, tc := range []struct {
+		id, status string
+		marked     []int
+	}{
+		{"d-L1", "known", []int{3}},
+		{"d-L2", "failed", nil},
+		{"d-L3", "failed", nil},
+		{"d-L4", "passed", nil},
+		{"d-L5", "failed", nil},
+	} {
+		s := scenarioByID(t, d, tc.id)
+		if s.Status != tc.status || !reflect.DeepEqual(markedSteps(s), tc.marked) {
+			t.Errorf("%s: status %s, marked %v; want %s, %v", tc.id, s.Status, markedSteps(s), tc.status, tc.marked)
+		}
+	}
+	for i, a := range d.Annotations {
+		if a.Invalid != (i == 4) {
+			t.Errorf("annotation %d invalid = %v", i, a.Invalid)
+		}
+	}
+	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
+		t.Errorf("verdict %+v", d.Verdict)
+	}
+	text := html.UnescapeString(noscript(t, doc))
+	for _, want := range []string{
+		"Known failure EX-9: verify is broken (the failure is at step 1, not at declared step 3: unexpected)",
+		"Known failure EX-9: verify is broken (the failure is at step 4, not at declared step 3: unexpected)",
+		"Known failure EX-9 (declared step 3 does not match the recorded step text; this record covers nothing)",
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("fallback lacks %q", want)
 		}
 	}
 }

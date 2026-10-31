@@ -119,7 +119,8 @@ An options file uses the JSON names of the `report` types:
   "sections": [{"id": "known-issues", "title": "Known issues", "tone": "warn", "role": "known",
                 "summary": [{"label": "Known failures", "value": "2"}]}],
   "annotations": [{"scenario": "order-processing-L30", "kind": "known", "ref": "EX-101",
-                   "title": "Zero quantities are accepted", "step": 3, "observed": true}],
+                   "title": "Zero quantities are accepted", "step": 3,
+                   "stepText": "the order is rejected", "observed": true}],
   "defaults": {"theme": "auto", "view": "dashboard", "widgets": {"duration": false}, "nav": {"timeline": false}}
 }
 ```
@@ -143,7 +144,7 @@ dir, err := report.RenderFeaturesDirTo(features, parentDir, report.Options{
 	Verdict:  &report.Verdict{Label: "Passed with known failures", Tone: report.ToneWarn},
 	Annotations: []report.Annotation{{
 		Scenario: ids[0][2], Kind: report.KindKnown, Ref: "EX-101", Title: "Zero quantities are accepted",
-		Step: 3, Observed: true,
+		Step: 3, StepText: "the order is rejected", Observed: true,
 	}},
 })
 
@@ -184,17 +185,23 @@ location, never input content.
 
 ### Known issues
 
-The renderer applies these rules, so a caller passes its records without post-processing:
+The renderer applies these rules, so a caller passes its records without post-processing. A known
+issue covers only its declared step; any other unexpected result still fails.
 
 - One `known` annotation per scenario and issue key; a repeat is refused.
-- `Step` is the declared step, numbered from 1 over the scenario's steps. `Observed` says that an
-  expected-failure outcome was recorded at that step; it needs `Step`.
-- A covered scenario that failed, or that passed with an observed expected failure, is a **known
-  failure** rather than a failure. Ambiguous, undefined, pending and skipped results are unchanged.
-  A passed scenario whose issue was not observed is flagged "the issue may be fixed".
-- The known-failure marker sits on the scenario's failed steps if it has any, otherwise on the
-  observed declared step only. `Outcomes` (every recorded outcome) are listed in the scenario banner
-  as detail and never mark a step; the declared one is labelled.
+- `Step` is the declared step, numbered from 1 over the scenario's steps, and `StepText` is that
+  step's text (without the keyword); the two go together. When the scenario's step at `Step` has a
+  different text, the record is shown with a warning ("not applied") and covers nothing, so a
+  numbering slip cannot hide a failure.
+- `Observed` says that an expected-failure outcome was recorded at the declared step; it needs `Step`.
+- A failed scenario is a **known failure** only when its first failed step is a declared step. A
+  failure at an earlier or a later step, or a record without a declared step, leaves it an
+  unexpected failure (red); the record is shown beside it as context, with the reason.
+- A passed scenario with an observed declared step is a known failure (the expected failure was
+  recorded while the step itself passed). A passed scenario whose issue was not observed stays passed
+  and is flagged "the issue may be fixed". Ambiguous, undefined, pending and skipped are unchanged.
+- The known-failure marker sits on the declared step only. `Outcomes` (every recorded outcome) are
+  listed in the scenario banner as detail and never mark a step; the declared one is labelled.
 - With known failures the headline figure is "As expected" (passed plus known, over executed
   scenarios) with the raw pass rate beside it, on the dashboard, the ring and the printed cover.
 

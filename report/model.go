@@ -26,20 +26,27 @@ var statusLabels = map[string]string{
 }
 
 type pageData struct {
-	Schema      int           `json:"schema"`
-	Title       string        `json:"title"`
-	Name        string        `json:"name"`
-	Verdict     Verdict       `json:"verdict"`
-	Facts       []Fact        `json:"facts"`
-	Top         []string      `json:"top"`
-	WallClock   string        `json:"wallClock,omitempty"`
-	Sections    []Section     `json:"sections"`
-	Annotations []Annotation  `json:"annotations"`
-	Defaults    ViewDefaults  `json:"defaults"`
-	Features    []featureData `json:"features"`
+	Schema      int              `json:"schema"`
+	Title       string           `json:"title"`
+	Name        string           `json:"name"`
+	Verdict     Verdict          `json:"verdict"`
+	Facts       []Fact           `json:"facts"`
+	Top         []string         `json:"top"`
+	WallClock   string           `json:"wallClock,omitempty"`
+	Sections    []Section        `json:"sections"`
+	Annotations []annotationData `json:"annotations"`
+	Defaults    ViewDefaults     `json:"defaults"`
+	Features    []featureData    `json:"features"`
 
 	Summary []statusCount `json:"-"`
 	Total   int           `json:"-"`
+}
+
+// annotationData is a caller annotation as the page receives it. Invalid marks a known issue whose
+// StepText does not match the scenario's step at Step; it is shown as a warning and covers nothing.
+type annotationData struct {
+	Annotation
+	Invalid bool `json:"invalid,omitempty"`
 }
 
 type statusCount struct {
@@ -169,7 +176,7 @@ func cleanFacts(facts []Fact) []Fact {
 }
 
 func cleanAnnotation(a Annotation) Annotation {
-	a.Ref, a.Title, a.Note = clean(a.Ref), clean(a.Title), clean(a.Note)
+	a.Ref, a.Title, a.Note, a.StepText = clean(a.Ref), clean(a.Title), clean(a.Note), clean(a.StepText)
 	if a.Outcomes != nil {
 		out := make([]Outcome, len(a.Outcomes))
 		for i, o := range a.Outcomes {
@@ -204,11 +211,11 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 		Schema: 1, Title: clean(opt.Title), Name: clean(opt.Name), Facts: cleanFacts(opt.RunFacts),
 		WallClock: clean(opt.WallClock), Defaults: opt.Defaults,
 	}
-	anns := map[string][]Annotation{}
-	for _, a := range opt.Annotations {
-		a = cleanAnnotation(a)
-		p.Annotations = append(p.Annotations, a)
-		anns[a.Scenario] = append(anns[a.Scenario], a)
+	p.Annotations = make([]annotationData, len(opt.Annotations))
+	anns := map[string][]*annotationData{}
+	for i, a := range opt.Annotations {
+		p.Annotations[i] = annotationData{Annotation: cleanAnnotation(a)}
+		anns[a.Scenario] = append(anns[a.Scenario], &p.Annotations[i])
 	}
 	for _, v := range topFacts(opt) {
 		p.Top = append(p.Top, clean(v))
@@ -279,34 +286,54 @@ func topFacts(opt Options) []string {
 	return out
 }
 
-// buildScenario applies the known-issue rules documented on Annotation.
-func buildScenario(sc cucumber.Scenario, id string, anns []Annotation, fi, si int, inline int64, sidecar sidecarFunc) (scenarioData, error) {
+// buildScenario applies the known-issue rules documented on Annotation and marks known issues whose
+// declared step text does not match as invalid.
+func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, si int, inline int64, sidecar sidecarFunc) (scenarioData, error) {
 	sd := scenarioData{
 		ID: id, Keyword: clean(sc.Keyword), Name: clean(sc.Name), Description: clean(strings.TrimSpace(sc.Description)),
 		Line: sc.Line, Tags: tagNames(sc.Tags), Status: string(sc.Status()),
 	}
-	known, observed := false, map[int]bool{}
-	for _, a := range anns {
-		if a.Kind == KindKnown {
-			known = true
-			if a.Observed {
-				observed[a.Step] = true
-			}
-		}
-		sd.Notes = append(sd.Notes, annotationNote(a))
-	}
 	raw := sd.Status
-	if known && (raw == "failed" || (raw == "passed" && len(observed) > 0)) {
+	failedAt := 0 // the first failed step, from 1
+	for k, st := range sc.Steps {
+		if st.Result.Status == cucumber.StatusFailed {
+			failedAt = k + 1
+			break
+		}
+	}
+	declared, observed := map[int]bool{}, map[int]bool{}
+	for _, a := range anns {
+		if a.Kind != KindKnown || a.Step == 0 {
+			continue
+		}
+		if clean(sc.Steps[a.Step-1].Name) != a.StepText {
+			a.Invalid = true
+			continue
+		}
+		declared[a.Step] = true
+		if a.Observed {
+			observed[a.Step] = true
+		}
+	}
+	marked := 0
+	switch {
+	case raw == "failed" && declared[failedAt]:
+		marked = failedAt
+	case raw == "passed" && len(observed) > 0:
+		marked = -1 // every observed declared step
+	}
+	if marked != 0 {
 		sd.Status = statusKnown
+	}
+	for _, a := range anns {
+		sd.Notes = append(sd.Notes, annotationNote(a, raw, sd.Status, failedAt))
 	}
 	for k, st := range sc.Steps {
 		d, err := buildStep(st, fi, si, k, inline, sidecar)
 		if err != nil {
 			return sd, err
 		}
-		if sd.Status == statusKnown {
-			d.Known = (raw == "failed" && st.Result.Status == cucumber.StatusFailed) || (raw == "passed" && observed[k+1])
-		}
+		d.Known = marked == k+1 || (marked == -1 && observed[k+1])
 		if d.Duration != nil {
 			sd.Duration += *d.Duration
 		}
@@ -315,13 +342,22 @@ func buildScenario(sc cucumber.Scenario, id string, anns []Annotation, fi, si in
 	return sd, nil
 }
 
-func annotationNote(a Annotation) string {
+func annotationNote(a *annotationData, raw, status string, failedAt int) string {
 	label := map[string]string{KindKnown: "Known failure", KindSkip: "Skipped", KindLimit: "Not verified"}[a.Kind]
 	if a.Ref != "" {
 		label += " " + a.Ref
 	}
 	if a.Title != "" {
 		label += ": " + a.Title
+	}
+	switch {
+	case a.Kind != KindKnown:
+	case a.Invalid:
+		label += " (declared step " + strconv.Itoa(a.Step) + " does not match the recorded step text; this record covers nothing)"
+	case raw == "failed" && status != statusKnown && a.Step > 0:
+		label += " (the failure is at step " + strconv.Itoa(failedAt) + ", not at declared step " + strconv.Itoa(a.Step) + ": unexpected)"
+	case raw == "failed" && status != statusKnown:
+		label += " (no declared step: the failure is unexpected)"
 	}
 	return label
 }

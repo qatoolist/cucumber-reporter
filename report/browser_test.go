@@ -549,30 +549,25 @@ func interactionChecks(t *testing.T, s *session) {
 		return nil
 	})
 	s.check("known-failure marker sits only on the declared step", func() error {
-		var anns []struct {
-			ID       string
-			Step     int
-			Observed bool
-			Failed   []int
+		var scen []struct {
+			ID, Status string
+			Known      []int
 		}
-		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const st = {};
-			for (const f of D.features) for (const e of f.elements) st[e.id] = e.steps.map((x) => x.status);
-			return (D.annotations || []).filter((a) => a.kind === 'known' && st[a.scenario]).map((a) => ({ id: a.scenario, step: a.step || 0, observed: !!a.observed, failed: st[a.scenario].map((x, i) => (x === 'failed' ? i : -1)).filter((i) => i >= 0) })); })()`, &anns)
-		seen := map[string]bool{}
-		for _, a := range anns {
-			if seen[a.ID] {
-				continue
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const ids = new Set((D.annotations || []).filter((a) => a.kind === 'known').map((a) => a.scenario)); const out = [];
+			for (const f of D.features) for (const e of f.elements) if (ids.has(e.id)) out.push({ id: e.id, status: e.status, known: e.steps.map((x, i) => (x.known ? i : -1)).filter((i) => i >= 0) });
+			return out; })()`, &scen)
+		for _, sc := range scen {
+			if (sc.Status == "known") != (len(sc.Known) == 1) {
+				return fail("%s: status %s with %d marked steps in the data", sc.ID, sc.Status, len(sc.Known))
 			}
-			seen[a.ID] = true
-			s.goTo("/scenarios/" + a.ID)
+			s.goTo("/scenarios/" + sc.ID)
 			var marked []int
 			s.eval(`[...document.querySelectorAll('.steps > .step')].map((li, i) => (li.classList.contains('s-known') ? i : -1)).filter((i) => i >= 0)`, &marked)
-			want := a.Failed
-			if len(want) == 0 && a.Observed && a.Step > 0 {
-				want = []int{a.Step - 1}
+			if fmt.Sprint(marked) != fmt.Sprint(sc.Known) && (len(marked) != 0 || len(sc.Known) != 0) {
+				return fail("%s: marked %v, want %v", sc.ID, marked, sc.Known)
 			}
-			if fmt.Sprint(marked) != fmt.Sprint(want) && (len(marked) != 0 || len(want) != 0) {
-				return fail("%s: marked %v, want %v", a.ID, marked, want)
+			if sc.Status == "failed" && !s.is(`document.querySelector('.banner.b-fail .banner-w')`) {
+				return fail("%s: an uncovered failure shows no warning", sc.ID)
 			}
 		}
 		return nil

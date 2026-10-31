@@ -378,7 +378,7 @@ mark { background: color-mix(in srgb, #facc15 45%, transparent); color: inherit;
 .banner > .i { color: var(--c); width: 20px; height: 20px; margin-top: 1px; }
 .banner-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-weight: 650; color: var(--c); }
 .banner .fixed { margin: 0; }
-.b-known { --c: var(--known); --t: var(--t-known); } .b-skip { --c: var(--skipped); --t: var(--t-skipped); } .b-limit { --c: var(--undefined); --t: var(--t-undefined); }
+.b-known { --c: var(--known); --t: var(--t-known); } .b-fail { --c: var(--failed); --t: var(--t-failed); } .banner-w { font-weight: 600; color: var(--c); } .b-skip { --c: var(--skipped); --t: var(--t-skipped); } .b-limit { --c: var(--undefined); --t: var(--t-undefined); }
 .sc-g { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 16px; align-items: start; margin-top: 16px; }
 .sc-aside { position: sticky; top: calc(var(--top) + 16px); display: grid; gap: 16px; }
 .sc-aside .card + .card { margin: 0; }

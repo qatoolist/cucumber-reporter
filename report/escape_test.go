@@ -276,7 +276,7 @@ func hostileRun(s string) ([]cucumber.Feature, Options) {
 			ID: "hostile", Title: s, Tone: ToneFail, Summary: []Fact{{Label: s, Value: s}}, Rows: []Fact{{Label: s, Value: s}}, Note: s,
 		}},
 		Annotations: []Annotation{
-			{Scenario: id, Kind: KindKnown, Ref: s, Title: s, Note: s, Step: 1, Observed: true, Outcomes: []Outcome{{Step: 1, Outcome: s, Text: s}}},
+			{Scenario: id, Kind: KindKnown, Ref: s, Title: s, Note: s, Step: 1, StepText: s, Observed: true, Outcomes: []Outcome{{Step: 1, Outcome: s, Text: s}}},
 			{Scenario: id, Kind: KindLimit, Title: s, Note: s},
 		},
 	}

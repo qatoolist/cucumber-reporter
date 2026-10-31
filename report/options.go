@@ -119,15 +119,21 @@ const (
 
 // Annotation attaches caller knowledge to one scenario, named by its ScenarioIDs value.
 //
-// Known issues follow these rules, applied by the renderer so that callers need no post-processing:
+// Known issues follow these rules, applied by the renderer so that callers need no post-processing.
+// A known issue covers only its declared step; any other unexpected result still fails.
 //   - At most one KindKnown annotation per scenario and Ref.
-//   - Step is the declared step, numbered from 1 over the scenario's steps (0: none declared).
+//   - Step is the declared step, numbered from 1 over the scenario's steps (0: none declared), and
+//     StepText is that step's text; it is required with Step. When the step at Step has a different
+//     text, the annotation is shown with a warning and covers nothing.
 //   - Observed reports that an expected-failure outcome was recorded at Step; it requires Step.
-//   - A scenario with a KindKnown annotation whose result is failed, or that passed with an observed
-//     expected failure, counts as a known failure, not as failed. Other results are unchanged; a
-//     passed scenario with only unobserved known issues is flagged "the issue may be fixed".
-//   - The known-failure marker sits on the scenario's failed steps when it has any, otherwise on the
-//     observed declared steps only. Outcomes are listed as detail and never mark a step.
+//   - A failed scenario is a known failure only when its first failed step is a declared step. A
+//     failure at any other step, or with no declared step, stays an unexpected failure, and the
+//     annotation is shown as context.
+//   - A passed scenario with an observed declared step is a known failure (the expected failure was
+//     recorded while the step passed). A passed scenario with only unobserved issues stays passed and
+//     is flagged "the issue may be fixed". Ambiguous, undefined, pending and skipped are unchanged.
+//   - The known-failure marker sits on the declared step only: the failed step, or the observed
+//     declared steps of a passed scenario. Outcomes are listed as detail and never mark a step.
 //   - The default headline and the "As expected" figure count known failures as expected.
 type Annotation struct {
 	Scenario string `json:"scenario"`
@@ -139,6 +145,8 @@ type Annotation struct {
 	Note  string `json:"note,omitempty"`
 	// Step is the declared step (KindKnown), from 1; 0 when none is declared.
 	Step int `json:"step,omitempty"`
+	// StepText is the declared step's text, without its keyword; required with Step.
+	StepText string `json:"stepText,omitempty"`
 	// Observed: an expected-failure outcome was recorded at Step (KindKnown only).
 	Observed bool `json:"observed,omitempty"`
 	// Outcomes are every outcome recorded for this issue in this scenario, shown as detail.
@@ -328,8 +336,11 @@ func normalize(opt Options) (Options, error) {
 		if !oneOf(a.Kind, KindKnown, KindSkip, KindLimit) {
 			return opt, invalid("annotations[%d].kind", i)
 		}
-		if a.Kind != KindKnown && (a.Step != 0 || a.Observed || len(a.Outcomes) > 0) {
-			return opt, invalid("annotations[%d]: step, observed and outcomes apply to known issues only", i)
+		if a.Kind != KindKnown && (a.Step != 0 || a.StepText != "" || a.Observed || len(a.Outcomes) > 0) {
+			return opt, invalid("annotations[%d]: step, stepText, observed and outcomes apply to known issues only", i)
+		}
+		if (a.Step != 0) != (a.StepText != "") {
+			return opt, invalid("annotations[%d]: step and stepText go together", i)
 		}
 		if a.Observed && a.Step == 0 {
 			return opt, invalid("annotations[%d].observed needs a declared step", i)

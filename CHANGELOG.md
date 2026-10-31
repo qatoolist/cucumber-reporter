@@ -22,7 +22,7 @@ Semantic Versioning.
   escaping; the page script builds the DOM with `createElement` and `textContent` only.
 - `Options` version 2: `TopFacts`, `WallClock`, `Verdict{Label, Tone}`, `Sections` with `Role`,
   `Annotations` (known issues, skip reasons, observation limits) with the known-issue rules applied by
-  the renderer, and `ViewDefaults{Theme, Density, Expand, View, Widgets, Nav}`. `FeatureIDs` and
+  the renderer (a known issue covers only its declared step, checked against `StepText`), and `ViewDefaults{Theme, Density, Expand, View, Widgets, Nav}`. `FeatureIDs` and
   `ScenarioIDs` give the stable identifiers used in links and annotations.
 - Hash-pinned inline CSS and JavaScript under a strict Content-Security-Policy. The embedded assets
   are the committed output of `go generate ./report` (`internal/minify`, comments and whitespace
