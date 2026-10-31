@@ -5,7 +5,25 @@ Semantic Versioning.
 
 ## [Unreleased]
 
-### v0.1.0 (not yet released)
+### v0.1.1 (not yet released)
+
+Fixes from the independent review of v0.1.0. No API change.
+
+- The timeline axis has at most eleven labels for any duration; a step of the largest int64 duration
+  used to make the page create millions of labels.
+- An attachment's Raw view and Copy give the original text byte for byte; re-serialised JSON had
+  rounded large integers, turned `1e400` into `null` and dropped repeated keys.
+- The virtualised scenario list measures its rows once they are in the page, so the last row is fully
+  visible.
+- `Render` and the directory functions enforce `Limits.Embedding` before decoding, as `Parse` does;
+  an attachment over the limit is refused with `cucumber.ErrTooLarge`.
+- Print shows ordinary sections' rows.
+- An empty attachment shows as empty, with Copy and Save, not as undecodable.
+- Optional content no longer renders the text "null".
+- The no-JS scenario duration saturates at the largest int64 instead of overflowing.
+- A test now decides the canonical base64 re-encoding check in `Embedding.Decode`.
+
+## [0.1.0] - 2026-10-31
 
 - `cucumber` package: strict parser for Godog's Cucumber JSON (six statuses, optional durations,
   error messages, doc strings, data tables, outline rows, attachments), `Validate`, canonical base64

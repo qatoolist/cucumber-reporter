@@ -177,7 +177,7 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `Sections` | Your own panels: a card on the dashboard and a full panel under Run details. `ID` is a-z, 0-9 and `-`, starting with a letter, at most 48 characters; `Tone` is `info` (default), `ok`, `warn` or `fail`; `Summary`, `Rows` and `Note` hold the content. `Role` tells the page what the section summarises: `known` (its summary and note appear on Known issues instead of a dashboard card; at most one), `skip` or `limit`. Sections with a role are left out of the printed scope sections, because their entries print from the annotations. |
 | `Annotations` | Caller knowledge per scenario, named by `ScenarioIDs`: `Kind` `known` (with `Ref`, the issue key), `skip` (why a scenario was skipped) or `limit` (not fully verified in this environment), plus `Title` and `Note`. See Known issues below. |
 | `Defaults` | Generation-time view settings: `Theme` (`auto`, `light`, `dark`), `Density` (`comfortable`, `compact`), `Expand` (attachments open at load: `failed`, `all`, `none`), `View` (start page: `dashboard`, `features`, `scenarios`, `failures`), `Widgets` and `Nav` (an entry `false` hides a dashboard widget or navigation section; `report.Widgets` and `report.NavSections` list the keys; the dashboard cannot be hidden). |
-| `Limits` | `Input` (default 512 MiB), `Embedding` (base64 characters per attachment, default 64 MiB) and `InlineAttachment` (default 4 MiB). |
+| `Limits` | `Input` (default 512 MiB), `Embedding` (base64 characters per attachment, default 64 MiB; enforced before decoding by `Parse` and by every render function, including for models built in code) and `InlineAttachment` (default 4 MiB). |
 
 Errors are sentinel values for `errors.Is`: `cucumber.ErrNoResults`, `ErrInvalidJSON`,
 `ErrIncomplete`, `ErrInvalid`, `ErrTooLarge`, `ErrInvalidBase64`, and `report.ErrOptionsVersion`,
@@ -229,7 +229,9 @@ issue covers only its declared step; any other unexpected result still fails.
 Attachments travel as their base64 text when the decoded content fits `Limits.InlineAttachment`.
 JSON opens as a collapsible tree or raw text, other text as text (HTML is never rendered as markup),
 PNG, JPEG, GIF and WebP as images; anything else shows its type and size with Save. Copy and Save
-work on every inline attachment. Larger text and JSON attachments are written beside the report as
+work on every inline attachment, an empty one included. Raw and Copy always give the original text
+byte for byte; only the tree shows values as JavaScript parses them, so a large integer, `1e400` or a
+repeated key reads differently there (the page says so). Larger text and JSON attachments are written beside the report as
 `attachment-….txt` or `.json` by the directory functions and linked; `Render` leaves them out with a
 note, as it does larger binary attachments.
 
@@ -286,9 +288,9 @@ identifiers) into the committed `.min` files that are embedded. Measured for thi
 
 | Item | Readable | Embedded (minified) | Minified, gzip |
 | --- | --- | --- | --- |
-| `app.js` | 104,624 B | 84,211 B | 27,195 B |
+| `app.js` | 106,995 B | 85,533 B | 27,616 B |
 | `app.css` | 58,245 B | 49,704 B | 11,095 B |
-| Report of one feature with two steps | | 136,429 B | 39,256 B |
+| Report of one feature with two steps | | 137,751 B | 39,676 B |
 | Report of 5,000 steps (1,000 scenarios) | | about 1.6 MB | |
 
 Attachments dominate larger reports: an attachment costs about 1.03 times its base64 size.
