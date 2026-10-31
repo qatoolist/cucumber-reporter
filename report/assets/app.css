@@ -241,6 +241,7 @@ kbd { display: inline-block; min-width: 20px; padding: 1px 5px; border: 1px soli
 .attn { display: grid; }
 .att-g { display: flex; justify-content: space-between; margin: 10px 0 4px; padding: 0 8px; font-size: 11.5px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; color: var(--text-3); }
 .att-g:first-child { margin-top: 0; }
+.att-more { padding: 0 8px 4px 46px; font-size: 12.5px; }
 .att { display: grid; grid-template-columns: 22px 1fr auto; gap: 12px; align-items: center; padding: 8px; border-radius: 8px; color: var(--text); text-decoration: none !important; transition: background .15s; }
 .att:hover { background: var(--surface-2); }
 .att-m { min-width: 0; display: grid; }

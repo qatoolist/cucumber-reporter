@@ -610,6 +610,57 @@ func interactionChecks(t *testing.T, s *session) {
 		}
 		return nil
 	})
+	s.check("needs attention keeps every group and counts each row", func() error {
+		s.goTo("/dashboard")
+		var groups []struct {
+			Label        string
+			Count, Shown int
+			More, Want   int
+		}
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const n = {};
+			for (const f of D.features) for (const e of f.elements) n[e.status] = (n[e.status] || 0) + 1;
+			const key = { 'Unexpected failures': 'failed', 'Ambiguous steps': 'ambiguous', 'Undefined steps': 'undefined', 'Known failures': 'known', 'Pending': 'pending' };
+			const out = []; let cur = null;
+			for (const li of document.querySelectorAll('.attn > li')) {
+				if (li.classList.contains('att-g')) { cur = { label: li.firstChild.textContent, count: +li.lastChild.textContent.replace(/,/g, ''), shown: 0, more: 0 }; cur.want = n[key[cur.label]] || 0; out.push(cur); }
+				else if (li.classList.contains('att-more')) cur.more = +li.textContent.replace(/[^0-9]/g, '');
+				else cur.shown++;
+			}
+			const want = Object.entries(key).filter(([, k]) => n[k]).map(([l]) => l);
+			if (out.map((g) => g.label).join('|') !== want.join('|')) out.push({ label: 'groups ' + out.map((g) => g.label).join(',') + ' want ' + want.join(','), count: -1 });
+			return out; })()`, &groups)
+		for _, g := range groups {
+			if g.Count != g.Want || g.Shown+g.More != g.Count {
+				return fail("%+v", g)
+			}
+		}
+		return nil
+	})
+	s.check("histogram colors follow its caption", func() error {
+		s.goTo("/dashboard")
+		var r struct{ Failed, Known, Red, Amber int }
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); let failed = 0, known = 0, slow = false;
+			for (const f of D.features) for (const e of f.elements) { const d = e.steps.reduce((a, x) => a + (x.duration || 0), 0); if (d >= 1e6) slow = true; if (e.status === 'failed') failed++; if (e.status === 'known') known++; }
+			if (!document.querySelector('.hist')) return { failed: 0, known: 0, red: 0, amber: 0 };
+			const sum = (re) => [...document.querySelectorAll('.hist-c')].reduce((a, c) => a + (+((c.getAttribute('aria-label').match(re) || [0, 0])[1])), 0);
+			return { failed, known, red: sum(/, (\d+) failed/), amber: sum(/, (\d+) known/) }; })()`, &r)
+		if r.Red != r.Failed || r.Amber != r.Known {
+			return fail("%+v", r)
+		}
+		return nil
+	})
+	s.check("print preview starts under its header; timeline axis starts at 0", func() error {
+		s.goTo("/print")
+		gap := s.num(`document.getElementById('print-root').getBoundingClientRect().top - document.querySelector('.page-h').getBoundingClientRect().bottom`)
+		if gap < 0 || gap > 48 {
+			return fail("print document starts %d px below the header", gap)
+		}
+		s.goTo("/timeline")
+		if first := s.str(`document.querySelector('.gantt-x span').textContent`); first != "0" {
+			return fail("axis starts with %q", first)
+		}
+		return nil
+	})
 	s.check("status legend labels never overlap or clip", func() error {
 		defer s.size(1440, 900)
 		defer s.eval(`localStorage.clear(), true`, nil)

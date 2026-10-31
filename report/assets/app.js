@@ -410,6 +410,7 @@
     cleanups = [];
     hideTip();
     toggleSide(false);
+    if (printRoot.parentNode !== doc.body) doc.body.append(printRoot);
     doc.body.classList.toggle('show-print', name === 'print');
     let node;
     try { node = (VIEWS[name] || VIEWS.missing)(parts.slice(1), q); } catch (e) { node = h('div', { class: 'view' }, empty('alert', 'This view could not be shown', String(e && e.message || e))); console.error(e); }
@@ -617,16 +618,19 @@
     const groups = [['failed', 'Unexpected failures'], ['ambiguous', 'Ambiguous steps'], ['undefined', 'Undefined steps'], ['known', 'Known failures'], ['pending', 'Pending']];
     const out = [];
     let n = 0;
+    // Every group keeps its header and count; rows stop at the limit and the rest is one "+N more" link.
     for (const [k, l] of groups) {
       const xs = S.filter((s) => s.status === k);
-      if (!xs.length || n >= limit) continue;
+      if (!xs.length) continue;
       out.push(h('li', { class: 'att-g' }, l, h('span', null, num(xs.length))));
-      for (const s of xs.slice(0, Math.max(1, limit - n))) {
+      const shown = n >= limit ? 0 : Math.min(xs.length, Math.max(1, limit - n));
+      for (const s of xs.slice(0, shown)) {
         n++;
         out.push(h('li', null, h('a', { class: 'att', href: '#/scenarios/' + encodeURIComponent(s.id) + (s.bad ? '?step=' + s.bad.k : '') }, glyph(s.status),
           h('span', { class: 'att-m' }, h('span', { class: 'att-t' }, bdi(s.name)), h('span', { class: 'att-s' }, bdi(s.f.name), s.bad ? [' · ', h('span', { class: 'mono' }, firstLine(s.bad.error) || s.bad.keyword + s.bad.name)] : null)),
           h('span', { class: 'att-d' }, dur(s.dur)))));
       }
+      if (xs.length > shown) out.push(h('li', { class: 'att-more' }, h('a', { class: 'link', href: '#/scenarios?status=' + k }, '+' + num(xs.length - shown) + ' more', icon('arrow'))));
     }
     return out;
   };
@@ -660,7 +664,7 @@
     const stats = h('dl', { class: 'stats' }, [['Median', quant(xs, 0.5)], ['95th percentile', quant(xs, 0.95)], ['Slowest', xs[xs.length - 1] || 0], ['Total', T.dur]].map(([l, v]) => h('div', null, h('dt', null, l), h('dd', null, dur(v)))));
     if (!xs.length || xs[xs.length - 1] < 1e6) return card('c-dur', 'Duration profile', null, null, stats, empty('clock', 'Every scenario finished in under 1 ms', 'Timing differences at this scale are noise, so no distribution is drawn.'));
     const n = BUCKETS.map(() => 0), bad = BUCKETS.map(() => 0), kn = BUCKETS.map(() => 0);
-    for (const s of ran) { const ms = s.dur / 1e6; const i = BUCKETS.findIndex((b) => ms >= b[0] && ms < b[1]); n[i]++; if (s.status === 'known') kn[i]++; else if (s.status !== 'passed') bad[i]++; }
+    for (const s of ran) { const ms = s.dur / 1e6; const i = BUCKETS.findIndex((b) => ms >= b[0] && ms < b[1]); n[i]++; if (s.status === 'known') kn[i]++; else if (s.status === 'failed') bad[i]++; }
     let a = n.findIndex((x) => x), b = n.length - 1 - [...n].reverse().findIndex((x) => x);
     while (b - a < 3) { if (a > 0) a--; else if (b < n.length - 1) b++; else break; }
     const mx = Math.max(...n);
@@ -671,8 +675,8 @@
       bars.append(sv('g', { class: 'grow-y' }, sv('rect', { class: 'hb', x: x + 1.5, y: 100 - hgt, width: 4, height: hgt }), kn[i] ? sv('rect', { class: 'hb-kn', x: x + 1.5, y: 100 - (bad[i] + kn[i]) / mx * 92, width: 4, height: kn[i] / mx * 92 }) : null, bad[i] ? sv('rect', { class: 'hb-bad', x: x + 1.5, y: 100 - bad[i] / mx * 92, width: 4, height: bad[i] / mx * 92 }) : null));
       css(bars.lastChild, '--d', (i - a) * 60 + 'ms');
       const lo = BUCKETS[i][0], hi = BUCKETS[i][1];
-      const col = h('a', { class: 'hist-c', href: '#/scenarios?sort=slowest&dur=' + lo + '-' + (hi === Infinity ? '' : hi), 'aria-label': plural(n[i], 'scenario') + ' took ' + BUCKETS[i][2] + (bad[i] ? ', ' + bad[i] + ' not passed' : '') + (kn[i] ? ', ' + kn[i] + ' known failures' : '') }, h('b', null, num(n[i])), h('span', null, BUCKETS[i][2]));
-      bindTip(col, () => [BUCKETS[i][2], plural(n[i], 'scenario'), bad[i] ? bad[i] + ' not passed' : kn[i] ? kn[i] + ' known failure' + (kn[i] > 1 ? 's' : '') : 'all passed']);
+      const col = h('a', { class: 'hist-c', href: '#/scenarios?sort=slowest&dur=' + lo + '-' + (hi === Infinity ? '' : hi), 'aria-label': plural(n[i], 'scenario') + ' took ' + BUCKETS[i][2] + (bad[i] ? ', ' + bad[i] + ' failed' : '') + (kn[i] ? ', ' + kn[i] + ' known failures' : '') }, h('b', null, num(n[i])), h('span', null, BUCKETS[i][2]));
+      bindTip(col, () => [BUCKETS[i][2], plural(n[i], 'scenario'), [bad[i] ? bad[i] + ' failed' : '', kn[i] ? kn[i] + ' known' : ''].filter(Boolean).join(' · ') || 'no failures']);
       cols.append(col);
     }
     const slow = ran.slice().sort((x, y) => y.dur - x.dur).slice(0, 6);
@@ -925,7 +929,7 @@
     });
     const axis = h('div', { class: 'gantt-x' });
     const stepNs = [1e6, 1e7, 1e8, 1e9, 5e9, 1e10, 3e10, 6e10, 1.2e11, 3e11, 6e11, 1.8e12, 3.6e12].find((x) => total / x <= 8) || 3.6e12;
-    for (let x = 0; x <= total; x += stepNs) axis.append(css(h('span', null, dur(x)), 'left', (x / total * 100) + '%'));
+    for (let x = 0; x <= total; x += stepNs) axis.append(css(h('span', null, x ? dur(x) : '0'), 'left', (x / total * 100) + '%'));
     // Step-definition profile.
     const defs = new Map();
     for (const st of STEPS) {
@@ -987,7 +991,10 @@
 
   VIEWS.print = () => {
     buildPrint();
-    return view('', crumbs([['Dashboard', '#/'], ['Print preview']]), head('Print preview', 'The printed report: cover summary, failures first, then every feature. Interactive controls are left out.', btn('Print / Save as PDF', 'print', () => W.print(), 'primary')));
+    // The preview shows the print document inside the view; printing moves it back to the body.
+    const v = view('', crumbs([['Dashboard', '#/'], ['Print preview']]), head('Print preview', 'The printed report: cover summary, failures first, then every feature. Interactive controls are left out.', btn('Print / Save as PDF', 'print', () => W.print(), 'primary')));
+    v.append(printRoot);
+    return v;
   };
   VIEWS.missing = () => view('', crumbs([['Dashboard', '#/'], ['Not found']]), head('Not found'), card('', null, null, null, empty('search', 'This link does not match anything in this report', 'It may come from a different run.')), h('a', { class: 'btn', href: '#/' }, icon('left'), 'Back to the dashboard'));
 
@@ -1052,7 +1059,8 @@
   };
   const glyphTxt = (k) => ({ passed: '✓', failed: '✕', known: '⚑', ambiguous: '≠', undefined: '?', pending: '…', skipped: '↷' }[k]);
   const doPrint = () => { buildPrint(); W.print(); };
-  W.addEventListener('beforeprint', buildPrint);
+  W.addEventListener('beforeprint', () => { buildPrint(); doc.body.append(printRoot); });
+  W.addEventListener('afterprint', () => { if (printRoot.parentNode === doc.body && doc.body.classList.contains('show-print')) render(); });
 
   /* ---------- search palette ---------- */
   const pal = h('dialog', { class: 'dlg palette', 'aria-label': 'Search' });
