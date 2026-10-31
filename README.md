@@ -232,7 +232,13 @@ never act as markup, style or script:
   `encoding/json` with HTML-safe escaping (`<`, `>`, `&`, U+2028 and U+2029 become `\u` escapes), so it
   cannot close the element. The page script reads it with one `JSON.parse` and builds every node with
   `createElement` and `textContent`; it never uses `innerHTML`, `eval` or inline handlers, and sets
-  geometry through SVG attributes or CSSOM, never `style` attributes.
+  geometry through SVG attributes or CSSOM, never `style` attributes. A unit test refuses markup- and
+  code-parsing APIs in the embedded script, and a browser test renders hostile strings into every
+  field and checks every view for elements, attributes, links or dialogs made from them.
+- One piece of data does reach a stylesheet: for the printed page header the script inserts one
+  `@page` rule through CSSOM whose `content` values are the run name and the verdict label, written
+  as CSS strings (backslash and double quote escaped, control characters replaced by spaces). A
+  browser test decodes them back from the live rule and compares them with the data.
 - The no-JS fallback is rendered by `html/template`. The code never converts data to
   `template.HTML`, `template.JS`, `template.CSS` or `template.URL`.
 - The page carries a Content-Security-Policy: `default-src 'none'`, the inline stylesheet and the

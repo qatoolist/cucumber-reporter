@@ -15,7 +15,7 @@ import (
 func TestRealChrome(t *testing.T) {
 	chrome, err := FindChrome()
 	if err != nil {
-		t.Skipf("no Chrome available: %v", err)
+		t.Fatalf("no Chrome available (the browser checks need one; set CHROME): %v", err)
 	}
 	dir := t.TempDir()
 	page := filepath.Join(dir, "page.html")

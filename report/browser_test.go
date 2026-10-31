@@ -41,13 +41,19 @@ type session struct {
 // 1440 × 900 viewport.
 func openSession(t *testing.T, features []cucumber.Feature, opt Options, reducedMotion bool) *session {
 	t.Helper()
+	return openPage(t, mustRender(t, features, opt), reducedMotion)
+}
+
+// openPage opens an already rendered page, as openSession does.
+func openPage(t *testing.T, page string, reducedMotion bool) *session {
+	t.Helper()
 	chrome, err := cdp.FindChrome()
 	if err != nil {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()
 	file := filepath.Join(dir, "index.html")
-	if err = os.WriteFile(file, []byte(mustRender(t, features, opt)), 0o600); err != nil {
+	if err = os.WriteFile(file, []byte(page), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
@@ -924,6 +930,91 @@ func TestBrowserHostileData(t *testing.T) {
 				if len(bad) > 0 {
 					return fail("route %s: %v", r, bad)
 				}
+			}
+			// The run name and verdict reach the print header through one inserted @page rule, as CSS
+			// strings; decoded, they must equal the data exactly (control characters become spaces).
+			s.goTo("/print")
+			var page struct{ Rules, Want []string }
+			s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const rules = [];
+				for (const sh of document.styleSheets) for (const r of sh.cssRules) if (r.type === CSSRule.PAGE_RULE) rules.push(r.cssText);
+				rules.splice(0, rules.length - 1); // the rule the script inserts comes last
+				const dec = (q) => q.slice(1, -1).replace(/\\([0-9a-fA-F]{1,6}) ?|\\([^0-9a-fA-F])/g, (m, h, c) => (h ? String.fromCodePoint(parseInt(h, 16)) : c));
+				const got = rules.flatMap((t) => [...t.matchAll(/content:\s*("(?:\\.|[^"\\])*")/g)].map((m) => dec(m[1])));
+				const clean = (x) => x.replace(/[\u0000-\u001f\u007f]/g, ' ');
+				return { rules: got, want: [clean(D.name), clean(D.verdict.label)] }; })()`, &page)
+			if fmt.Sprint(page.Rules) != fmt.Sprint(page.Want) {
+				return fail("print header strings %q, want %q", page.Rules, page.Want)
+			}
+			return nil
+		})
+	}
+}
+
+// TestBrowserCallerVerdict: the page shows the verdict tone the renderer sends, not one it computes.
+func TestBrowserCallerVerdict(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	opt.Verdict = &Verdict{Label: "Accepted by the release board", Tone: ToneInfo}
+	s := openSession(t, features, opt, true)
+	s.check("pill, hero and print use the caller's tone", func() error {
+		s.goTo("/dashboard")
+		got := s.str(`[document.querySelector('.verdict-pill').className, document.querySelector('.hero').className, document.querySelector('.verdict-pill').textContent].join('|')`)
+		if got != "verdict-pill t-info|hero t-info|Accepted by the release board" {
+			return fail("%s", got)
+		}
+		s.goTo("/print")
+		if !s.is(`document.querySelector('.pr-verdict.t-info')`) {
+			return fail("print verdict tone")
+		}
+		return nil
+	})
+}
+
+// TestBrowserAttachmentKinds: raster images render as images, SVG and HTML only as text, and the page
+// links only to the renderer's own sidecar names even when the data block is altered.
+func TestBrowserAttachmentKinds(t *testing.T) {
+	png := "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+	svg := `<svg xmlns="http://www.w3.org/2000/svg"><text>svg-attachment-body</text></svg>`
+	big := strings.Repeat("evidence line\n", 200)
+	features := one(step("s", cucumber.StatusFailed, 1,
+		cucumber.Embedding{Name: "pixel.png", MimeType: "image/png", Data: png},
+		cucumber.Embedding{Name: "drawing.svg", MimeType: "image/svg+xml", Data: b64(svg)},
+		cucumber.Embedding{Name: "page.html", MimeType: "text/html", Data: b64("<b>html-attachment-body</b>")},
+		cucumber.Embedding{Name: "big.txt", MimeType: "text/plain", Data: b64(big)},
+	))
+	dir, err := RenderFeaturesDirTo(features, t.TempDir(), Options{Version: OptionsVersion, Limits: cucumber.Limits{InlineAttachment: 1024}, Defaults: ViewDefaults{Expand: ExpandAll}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, err := os.ReadFile(filepath.Join(dir, "index.html"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	page := string(raw)
+	const sidecar = `"href":"attachment-f1-s1-t1-a4.txt"`
+	if !strings.Contains(page, sidecar) {
+		t.Fatal("no sidecar link in the data block")
+	}
+	route := "/scenarios/" + ScenarioIDs(features)[0][0]
+	s := openPage(t, page, true)
+	s.check("image, SVG, HTML and sidecar", func() error {
+		s.goTo(route)
+		got := s.str(`[document.querySelectorAll('img').length, document.querySelector('img') ? document.querySelector('img').getAttribute('src').slice(0, 21) : '',
+			[...document.querySelectorAll('pre')].some((p) => p.textContent.includes('svg-attachment-body')), [...document.querySelectorAll('pre')].some((p) => p.textContent.includes('<b>html-attachment-body</b>')),
+			[...document.querySelectorAll('a[href^="attachment-"]')].map((a) => a.getAttribute('href')).join(',')].join('|')`)
+		if got != "1|data:image/png;base64|true|true|attachment-f1-s1-t1-a4.txt" {
+			return fail("%s", got)
+		}
+		return nil
+	})
+	for _, href := range []string{"javascript:attachment-a.txt", "https://example.invalid/attachment-a.txt", "attachment-a.txt?x=1", "../attachment-a.txt", "attachment-a.txt/../../x.txt", "xattachment-a.txt", "attachment-a.html"} {
+		s.check("altered sidecar link "+href, func() error {
+			altered := strings.Replace(page, sidecar, `"href":`+jsString(href), 1)
+			if err := os.WriteFile(s.file, []byte(altered), 0o600); err != nil {
+				return err
+			}
+			s.goTo(route)
+			if n := s.num(`document.querySelectorAll('.atts a[href]').length`); n != 0 {
+				return fail("%d links built from an altered href", n)
 			}
 			return nil
 		})

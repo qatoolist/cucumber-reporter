@@ -71,7 +71,7 @@ func TestDataBlockIsEncodingJSON(t *testing.T) {
 // API that parses a string as markup or code, so data can reach the DOM only as text nodes and
 // attribute values. TestBrowserHostileData checks the resulting DOM.
 func TestScriptBuildsNoMarkupFromStrings(t *testing.T) {
-	banned := regexp.MustCompile("innerHTML|outerHTML|insertAdjacentHTML|document\\.write|\\beval\\s*\\(|new\\s+Function|set(Timeout|Interval)\\s*\\(\\s*['\"`]|srcdoc|DOMParser|createContextualFragment|\\.style\\.cssText|setAttribute\\(\\s*['\"]style")
+	banned := regexp.MustCompile("innerHTML|outerHTML|insertAdjacentHTML|HTMLUnsafe|\\bsetHTML\\b|document\\.write|\\beval\\s*\\(|new\\s+Function|set(Timeout|Interval)\\s*\\(\\s*['\"`]|srcdoc|DOMParser|createContextualFragment|\\.style\\.cssText|setAttribute\\(\\s*['\"]style")
 	if m := banned.FindAllString(scriptSource, -1); len(m) > 0 {
 		t.Errorf("app.js uses %q", m)
 	}
