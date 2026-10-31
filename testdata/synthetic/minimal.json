@@ -1,0 +1,36 @@
+[
+  {
+    "uri": "features/greeting.feature",
+    "id": "greeting",
+    "keyword": "Feature",
+    "name": "Greeting",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "greeting;say-hello",
+        "keyword": "Scenario",
+        "name": "Say hello",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a visitor",
+            "line": 4,
+            "match": {"location": "steps.go:10"},
+            "result": {"status": "passed", "duration": 41000000}
+          },
+          {
+            "keyword": "Then ",
+            "name": "the page says hello",
+            "line": 5,
+            "match": {"location": "steps.go:14"},
+            "result": {"status": "passed", "duration": 1500000}
+          }
+        ]
+      }
+    ]
+  }
+]

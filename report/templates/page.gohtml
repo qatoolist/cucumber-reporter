@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{.Theme}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{.Head}}
+<title>{{.Title}}</title>
+</head>
+<body{{if .Compact}} class="compact"{{end}} data-theme="{{.Theme}}" data-density="{{.Density}}" data-expand="{{.Expand}}" data-page-size="{{.PageSize}}" data-hidden-charts="{{.HiddenCharts}}" data-hidden-sections="{{.HiddenSections}}">
+<a class="skip" href="#features">Skip to features</a>
+<header class="top">
+<div class="bar-row">
+<h1>{{.Name}}</h1>
+<button type="button" class="js" id="open-settings" hidden>Settings</button>
+<button type="button" class="js" id="open-help" hidden aria-label="Keyboard shortcuts">?</button>
+</div>
+<p class="note" id="storage-note" role="status" hidden>Preferences are not saved in this browser.</p>
+<h2 class="verdict st-{{.Verdict.Key}}"><span class="glyph" aria-hidden="true">{{.Verdict.Glyph}}</span> {{.Verdict.Label}}</h2>
+{{- if .Facts}}
+<dl class="facts">{{range .Facts}}<div><dt>{{.Label}}</dt><dd>{{.Value}}</dd></div>{{end}}</dl>
+{{- end}}
+</header>
+<main>
+<section class="dashboard" aria-label="Summary">
+<div class="tiles">
+{{- range .Tiles}}
+<div class="tile" data-kind="{{.Kind}}"><h3>{{.Label}}</h3><p class="total">{{.Total}}</p><ul class="counts">{{range .Counts}}<li class="st-{{.Status.Key}}"><span class="glyph" aria-hidden="true">{{.Status.Glyph}}</span> {{.N}} {{.Status.Label}}</li>{{end}}</ul></div>
+{{- end}}
+</div>
+{{- range .Sections}}
+{{template "section" .}}
+{{- end}}
+<div class="charts">
+{{- range .Charts}}
+{{template "chart" .}}
+{{- end}}
+</div>
+</section>
+{{template "features" .}}
+</main>
+{{template "settings" .}}
+{{.Script}}
+</body>
+</html>

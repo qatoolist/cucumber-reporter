@@ -1,0 +1,30 @@
+{{define "settings" -}}
+<dialog id="settings" aria-labelledby="settings-h">
+<h2 id="settings-h">Settings</h2>
+<p class="note">Saved in this browser for every report. Report defaults apply until you change them.</p>
+<fieldset><legend>Charts</legend>
+{{- range .ChartToggles}}
+<label><input type="checkbox" data-toggle="{{.Key}}"{{if .On}} checked{{end}}> {{.Label}}</label>
+{{- end}}
+</fieldset>
+{{- if .SectionToggles}}
+<fieldset><legend>Sections</legend>
+{{- range .SectionToggles}}
+<label><input type="checkbox" data-toggle="{{.Key}}"{{if .On}} checked{{end}}> {{.Label}}</label>
+{{- end}}
+</fieldset>
+{{- end}}
+<fieldset><legend>View</legend>
+<label>Theme <select data-pref="theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+<label>Density <select data-pref="density"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label>
+<label>Open scenarios <select data-pref="expand"><option value="failed">Failed</option><option value="none">None</option><option value="all">All</option></select></label>
+<label>Page size <select data-pref="pageSize"><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="0">All</option></select></label>
+</fieldset>
+<div class="bar-row"><button type="button" id="reset-prefs">Reset to report defaults</button><button type="button" data-close>Close</button></div>
+</dialog>
+<dialog id="help" aria-labelledby="help-h">
+<h2 id="help-h">Keyboard shortcuts</h2>
+<dl class="facts"><div><dt><kbd>/</kbd></dt><dd>Search features</dd></div><div><dt><kbd>f</kbd></dt><dd>Show failed only, or all</dd></div><div><dt><kbd>?</kbd></dt><dd>This help</dd></div><div><dt><kbd>Esc</kbd></dt><dd>Close a dialog</dd></div></dl>
+<div class="bar-row"><button type="button" data-close>Close</button></div>
+</dialog>
+{{- end}}
