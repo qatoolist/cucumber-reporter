@@ -200,6 +200,10 @@ issue covers only its declared step; any other unexpected result still fails.
 - A passed scenario with an observed declared step is a known failure (the expected failure was
   recorded while the step itself passed). A passed scenario whose issue was not observed stays passed
   and is flagged "the issue may be fixed". Ambiguous, undefined, pending and skipped are unchanged.
+- A record that covers nothing (not applied, or invalid) never counts as a known issue: the Known
+  issues page lists it separately under "Records not applied" with its reason, the dashboard notes
+  it apart from the known-issue list, and print lists it with its reason. The renderer decides each
+  record's state once and the page, the fallback and print all use it.
 - The known-failure marker sits on the declared step only. `Outcomes` (every recorded outcome) are
   listed in the scenario banner as detail and never mark a step; the declared one is labelled.
 - With known failures the headline figure is "As expected" (passed plus known, over executed

@@ -42,11 +42,24 @@ type pageData struct {
 	Total   int           `json:"-"`
 }
 
-// annotationData is a caller annotation as the page receives it. Invalid marks a known issue whose
-// StepText does not match the scenario's step at Step; it is shown as a warning and covers nothing.
+// Known-issue record states, decided once here and used by the page, the fallback and print.
+const (
+	// stateApplied: the record makes its scenario a known failure.
+	stateApplied = "applied"
+	// statePassed: the scenario passed and the issue was not observed; it may be fixed.
+	statePassed = "passed"
+	// stateNotApplied: the record covers nothing; the scenario keeps its own result.
+	stateNotApplied = "not-applied"
+	// stateInvalid: StepText does not match the scenario's step at Step; the record covers nothing.
+	stateInvalid = "invalid"
+)
+
+// annotationData is a caller annotation as the page receives it. State and Reason are set for known
+// issues only; Reason explains a record that covers nothing.
 type annotationData struct {
 	Annotation
-	Invalid bool `json:"invalid,omitempty"`
+	State  string `json:"state,omitempty"`
+	Reason string `json:"reason,omitempty"`
 }
 
 type statusCount struct {
@@ -307,7 +320,7 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 			continue
 		}
 		if clean(sc.Steps[a.Step-1].Name) != a.StepText {
-			a.Invalid = true
+			a.State = stateInvalid
 			continue
 		}
 		declared[a.Step] = true
@@ -326,7 +339,10 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 		sd.Status = statusKnown
 	}
 	for _, a := range anns {
-		sd.Notes = append(sd.Notes, annotationNote(a, raw, sd.Status, failedAt))
+		if a.Kind == KindKnown {
+			a.State, a.Reason = knownState(a, raw, marked, failedAt)
+		}
+		sd.Notes = append(sd.Notes, annotationNote(a))
 	}
 	for k, st := range sc.Steps {
 		d, err := buildStep(st, fi, si, k, inline, sidecar)
@@ -342,22 +358,41 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 	return sd, nil
 }
 
-func annotationNote(a *annotationData, raw, status string, failedAt int) string {
+// knownState decides whether a known-issue record covers its scenario and, when it does not, why.
+func knownState(a *annotationData, raw string, marked, failedAt int) (state, reason string) {
+	step := strconv.Itoa(a.Step)
+	switch {
+	case a.State == stateInvalid:
+		return stateInvalid, "Declared step " + step + " does not match the recorded step text, so this record covers nothing."
+	case a.Step > 0 && (marked == a.Step || (marked == -1 && a.Observed)):
+		return stateApplied, ""
+	case raw == "passed" && marked == 0:
+		return statePassed, ""
+	case raw == "passed":
+		return stateNotApplied, "The expected failure was not observed at declared step " + step + "; another record covers this scenario."
+	case raw != "failed":
+		return stateNotApplied, "The scenario is " + raw + ", so this record covers nothing."
+	case marked != 0:
+		return stateNotApplied, "Another record covers this scenario's failure at step " + strconv.Itoa(failedAt) + "."
+	case a.Step == 0:
+		return stateNotApplied, "No step is declared, so the failure counts as unexpected."
+	}
+	return stateNotApplied, "The failure is at step " + strconv.Itoa(failedAt) + ", not at the declared step " + step + ", so it counts as an unexpected failure."
+}
+
+func annotationNote(a *annotationData) string {
 	label := map[string]string{KindKnown: "Known failure", KindSkip: "Skipped", KindLimit: "Not verified"}[a.Kind]
+	if a.State == stateNotApplied || a.State == stateInvalid {
+		label = "Known issue, not applied"
+	}
 	if a.Ref != "" {
 		label += " " + a.Ref
 	}
 	if a.Title != "" {
 		label += ": " + a.Title
 	}
-	switch {
-	case a.Kind != KindKnown:
-	case a.Invalid:
-		label += " (declared step " + strconv.Itoa(a.Step) + " does not match the recorded step text; this record covers nothing)"
-	case raw == "failed" && status != statusKnown && a.Step > 0:
-		label += " (the failure is at step " + strconv.Itoa(failedAt) + ", not at declared step " + strconv.Itoa(a.Step) + ": unexpected)"
-	case raw == "failed" && status != statusKnown:
-		label += " (no declared step: the failure is unexpected)"
+	if a.Reason != "" {
+		label += " (" + strings.TrimSuffix(a.Reason, ".") + ")"
 	}
 	return label
 }

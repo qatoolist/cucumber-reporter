@@ -137,7 +137,10 @@
   const HEAD = T.sc.known ? { label: 'As expected', value: asExpected, sub: num(T.sc.passed) + ' passed · ' + num(T.sc.known) + ' known · pass rate ' + fpct(passRate), href: '#/scenarios?status=passed,known' } : { label: 'Pass rate', value: passRate, sub: num(T.sc.passed) + ' of ' + num(executed) + ' executed', href: '#/scenarios?status=passed' };
   if (T.sc.skipped) HEAD.sub += ' · ' + num(T.sc.skipped) + ' skipped';
   const blocking = T.sc.ambiguous + T.sc.undefined;
-  const KNOWN = (D.annotations || []).filter((a) => a.kind === 'known');
+  // The renderer decides each known-issue record's state once (applied, passed, not-applied, invalid);
+  // every view, the print document and the fallback use that state.
+  const KNOWN = (D.annotations || []).filter((a) => a.kind === 'known' && (a.state === 'applied' || a.state === 'passed'));
+  const NOTAPPLIED = (D.annotations || []).filter((a) => a.kind === 'known' && (a.state === 'not-applied' || a.state === 'invalid') && SB[a.scenario]);
   const LIMITS = (D.annotations || []).filter((a) => a.kind === 'limit');
   const tone = (D.verdict && D.verdict.tone) || (T.sc.failed || blocking ? 'fail' : T.sc.known ? 'warn' : 'ok');
   const verdict = (D.verdict && D.verdict.label) || (tone === 'fail' ? 'Failed' : tone === 'warn' ? 'Passed with known failures' : 'Passed');
@@ -617,15 +620,15 @@
   const attnList = (limit) => {
     const groups = [['failed', 'Unexpected failures'], ['ambiguous', 'Ambiguous steps'], ['undefined', 'Undefined steps'], ['known', 'Known failures'], ['pending', 'Pending']];
     const out = [];
-    let n = 0;
-    // Every group keeps its header and count; rows stop at the limit and the rest is one "+N more" link.
-    for (const [k, l] of groups) {
-      const xs = S.filter((s) => s.status === k);
-      if (!xs.length) continue;
+    // Every non-empty group keeps its header, its count and at least one row; the remaining rows up to
+    // the limit go to the groups in order, and the rest of a group is one "+N more" link.
+    const present = groups.map(([k, l]) => [k, l, S.filter((s) => s.status === k)]).filter((g) => g[2].length);
+    let spare = Math.max(0, limit - present.length);
+    for (const [k, l, xs] of present) {
+      const shown = Math.min(xs.length, 1 + spare);
+      spare -= shown - 1;
       out.push(h('li', { class: 'att-g' }, l, h('span', null, num(xs.length))));
-      const shown = n >= limit ? 0 : Math.min(xs.length, Math.max(1, limit - n));
       for (const s of xs.slice(0, shown)) {
-        n++;
         out.push(h('li', null, h('a', { class: 'att', href: '#/scenarios/' + encodeURIComponent(s.id) + (s.bad ? '?step=' + s.bad.k : '') }, glyph(s.status),
           h('span', { class: 'att-m' }, h('span', { class: 'att-t' }, bdi(s.name)), h('span', { class: 'att-s' }, bdi(s.f.name), s.bad ? [' · ', h('span', { class: 'mono' }, firstLine(s.bad.error) || s.bad.keyword + s.bad.name)] : null)),
           h('span', { class: 'att-d' }, dur(s.dur)))));
@@ -653,8 +656,12 @@
         h('a', { class: 'ku-n s-known', href: '#/known' }, countUp(h('b'), k, (v) => num(Math.round(v))), h('span', null, icon('flag'), 'Known'))),
       bar,
       refs.size ? h('ul', { class: 'refs' }, [...refs].map(([ref, r]) => h('li', null, h('a', { href: '#/known' }, h('span', { class: 'ref' }, ref || '—'), h('span', { class: 'refs-t' }, bdi(r.a.title || '')), h('span', { class: 'refs-n' }, plural(r.n, 'scenario')))))) : h('p', { class: 'muted' }, 'No known issues are recorded for this run.'),
+      NOTAPPLIED.length ? h('a', { class: 'note na', href: '#/known' }, icon('alert'), plural(NOTAPPLIED.length, 'known-issue record') + ' not applied; ' + (NOTAPPLIED.length > 1 ? 'their scenarios keep' : 'its scenario keeps') + ' its own result.') : null,
       blocking ? h('p', { class: 'note' }, icon('alert'), num(blocking) + ' scenario' + (blocking > 1 ? 's' : '') + ' also stopped on undefined or ambiguous steps.') : null);
   };
+  const notApplied = (a) => h('section', { class: 'card grp na-c' }, h('header', { class: 'grp-h' }, h('span', { class: 'ref big' }, a.ref || '—'),
+    h('div', null, h('p', { class: 'banner-t' }, icon('alert'), 'Known issue, not applied'), h('p', { class: 'grp-t' }, bdi(a.title || '')), h('p', { class: 'banner-w' }, a.reason || ''))),
+    h('div', { class: 'mrows' }, mini(SB[a.scenario])));
 
   const BUCKETS = [[0, 1, '< 1 ms'], [1, 10, '1–10 ms'], [10, 100, '10–100 ms'], [100, 1e3, '0.1–1 s'], [1e3, 1e4, '1–10 s'], [1e4, 6e4, '10 s–1 min'], [6e4, 6e5, '1–10 min'], [6e5, Infinity, '> 10 min']];
   const quant = (xs, p) => xs.length ? xs[Math.min(xs.length - 1, Math.floor(p * xs.length))] : 0;
@@ -817,10 +824,9 @@
       const a = as.find((x) => x.observed) || as[0];
       // A known issue covers only its declared step: a record whose step text does not match covers
       // nothing, and a failure elsewhere stays unexpected (the renderer decided both; see report.Annotation).
-      const why = a.kind !== 'known' ? null : a.invalid ? 'Declared step ' + a.step + ' does not match the recorded step text, so this record covers nothing.'
-        : s.status === 'failed' ? (a.step ? 'The failure is at step ' + (s.bad ? s.bad.k + 1 : '?') + ', not at the declared step ' + a.step + ', so it counts as an unexpected failure.' : 'No step is declared, so the failure counts as unexpected.') : null;
+      const why = a.kind === 'known' && (a.state === 'not-applied' || a.state === 'invalid') ? a.reason || '' : null;
       return h('div', { class: 'banner b-' + (why ? 'fail' : a.kind) }, icon(why ? 'alert' : a.kind === 'known' ? 'flag' : a.kind === 'skip' ? 'skip' : 'eyeoff'),
-        h('div', null, h('p', { class: 'banner-t' }, why ? 'Known issue, not applied' : a.kind === 'known' ? 'Known failure' : a.kind === 'skip' ? 'Skipped' : 'Not verified', a.ref ? h('span', { class: 'ref' }, a.ref) : null, s.status === 'passed' && a.kind === 'known' && !a.invalid ? h('span', { class: 'fixed' }, 'Passed in this run — the issue may be fixed') : null),
+        h('div', null, h('p', { class: 'banner-t' }, why ? 'Known issue, not applied' : a.kind === 'known' ? 'Known failure' : a.kind === 'skip' ? 'Skipped' : 'Not verified', a.ref ? h('span', { class: 'ref' }, a.ref) : null, a.kind === 'known' && a.state === 'passed' ? h('span', { class: 'fixed' }, 'Passed in this run — the issue may be fixed') : null),
           h('p', null, bdi(a.title || '')),
           why ? h('p', { class: 'banner-w' }, why) : null,
           a.outcomes && a.outcomes.length > 1 ? h('ul', { class: 'banner-l' }, a.outcomes.map((o) => h('li', { class: o.step === a.step ? '' : 'muted' }, o.step ? h('a', { href: '#/scenarios/' + encodeURIComponent(s.id) + '?step=' + (o.step - 1) }, 'Step ' + o.step) : 'No step', ' · ' + o.outcome + (o.step === a.step ? ' (declared)' : '') + (o.text ? ': ' : ''), bdi(o.text || '')))) : as.length > 1 ? h('ul', { class: 'banner-l' }, as.map((x) => h('li', { class: x.observed === false ? 'muted' : '' }, x.step ? h('a', { href: '#/scenarios/' + encodeURIComponent(s.id) + '?step=' + (x.step - 1) }, 'Step ' + x.step) : null, x.step ? ': ' : '', bdi(x.note || x.title || '')))) : a.note ? h('p', { class: 'muted' }, bdi(a.note)) : null));
@@ -892,6 +898,7 @@
         fixed ? h('p', { class: 'fixed' }, icon('check'), plural(fixed, 'scenario') + ' passed although the issue is open — consider closing it.') : null,
         h('div', { class: 'mrows' }, r.xs.map((s) => mini(s)))));
     }
+    if (NOTAPPLIED.length) body.push(h('h2', { class: 'sec-h' }, 'Records not applied', h('span', { class: 'cnt s-failed' }, num(NOTAPPLIED.length))), h('p', { class: 'muted' }, 'These records cover no known failure; their scenarios keep their own result.'), NOTAPPLIED.map(notApplied));
     if (sec && sec.note) body.push(h('p', { class: 'muted' }, bdi(sec.note)));
     return view('', crumbs([['Dashboard', '#/'], ['Known issues']]), head('Known issues', plural(T.sc.known, 'known failure') + ' across ' + plural(refs.size, 'issue') + '. They are expected and kept apart from unexpected failures.'), body);
   };
@@ -1030,7 +1037,8 @@
       s.bad && s.bad.error ? h('pre', { class: 'pr-pre' }, excerpt(s.bad.error, 12)) : null);
     const P2 = h('section', { class: 'pr-sec' }, h('h2', null, 'Failures and known issues'),
       h('h3', null, 'Unexpected failures, undefined and ambiguous (' + prob.length + ')'), prob.length ? prob.map((s) => pcard(s)) : h('p', null, 'None.'),
-      h('h3', null, 'Known failures (' + known.length + ')'), known.length ? known.map((s) => { const a = s.ann.find((x) => x.kind === 'known'); return pcard(s, a ? (a.ref ? a.ref + ': ' : '') + (a.title || '') + (a.step ? ' (step ' + a.step + ')' : '') : null); }) : h('p', null, 'None.'),
+      h('h3', null, 'Known failures (' + known.length + ')'), known.length ? known.map((s) => { const a = s.ann.find((x) => x.kind === 'known' && x.state === 'applied'); return pcard(s, a ? (a.ref ? a.ref + ': ' : '') + (a.title || '') + (a.step ? ' (step ' + a.step + ')' : '') : null); }) : h('p', null, 'None.'),
+      NOTAPPLIED.length ? [h('h3', null, 'Known-issue records not applied (' + NOTAPPLIED.length + ')'), NOTAPPLIED.map((a) => pcard(SB[a.scenario], 'Known issue, not applied: ' + (a.ref ? a.ref + ': ' : '') + (a.title || '') + '. ' + (a.reason || '')))] : null,
       h('h3', null, 'Skipped, pending and not verified (' + (sk.length + LIMITS.length) + ')'),
       !sk.length && !LIMITS.length ? h('p', null, 'None.') : h('table', { class: 'pr-t full' }, h('tbody', null, sk.map((s) => h('tr', null, h('td', null, glyphTxt(s.status), ' ', ST[s.status][0]), h('td', null, bdi(s.f.name + ' / ' + s.name)), h('td', null, bdi((s.ann.find((a) => a.kind === 'skip') || {}).title || (s.bad && s.bad.error ? firstLine(s.bad.error) : ''))))),
         LIMITS.filter((a) => SB[a.scenario]).map((a) => h('tr', null, h('td', null, '◌ Not verified'), h('td', null, bdi(SB[a.scenario].f.name + ' / ' + SB[a.scenario].name)), h('td', null, bdi(a.title)))))),

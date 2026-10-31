@@ -278,6 +278,8 @@ func hostileRun(s string) ([]cucumber.Feature, Options) {
 		Annotations: []Annotation{
 			{Scenario: id, Kind: KindKnown, Ref: s, Title: s, Note: s, Step: 1, StepText: s, Observed: true, Outcomes: []Outcome{{Step: 1, Outcome: s, Text: s}}},
 			{Scenario: id, Kind: KindLimit, Title: s, Note: s},
+			// A record whose step text does not match: the "not applied" banner and reason show data too.
+			{Scenario: id, Kind: KindKnown, Ref: s + " (2)", Title: s, Note: s, Step: 1, StepText: s + " (other)"},
 		},
 	}
 	return features, opt

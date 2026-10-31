@@ -29,7 +29,7 @@ type (
 	}
 	tAnnotation struct {
 		Annotation
-		Invalid bool `json:"invalid"`
+		State, Reason string
 	}
 	tFeature struct {
 		ID, URI, Name, Description, Status string
@@ -143,6 +143,14 @@ func knownAnnotations() []Annotation {
 	}
 }
 
+func statesOf(d tData) []string {
+	out := make([]string, len(d.Annotations))
+	for i, a := range d.Annotations {
+		out[i] = a.State
+	}
+	return out
+}
+
 func annotationsOf(d tData) []Annotation {
 	out := make([]Annotation, len(d.Annotations))
 	for i, a := range d.Annotations {
@@ -176,6 +184,9 @@ func TestKnownIssueRules(t *testing.T) {
 	}
 	if d.Features[0].Status != "failed" {
 		t.Errorf("feature status %s; an unexpected failure outranks known", d.Features[0].Status)
+	}
+	if got, want := statesOf(d), []string{"applied", "applied", "passed", "not-applied", "not-applied", ""}; !reflect.DeepEqual(got, want) {
+		t.Errorf("states %q, want %q", got, want)
 	}
 	if !reflect.DeepEqual(annotationsOf(d), knownAnnotations()) {
 		t.Errorf("annotations not passed through unchanged:\n%+v", d.Annotations)
@@ -338,6 +349,9 @@ func TestKnownIssueRuleEdges(t *testing.T) {
 		{Scenario: "e-L12", Kind: KindKnown, Ref: "EX-4", Step: 1, StepText: "a", Observed: true},
 	}
 	d, _ := dataBlock(t, mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns}))
+	if got, want := statesOf(d), []string{"not-applied", "applied", "not-applied", "not-applied"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("states %q, want %q", got, want)
+	}
 	for _, tc := range []struct {
 		id, status string
 		marked     []int
@@ -396,19 +410,17 @@ func TestKnownIssueDeclaredStep(t *testing.T) {
 			t.Errorf("%s: status %s, marked %v; want %s, %v", tc.id, s.Status, markedSteps(s), tc.status, tc.marked)
 		}
 	}
-	for i, a := range d.Annotations {
-		if a.Invalid != (i == 4) {
-			t.Errorf("annotation %d invalid = %v", i, a.Invalid)
-		}
+	if got, want := statesOf(d), []string{"applied", "not-applied", "not-applied", "passed", "invalid"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("states %q, want %q", got, want)
 	}
 	if d.Verdict != (Verdict{Label: "Failed", Tone: ToneFail}) {
 		t.Errorf("verdict %+v", d.Verdict)
 	}
 	text := html.UnescapeString(noscript(t, doc))
 	for _, want := range []string{
-		"Known failure EX-9: verify is broken (the failure is at step 1, not at declared step 3: unexpected)",
-		"Known failure EX-9: verify is broken (the failure is at step 4, not at declared step 3: unexpected)",
-		"Known failure EX-9 (declared step 3 does not match the recorded step text; this record covers nothing)",
+		"Known issue, not applied EX-9: verify is broken (The failure is at step 1, not at the declared step 3, so it counts as an unexpected failure)",
+		"Known issue, not applied EX-9: verify is broken (The failure is at step 4, not at the declared step 3, so it counts as an unexpected failure)",
+		"Known issue, not applied EX-9 (Declared step 3 does not match the recorded step text, so this record covers nothing)",
 	} {
 		if !strings.Contains(text, want) {
 			t.Errorf("fallback lacks %q", want)

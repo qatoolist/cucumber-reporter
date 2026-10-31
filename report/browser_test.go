@@ -630,8 +630,46 @@ func interactionChecks(t *testing.T, s *session) {
 			if (out.map((g) => g.label).join('|') !== want.join('|')) out.push({ label: 'groups ' + out.map((g) => g.label).join(',') + ' want ' + want.join(','), count: -1 });
 			return out; })()`, &groups)
 		for _, g := range groups {
-			if g.Count != g.Want || g.Shown+g.More != g.Count {
+			if g.Count != g.Want || g.Shown+g.More != g.Count || g.Shown < 1 {
 				return fail("%+v", g)
+			}
+		}
+		return nil
+	})
+	s.check("known-issue records that cover nothing are not counted as known", func() error {
+		var d struct {
+			Issues int
+			NA     []string
+		}
+		s.eval(`(() => { const D = JSON.parse(document.getElementById('report-data').textContent); const k = (D.annotations || []).filter((a) => a.kind === 'known');
+			return { issues: new Set(k.filter((a) => a.state === 'applied' || a.state === 'passed').map((a) => a.ref)).size, na: k.filter((a) => a.state === 'not-applied' || a.state === 'invalid').map((a) => a.ref) }; })()`, &d)
+		s.goTo("/known")
+		head := s.str(`document.querySelector('.page-s').textContent`)
+		if want := fmt.Sprintf("across %d issue", d.Issues); !strings.Contains(head, want) {
+			return fail("Known issues reads %q, want %q", head, want)
+		}
+		var na []string
+		s.eval(`[...document.querySelectorAll('.na-c')].filter((c) => /Known issue, not applied/.test(c.textContent) && c.querySelector('.banner-w').textContent.length > 10 && c.querySelector('.glyph.s-known') === null).map((c) => c.querySelector('.ref').textContent)`, &na)
+		if fmt.Sprint(na) != fmt.Sprint(d.NA) {
+			return fail("not-applied cards %v, want %v", na, d.NA)
+		}
+		s.goTo("/dashboard")
+		var refs []string
+		s.eval(`[...document.querySelectorAll('.c-known .refs .ref')].map((r) => r.textContent)`, &refs)
+		for _, r := range refs {
+			for _, x := range d.NA {
+				if r == x {
+					return fail("dashboard lists not-applied record %s among known issues", r)
+				}
+			}
+		}
+		if len(d.NA) > 0 && !s.is(`document.querySelector('.c-known .note.na')`) {
+			return fail("dashboard does not mention the records not applied")
+		}
+		s.goTo("/print")
+		for _, x := range d.NA {
+			if !s.is(`/Known issue, not applied: ` + regexp.QuoteMeta(x) + `/.test(document.getElementById('print-root').textContent)`) {
+				return fail("print lacks the not-applied record %s", x)
 			}
 		}
 		return nil
