@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/qatoolist/cucumber-reporter/cucumber"
 )
@@ -41,9 +42,14 @@ type Options struct {
 	// TopFacts names, by label, up to three RunFacts whose values the top bar shows under the run name.
 	// Empty: the first three RunFacts.
 	TopFacts []string `json:"topFacts,omitempty"`
-	// WallClock, when set, is shown beside the summed test time, for example "9m 35s". Cucumber JSON
-	// has no start times, so the renderer cannot compute it.
+	// WallClock, when set, is the primary elapsed-time metric, for example "9m 35s". Cucumber JSON
+	// has no start times, so the renderer cannot compute it. Surrounding whitespace is trimmed;
+	// a whitespace-only value is treated as absent.
 	WallClock string `json:"wallClock,omitempty"`
+	// TimingSection optionally links the time card to a caller-supplied section.
+	// Without it, the card opens the slowest-scenarios list.
+	// It must be the ID of a section in Sections.
+	TimingSection string `json:"timingSection,omitempty"`
 	// Sections are caller-owned panels: compact cards on the dashboard and full panels under Run details.
 	Sections []Section `json:"sections,omitempty"`
 	// Annotations attach known issues, skip reasons and observation limits to scenarios.
@@ -292,6 +298,7 @@ func normalize(opt Options) (Options, error) {
 	if opt.Name == "" {
 		opt.Name = opt.Title
 	}
+	opt.WallClock = strings.TrimSpace(opt.WallClock)
 	opt.Limits = opt.Limits.WithDefaults()
 	if v := opt.Verdict; v != nil {
 		if v.Label == "" {
@@ -335,6 +342,9 @@ func normalize(opt Options) (Options, error) {
 		if s.Role == RoleKnownIssues {
 			knownSections++
 		}
+	}
+	if opt.TimingSection != "" && !ids[opt.TimingSection] {
+		return opt, invalid("timingSection must name an existing section")
 	}
 	if knownSections > 1 {
 		return opt, invalid("more than one section has the known-issues role")

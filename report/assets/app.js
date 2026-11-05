@@ -577,7 +577,7 @@
         kpi('#/scenarios', 'Scenarios', S.length, (v) => num(Math.round(v)), top2(T.sc), sbar(T.sc, { cls: 'micro', delay: 160 }), 'list'),
         kpi('#/timeline', 'Steps', STEPS.length, (v) => num(Math.round(v)), top2(T.st), sbar(T.st, { cls: 'micro', delay: 220 }), 'timeline'),
         kpi(HEAD.href, HEAD.label, HEAD.value, fpct, HEAD.sub, null, 'check'),
-        kpi('#/scenarios?sort=slowest', 'Test time', T.dur, (v) => dur(Math.round(v)), (D.wallClock ? 'wall clock ' + D.wallClock + ' · ' : '') + (slow ? 'slowest ' + dur(slow.dur) : ''), null, 'clock')));
+        kpi(D.timingSection ? '#/run?section=' + encodeURIComponent(D.timingSection) : '#/scenarios?sort=slowest', D.wallClock ? 'Total elapsed time' : 'Summed step time', T.dur, (v) => D.wallClock || dur(Math.round(v)), [D.wallClock ? 'summed steps ' + dur(T.dur) : '', slow ? 'slowest ' + dur(slow.dur) : ''].filter(Boolean).join(' · '), null, 'clock')));
     }
     // Two cards that share a row are fitted once laid out: the first card's list takes as many rows
     // (from most down to fewest) as fit beside the second, so neither column ends in a large empty area.
@@ -1125,7 +1125,7 @@
       h('h1', null, bdi(D.name || '')),
       h('div', { class: 'pr-verdict t-' + tone }, h('span', { class: 'pr-vi' }, icon(tone === 'fail' ? 'x' : tone === 'warn' ? 'flag' : 'check')), h('div', null, h('b', null, verdict), h('p', null, (T.sc.known ? num(T.sc.passed + T.sc.known) + ' of ' + num(executed) + ' executed scenarios ended as expected (' + num(T.sc.passed) + ' passed, pass rate ' + fpct(passRate) + ')' : num(T.sc.passed) + ' of ' + num(executed) + ' executed scenarios passed (' + fpct(passRate) + ')') + ' · ' + plural(T.sc.failed, 'unexpected failure') + ' · ' + plural(T.sc.known, 'known failure') + ' · ' + num(blocking) + ' undefined or ambiguous · ' + num(T.sc.skipped) + ' skipped'))),
       h('dl', { class: 'pr-facts' }, (D.facts || []).map((f) => h('div', null, h('dt', null, f.label), h('dd', null, bdi(f.value))))),
-      h('div', { class: 'pr-kpis' }, [['Features', num(F.length)], ['Scenarios', num(S.length)], ['Steps', num(STEPS.length)], [HEAD.label, fpct(HEAD.value)], ['Test time', dur(T.dur)]].map(([l, v]) => h('div', null, h('span', null, l), h('b', null, v)))),
+      h('div', { class: 'pr-kpis' }, [['Features', num(F.length)], ['Scenarios', num(S.length)], ['Steps', num(STEPS.length)], [HEAD.label, fpct(HEAD.value)], [D.wallClock ? 'Total elapsed time' : 'Summed step time', D.wallClock || dur(T.dur), D.wallClock ? 'Summed step time: ' + dur(T.dur) : '']].map(([l, v, sub]) => h('div', null, h('span', null, l), h('b', null, v), sub ? h('span', null, sub) : null))),
       h('div', { class: 'pr-charts' },
         h('div', { class: 'pr-donut' }, h('h2', null, 'Scenarios by status'), h('div', { class: 'pr-dw' }, donut(T.sc, 'scenario', new Set(), null, true), h('table', { class: 'pr-t' }, h('tbody', null, ORDER.filter((k) => T.sc[k]).map((k) => h('tr', null, h('td', null, h('span', { class: 'sw f-' + k }), ' ', glyphTxt(k), ' ', ST[k][0]), h('td', { class: 'num' }, num(T.sc[k])), h('td', { class: 'num' }, fpct(pct(T.sc[k], S.length))))))))),
         h('div', { class: 'pr-feat' }, h('h2', null, 'Results per feature'), h('table', { class: 'pr-t' }, h('thead', null, h('tr', null, h('th', null, 'Feature'), h('th', null, 'Outcome'), h('th', { class: 'num' }, 'Passed'), h('th', { class: 'num' }, 'Time'))),

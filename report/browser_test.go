@@ -1304,3 +1304,43 @@ func TestBrowserReviewFixtures(t *testing.T) {
 		}
 	})
 }
+
+func TestBrowserElapsedTimeLinksToMeasuredPhases(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	opt.WallClock = "19m26s"
+	opt.TimingSection = "execution-time"
+	opt.Sections = append(opt.Sections, Section{ID: "execution-time", Title: "Measured phases", Rows: []Fact{{Label: "Setup", Value: "2m"}}})
+	s := openSession(t, features, opt, true)
+	s.check("elapsed time, summed steps and phase navigation", func() error {
+		s.goTo("/dashboard")
+		if !s.is(`Array.from(document.querySelectorAll('a')).some(a=>a.getAttribute('href')==='#/run?section=execution-time' && a.textContent.includes('19m26s') && a.textContent.includes('Total elapsed time') && a.textContent.includes('summed steps'))`) {
+			return fail("elapsed time card missing")
+		}
+		s.goTo("/run?section=execution-time")
+		if !s.is(`document.body.textContent.includes('Measured phases') && document.body.textContent.includes('2m')`) {
+			return fail("phase section missing")
+		}
+		s.goTo("/print")
+		if !s.is(`document.querySelector('.pr-kpis').textContent.includes('19m26s') && document.querySelector('.pr-kpis').textContent.includes('Total elapsed time') && document.querySelector('.pr-kpis').textContent.includes('Summed step time:')`) {
+			return fail("print elapsed time missing")
+		}
+		return nil
+	})
+}
+
+func TestBrowserTimingWithoutElapsedTimeKeepsSlowestNavigation(t *testing.T) {
+	features, opt := loadShowcase(t, "")
+	opt.WallClock = " \t "
+	s := openSession(t, features, opt, true)
+	s.check("summed time without an invented elapsed duration", func() error {
+		s.goTo("/dashboard")
+		if !s.is(`(() => { const a = document.querySelector('.kpis a[href="#/scenarios?sort=slowest"]'); return a && a.textContent.includes('Summed step time') && !a.querySelector('.kpi-s').textContent.includes('summed steps') && !a.textContent.includes('across workers'); })()`) {
+			return fail("summed time card or legacy navigation missing")
+		}
+		s.goTo("/print")
+		if !s.is(`document.querySelector('.pr-kpis').textContent.includes('Summed step time') && !document.querySelector('.pr-kpis').textContent.includes('Total elapsed time')`) {
+			return fail("print invented elapsed time")
+		}
+		return nil
+	})
+}

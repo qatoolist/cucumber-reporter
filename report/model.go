@@ -26,17 +26,18 @@ var statusLabels = map[string]string{
 }
 
 type pageData struct {
-	Schema      int              `json:"schema"`
-	Title       string           `json:"title"`
-	Name        string           `json:"name"`
-	Verdict     Verdict          `json:"verdict"`
-	Facts       []Fact           `json:"facts"`
-	Top         []string         `json:"top"`
-	WallClock   string           `json:"wallClock,omitempty"`
-	Sections    []Section        `json:"sections"`
-	Annotations []annotationData `json:"annotations"`
-	Defaults    ViewDefaults     `json:"defaults"`
-	Features    []featureData    `json:"features"`
+	Schema        int              `json:"schema"`
+	Title         string           `json:"title"`
+	Name          string           `json:"name"`
+	Verdict       Verdict          `json:"verdict"`
+	Facts         []Fact           `json:"facts"`
+	Top           []string         `json:"top"`
+	WallClock     string           `json:"wallClock,omitempty"`
+	TimingSection string           `json:"timingSection,omitempty"`
+	Sections      []Section        `json:"sections"`
+	Annotations   []annotationData `json:"annotations"`
+	Defaults      ViewDefaults     `json:"defaults"`
+	Features      []featureData    `json:"features"`
 
 	Summary []statusCount `json:"-"`
 	Total   int           `json:"-"`
@@ -232,7 +233,7 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 	}
 	p := &pageData{
 		Schema: 1, Title: clean(opt.Title), Name: clean(opt.Name), Facts: cleanFacts(opt.RunFacts),
-		WallClock: clean(opt.WallClock), Defaults: opt.Defaults,
+		WallClock: clean(opt.WallClock), TimingSection: opt.TimingSection, Defaults: opt.Defaults,
 	}
 	p.Annotations = make([]annotationData, len(opt.Annotations))
 	anns := map[string][]*annotationData{}

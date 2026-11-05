@@ -28,7 +28,7 @@ The page is an application shell: a top bar, a navigation sidebar and one view a
   Run details, then a quick link per feature with its status. It collapses to icons on wide screens
   and becomes a drawer at 1024 px and below.
 - **Dashboard.** The verdict with a one-line summary, the first six run facts and a ring; key figures
-  (features, scenarios, steps, the headline rate and test time); a status donut (scenarios or steps);
+  (features, scenarios, steps, the headline rate and elapsed or summed step time); a status donut (scenarios or steps);
   results per feature; Needs attention; known and unexpected failures; your sections as cards; and a
   duration profile on a logarithmic scale with the slowest scenarios. Every tile, segment, bar and
   row is a link into a filtered view.
@@ -172,7 +172,8 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `Title`, `Name` | Document title (also the printed brand line) and run name. |
 | `RunFacts` | Label and value pairs: the first six on the dashboard, all under Run details and on the printed cover. |
 | `TopFacts` | Up to three `RunFacts` labels shown in the top bar. Default: the first three facts. |
-| `WallClock` | Shown beside the summed test time. Cucumber JSON has no start times, so the renderer cannot compute it. |
+| `WallClock` | Measured elapsed duration, shown as the primary dashboard and print time. Summed step time remains separate. Surrounding whitespace is trimmed; an empty value shows only summed step time. Cucumber JSON has no start times, so the renderer cannot compute elapsed time. |
+| `TimingSection` | Optional ID of an existing `Sections` entry. Links the dashboard time card to that section under Run details. Without it the card opens the slowest-scenarios list. A missing section ID is rejected. |
 | `Verdict` | The headline: `Label` (required) and `Tone` (`ok`, `warn`, `fail`, `info`; empty uses the computed tone). Without it the headline is computed: "Failed: N unexpected failures" (N counts scenarios whose outcome is failed after the known-issue rules), Ambiguous or Undefined (fail), Passed with known failures (warn), Pending or Skipped (info), Passed (ok). |
 | `Sections` | Your own panels: a card on the dashboard and a full panel under Run details. `ID` is a-z, 0-9 and `-`, starting with a letter, at most 48 characters; `Tone` is `info` (default), `ok`, `warn` or `fail`; `Summary`, `Rows` and `Note` hold the content. `Role` tells the page what the section summarises: `known` (its summary and note appear on Known issues instead of a dashboard card; at most one), `skip` or `limit`. Sections with a role are left out of the printed scope sections, because their entries print from the annotations. |
 | `Annotations` | Caller knowledge per scenario, named by `ScenarioIDs`: `Kind` `known` (with `Ref`, the issue key), `skip` (why a scenario was skipped) or `limit` (not fully verified in this environment), plus `Title` and `Note`. See Known issues below. |
@@ -183,6 +184,18 @@ Errors are sentinel values for `errors.Is`: `cucumber.ErrNoResults`, `ErrInvalid
 `ErrIncomplete`, `ErrInvalid`, `ErrTooLarge`, `ErrInvalidBase64`, and `report.ErrOptionsVersion`,
 `ErrInvalidOptions`, `ErrNoInput`, `ErrNotRegular`, `ErrEmptyOutput`. Messages name a field, index or
 location, never input content.
+
+### Elapsed time and phase details
+
+Set `WallClock` to the measured run duration to show it as the primary dashboard
+and print time. Summed step durations remain a separate secondary metric because
+concurrent steps can overlap. When elapsed time is unavailable, leave `WallClock`
+empty: the card is labelled "Summed step time" and does not repeat that value in
+its secondary text. The reporter never estimates setup time from summed steps.
+
+Set `TimingSection` to an existing custom section ID to link the time card to your
+measured phase breakdown. Without that option the card opens the slowest-scenarios
+list, as in earlier versions.
 
 ### Known issues
 

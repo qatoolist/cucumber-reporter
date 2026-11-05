@@ -5,6 +5,25 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-05
+
+### Added
+
+- Optional `Options.TimingSection` links the dashboard time card to an existing
+  caller-provided section. Without it, the card keeps its slowest-scenarios link.
+
+### Changed
+
+- A supplied `WallClock` is the primary dashboard and print duration, labelled
+  "Total elapsed time". Summed step time remains visible separately in both views.
+  Without `WallClock`, the primary metric is "Summed step time"; the reporter does
+  not estimate elapsed time from steps. Surrounding whitespace is trimmed and a
+  whitespace-only value is treated as absent.
+- Timing labels no longer assume that a run has multiple workers.
+
+This minor release adds an exported option; existing named-field callers and
+options files remain compatible. `OptionsVersion` remains 2.
+
 ## [0.1.1] - 2026-10-31
 
 Fixes from the independent review of v0.1.0. No API change.
