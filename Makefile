@@ -53,6 +53,20 @@ verify: fmt-check vet lint test compat-check ## The offline gate: formatting, ve
 surface-check: ## Compare public API and artifacts over every unique repository fixture
 	python3 internal/surfacecheck/run.py
 
+.PHONY: ui-check
+BROWSERS ?= chromium
+ui-check: ## Playwright UI checks on generated reports: routes, print, reflow, retries and interactions (BROWSERS="chromium firefox webkit")
+	@d=$$(mktemp -d) && mkdir -p $$d/showcase $$d/retry $$d/empty $$d/messages && echo '[]' > $$d/empty.json && \
+	$(GO) run ./cmd/cucumber-report -enhanced -bundle -options testdata/synthetic/showcase/options-enhanced.json -o $$d/showcase testdata/synthetic/showcase >/dev/null && \
+	$(GO) run ./cmd/cucumber-report -enhanced -o $$d/retry testdata/captured/cucumber-ruby-9.2.1-retry/retry.json >/dev/null && \
+	$(GO) run ./cmd/cucumber-report -enhanced -o $$d/empty $$d/empty.json >/dev/null && \
+	$(GO) run ./cmd/cucumber-report -enhanced -format messages -o $$d/messages testdata/round15/captured/s3-retry2/run.ndjson >/dev/null && \
+	python3 internal/browsercheck/check.py $$d/showcase/html-*/index.html $(BROWSERS) && \
+	ok=1 && for b in $(BROWSERS); do python3 internal/browsercheck/retries.py $$d/retry/html-*/index.html $$b || ok=0; done && [ $$ok = 1 ] && \
+	python3 internal/browsercheck/interactions.py $$d/retry/html-*/index.html $$d/empty/html-*/index.html $$d/messages/html-*/index.html $(BROWSERS) && \
+	python3 internal/browsercheck/interactions_mutants.py $$d/retry/html-*/index.html $$d/empty/html-*/index.html $$d/messages/html-*/index.html $(firstword $(BROWSERS)); \
+	status=$$?; rm -rf "$$d"; exit $$status
+
 .PHONY: release-gate corpus-check api-check dom-check
 release-gate: ## Clean-commit release gate with full output in dist/release-gate.log (browser CI remains separate)
 	python3 internal/releasecheck/run.py

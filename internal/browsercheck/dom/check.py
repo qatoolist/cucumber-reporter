@@ -41,6 +41,7 @@ def fixtures(tmp):
         ('emptyMessages', ROOT/'testdata/round16/H3/in/empty.ndjson', True),
         ('eager', tmp / 'eager.json', True),
         ('earlier', ROOT / 'testdata/round16/H3/in/rj2/cucumber.json', True),
+        ('messagesRetry', ROOT / 'testdata/round15/captured/s3-retry2/run.ndjson', True),
         ('deep', tmp / 'deep.json', True), ('bulk', tmp / 'bulk.json', True),
     ]:
         parent = tmp / name

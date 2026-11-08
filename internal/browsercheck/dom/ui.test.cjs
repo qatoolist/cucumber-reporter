@@ -333,3 +333,21 @@ test('H4-N3: Open attachments Failed steps reopens the failed step attachment in
  await choose('None');assert(!open().some(Boolean));
  await choose('Failed steps');assert.deepEqual(open(),initial);
 });
+const attemptLines=async(w,d)=>{const out=[];for(const b of [...d.querySelectorAll('.attempts [data-attempt-index]')]){click(w,b);await sleep(10);out.push({label:b.textContent,body:d.querySelector('.attempt-body p').textContent});}return out;};
+test('attempts show measured start, finish and elapsed time when the runner records them',async t=>{
+ const {w,d}=await load(t,'messagesRetry','#/scenarios/checkout-55a03ad5f369-L31');
+ const lines=await attemptLines(w,d);assert.equal(lines.length,3);
+ assert.equal(lines[0].body,'Attempt 1: Failed · Started 03:10:51.148364 UTC · Finished 03:10:51.154157 UTC · 5.8 ms elapsed');
+ assert.equal(lines[2].body,'Attempt 3: Failed · Started 03:10:51.158285 UTC · Finished 03:10:51.160796 UTC · 2.5 ms elapsed');
+ assert.deepEqual(lines.map(x=>x.label),['Attempt 1 · failed · 03:10:51.148 UTC','Attempt 2 · failed · 03:10:51.154 UTC','Attempt 3 · failed · 03:10:51.158 UTC']);
+ const time=d.querySelector('.attempt-body time');assert(time);assert.equal(time.getAttribute('datetime'),'2026-11-07T03:10:51.158285Z');
+});
+test('attempts without timestamps show their own step time, never an invented clock',async t=>{
+ const s=scenario(reports.enhanced),ex=data(reports.enhanced).execution[s.id];const {w,d}=await load(t,'enhanced','#/scenarios/'+s.id);
+ const lines=await attemptLines(w,d);assert.equal(lines.length,3);
+ // Each attempt's own steps: 77, 94 and 92 µs in the captured Ruby retry (the final attempt reuses the scenario's steps).
+ assert.deepEqual(ex.map(a=>(a.useScenarioSteps?s.steps:a.steps).reduce((n,st)=>n+(st.duration||0),0)),[77000,94000,92000]);
+ assert.deepEqual(lines.map(x=>x.body),['77 µs','94 µs','92 µs'].map((v,i)=>'Attempt '+(i+1)+': Failed · Step time '+v+' (no start or finish time recorded)'));
+ assert.deepEqual(lines.map(x=>x.label),['Attempt 1 · failed','Attempt 2 · failed','Attempt 3 · failed']);
+});
+

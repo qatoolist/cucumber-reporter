@@ -29,6 +29,13 @@ Planned v0.3.0; browser/print/cross-browser CI remains a release gate.
   allocation benchmarks and report-size budgets.
 - Context-aware rendering, streamed directory/ZIP output and durable file publication.
 - Enhanced processing of runner timestamps/git facts and final-attempt retry outcomes.
+- Real-browser UI interaction checks, run in CI on Chromium, Firefox and WebKit (`make ui-check`
+  locally, Chromium by default): settings keep scenario state, Back/Forward focus, mobile drawer,
+  evidence reveal, command palette, attempt times and the empty report, with ten mutants proving
+  every check fails on broken behaviour.
+- Execution attempts show the runner's recorded start, finish and elapsed time (Cucumber
+  Messages), and the attempt selector shows each start time; without timestamps each attempt
+  shows its own summed step time, labelled as such.
 
 ### Fixed
 

@@ -59,3 +59,16 @@ jobs:
           mkdir -p /tmp/reporter-retries
           go run ./cmd/cucumber-report -enhanced -o /tmp/reporter-retries testdata/captured/cucumber-ruby-9.2.1-retry/retry.json
       - run: python internal/browsercheck/retries.py /tmp/reporter-retries/html-*/index.html ${{ matrix.browser }}
+      - name: Generate empty report
+        run: |
+          mkdir -p /tmp/reporter-empty
+          echo '[]' > /tmp/reporter-empty.json
+          go run ./cmd/cucumber-report -enhanced -o /tmp/reporter-empty /tmp/reporter-empty.json
+      - name: Generate Messages retry report
+        run: |
+          mkdir -p /tmp/reporter-messages
+          go run ./cmd/cucumber-report -enhanced -format messages -o /tmp/reporter-messages testdata/round15/captured/s3-retry2/run.ndjson
+      - run: python internal/browsercheck/interactions.py /tmp/reporter-retries/html-*/index.html /tmp/reporter-empty/html-*/index.html /tmp/reporter-messages/html-*/index.html ${{ matrix.browser }}
+      - name: Prove the interaction checks fail on broken behaviour
+        if: matrix.browser == 'chromium'
+        run: python internal/browsercheck/interactions_mutants.py /tmp/reporter-retries/html-*/index.html /tmp/reporter-empty/html-*/index.html /tmp/reporter-messages/html-*/index.html chromium

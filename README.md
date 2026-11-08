@@ -414,6 +414,10 @@ make generate        # re-minify report/assets after editing app.js or app.css (
 make fuzz-smoke      # each target for FUZZTIME (default 30s); minimization capped at 1s
 make browser-check   # interaction, print and stress checks in local headless Chrome; the PDF checks
                      # need Ghostscript (gs). Not part of verify, because it needs both.
+make ui-check        # Playwright UI checks (routes, print preview, reflow, retries, settings, history,
+                     # mobile drawer, evidence, palette, attempt times, empty report) and their mutant proofs; chromium by default,
+                     # BROWSERS="chromium firefox webkit" for all three (CI runs all three).
+                     # Needs `pip install -r internal/browsercheck/requirements.txt` and `playwright install`.
 make golden-update   # rewrite expected HTML after an intended change; review the diff
 ```
 
