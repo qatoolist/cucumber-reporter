@@ -53,7 +53,7 @@ func CheckInputs(streams []Stream) error {
 	for i, stream := range streams {
 		for _, location := range stream.Locations {
 			if owner, ok := seen[location]; ok && owner != i {
-				return Floorf("evidence floor: cross-input repeat in inputs %q and %q; this is a reporter bug", streams[owner].Name, stream.Name)
+				return Floorf("evidence floor: cross-input repeat in inputs %q and %q; internal consistency check failed, so the report was refused (please report this with the input)", streams[owner].Name, stream.Name)
 			}
 			seen[location] = i
 		}
@@ -71,15 +71,15 @@ func CheckOutcomes(streams []Stream, final map[string]Final, _ bool) error {
 	for _, stream := range streams {
 		for key, raw := range stream.Cases {
 			if seen[key] {
-				return Floorf("evidence floor: cross-input repeat; this is a reporter bug")
+				return Floorf("evidence floor: cross-input repeat; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 			seen[key] = true
 			shown, ok := final[key]
 			if !ok {
-				return Floorf("evidence floor: input execution disappeared; this is a reporter bug")
+				return Floorf("evidence floor: input execution disappeared; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 			if len(shown.Attempts) < len(raw) {
-				return Floorf("evidence floor: retry evidence disappeared; this is a reporter bug")
+				return Floorf("evidence floor: retry evidence disappeared; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 			if len(raw) > 1 {
 				nonpassed := false
@@ -87,7 +87,7 @@ func CheckOutcomes(streams []Stream, final map[string]Final, _ bool) error {
 					nonpassed = nonpassed || !strictlyPassed(a)
 				}
 				if !nonpassed {
-					return Floorf("evidence floor: repeated execution has no non-passed attempt; this is a reporter bug")
+					return Floorf("evidence floor: repeated execution has no non-passed attempt; internal consistency check failed, so the report was refused (please report this with the input)")
 				}
 			}
 			// In-input retries may rescue a prior failure only if the RAW final
@@ -97,7 +97,7 @@ func CheckOutcomes(streams []Stream, final map[string]Final, _ bool) error {
 				rawFailure = rawFailure || hard(attempt)
 			}
 			if rawFailure && !strictlyPassed(raw[len(raw)-1]) && shown.Status != "failed" && shown.Status != "ambiguous" && shown.Status != "known" {
-				return Floorf("evidence floor: hard result became green without a passed final execution; this is a reporter bug")
+				return Floorf("evidence floor: hard result became green without a passed final execution; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 		}
 	}

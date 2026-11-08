@@ -176,19 +176,19 @@ func (m *Messages) Observe(raw []byte) error {
 // when the runner omitted the Around hook event that caused its retry.
 func (m *Messages) Check(shown map[string]Execution, runnerFailed bool) error {
 	if m.failed && !runnerFailed {
-		return Floorf("evidence floor: raw runner failure signal disappeared; this is a reporter bug")
+		return Floorf("evidence floor: raw runner failure signal disappeared; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	if m.failed && len(shown) == 0 {
-		return Floorf("evidence floor: runner failed without executed cases; this is a reporter bug")
+		return Floorf("evidence floor: runner failed without executed cases; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	for _, ids := range m.starts {
 		for i, id := range ids {
 			e, ok := shown[id]
 			if !ok {
-				return Floorf("evidence floor: raw testCaseStarted has no execution; this is a reporter bug")
+				return Floorf("evidence floor: raw testCaseStarted has no execution; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 			if i < len(ids)-1 && strictlyPassed(e) {
-				return Floorf("evidence floor: retried execution has no non-passing evidence; this is a reporter bug")
+				return Floorf("evidence floor: retried execution has no non-passing evidence; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 			raw := Counts{Results: map[string]int{}}
 			actual := Counts{Results: map[string]int{}}

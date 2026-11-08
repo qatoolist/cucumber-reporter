@@ -188,7 +188,7 @@ func Check(raw, represented Counts) error {
 		missing += need
 	}
 	if missing > 0 {
-		return Floorf("evidence floor: %d non-passing results in the input are not represented; this is a reporter bug", missing)
+		return Floorf("evidence floor: %d non-passing results in the input are not represented; internal consistency check failed, so the report was refused (please report this with the input)", missing)
 	}
 	return nil
 }

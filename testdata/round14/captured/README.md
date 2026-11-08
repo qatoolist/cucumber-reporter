@@ -48,7 +48,7 @@ e1/e2 blobs/ are the generated random attachments (regenerable; see features/sup
 | a2/a4/a5b/a3/a8 ordered | Failed exit 3, counts = latest attempt | same | match |
 | any case REVERSED / shuffled | Failed (older run treated as final) | Failed | never greener (doc: keep order) |
 | + unrelated extra run (first or last) | unchanged, +2 passed | unchanged | match |
-| a6b ordered/reversed (Background failed in earlier input) | exit 1 "evidence floor ... reporter bug" | Failed exit 3 | JSON REFUSES (Q2-H2) |
+| a6b ordered/reversed (Background failed in earlier input) | exit 1 "evidence floor ... the report was refused" | Failed exit 3 | JSON REFUSES (Q2-H2) |
 | b1 / b3 / b4 | match | match | match |
 | b2 around-after fail | Failed {failed 1} | Failed but counts {passed 3} + diagnostic | documented Ruby limitation |
 | b4b around-after fail + retry | Passed (1 flaky) | Passed, 0 flaky; gates.flaky exit 0 | Messages loses flaky (Q2-H3) |

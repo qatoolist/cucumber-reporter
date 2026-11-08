@@ -34,7 +34,7 @@ func checkDisplayedEvidence(features []cucumber.Feature, page *pageData) error {
 				}
 			}
 			if priorFailure && !strictPass && sc.Status == "passed" {
-				return evidence.Floorf("evidence floor: failed retry was not rescued by a strictly passing final attempt; this is a reporter bug")
+				return evidence.Floorf("evidence floor: failed retry was not rescued by a strictly passing final attempt; internal consistency check failed, so the report was refused (please report this with the input)")
 			}
 		}
 	}
@@ -47,14 +47,14 @@ func checkDisplayedEvidence(features []cucumber.Feature, page *pageData) error {
 // ran, supplies the unmasked step evidence and annotations for those checks.
 func checkScenarioOutcomes(features []cucumber.Feature, page *pageData, cfg *RunConfig, orig *originalEvidence) error {
 	if page.Analysis != nil && len(page.Aliases) > 0 {
-		return evidence.Floorf("evidence floor: enhanced report contains plain navigation aliases; this is a reporter bug")
+		return evidence.Floorf("evidence floor: enhanced report contains plain navigation aliases; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 
 	if page.Total == 0 && page.VerdictSource != "caller" && page.Verdict.Tone == ToneOK {
-		return evidence.Floorf("evidence floor: empty execution cannot be green; this is a reporter bug")
+		return evidence.Floorf("evidence floor: empty execution cannot be green; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	if model.RunnerFailed(features) && page.Verdict.Tone != ToneFail {
-		return evidence.Floorf("evidence floor: runner failure signal was lost; this is a reporter bug")
+		return evidence.Floorf("evidence floor: runner failure signal was lost; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	ids := scenarioIDs(features)
 	source := map[string]struct {
@@ -80,12 +80,12 @@ func checkScenarioOutcomes(features []cucumber.Feature, page *pageData, cfg *Run
 		for _, sc := range f.Elements {
 			original, ok := source[sc.ID]
 			if !ok {
-				return evidence.Floorf("evidence floor: unknown scenario %s; this is a reporter bug", sc.ID)
+				return evidence.Floorf("evidence floor: unknown scenario %s; internal consistency check failed, so the report was refused (please report this with the input)", sc.ID)
 			}
 			raw := original.sc
 			if orig != nil {
 				if raw, ok = orig.scenarios[sc.ID]; !ok || len(raw.Steps) != len(original.sc.Steps) {
-					return evidence.Floorf("evidence floor: no unmasked evidence for scenario %s; this is a reporter bug", sc.ID)
+					return evidence.Floorf("evidence floor: no unmasked evidence for scenario %s; internal consistency check failed, so the report was refused (please report this with the input)", sc.ID)
 				}
 			}
 			// Coverage is re-derived from the annotations and the unmasked step text
@@ -104,12 +104,12 @@ func checkScenarioOutcomes(features []cucumber.Feature, page *pageData, cfg *Run
 	}
 	if page.VerdictSource != "caller" && page.Verdict.Tone == ToneOK {
 		if page.Analysis != nil && (page.Analysis.RunnerFailed || len(page.Analysis.GateFailures) > 0) {
-			return evidence.Floorf("evidence floor: green verdict despite runner or gate failure; this is a reporter bug")
+			return evidence.Floorf("evidence floor: green verdict despite runner or gate failure; internal consistency check failed, so the report was refused (please report this with the input)")
 		}
 		for _, f := range page.Features {
 			for _, sc := range f.Elements {
 				if failedOutcome(sc.Status) {
-					return evidence.Floorf("%s:%d: evidence floor: green run despite failed scenario; this is a reporter bug", f.URI, sc.Line)
+					return evidence.Floorf("%s:%d: evidence floor: green run despite failed scenario; internal consistency check failed, so the report was refused (please report this with the input)", f.URI, sc.Line)
 				}
 			}
 		}
@@ -194,7 +194,7 @@ func checkPolicyFloor(summary RunSummary, policy GatePolicy) error {
 		}
 	}
 	if scenarios == 0 && summary.Computed.Tone == ToneOK {
-		return evidence.Floorf("evidence floor: empty run cannot have a green verdict; this is a reporter bug")
+		return evidence.Floorf("evidence floor: empty run cannot have a green verdict; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	gateRequired = gateRequired || (policy.Empty && scenarios == 0) || (policy.Incomplete && summary.Completeness != "complete")
 	if policy.NewFailures {
@@ -211,10 +211,10 @@ func checkPolicyFloor(summary RunSummary, policy GatePolicy) error {
 		}
 	}
 	if gateRequired && len(summary.GateFailures) == 0 {
-		return evidence.Floorf("evidence floor: required quality gate did not fail; this is a reporter bug")
+		return evidence.Floorf("evidence floor: required quality gate did not fail; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	if (summary.RunnerFailed || gateRequired) && summary.Computed.Tone != ToneFail {
-		return evidence.Floorf("evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug")
+		return evidence.Floorf("evidence floor: run verdict contradicts runner or quality policy; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	return nil
 }

@@ -130,6 +130,8 @@ Planned v0.3.0; browser/print/cross-browser CI remains a release gate.
 
 ### Changed
 
+- Consistency-guard refusals ("evidence floor") now end with "internal consistency check failed, so the
+  report was refused (please report this with the input)" instead of "this is a reporter bug".
 - `-h` writes help to stdout and exits 0. `-strict` requires `-validate`.
 - Confirmed Ruby retries fold in plain mode as well as enhanced mode. This can change
   a v0.2.0 failed verdict to Passed (flaky) when the final attempt strictly passed.

@@ -522,7 +522,7 @@ func checkRawScenarioEvidence(raw evidence.Counts, features []Feature) error {
 	for _, f := range features {
 		for _, sc := range f.Elements {
 			if index >= len(raw.Scenarios) {
-				return evidence.Floorf("%s:%d: evidence floor: source scenario mapping lost; this is a reporter bug", f.URI, sc.Line)
+				return evidence.Floorf("%s:%d: evidence floor: source scenario mapping lost; internal consistency check failed, so the report was refused (please report this with the input)", f.URI, sc.Line)
 			}
 			if err := evidence.Check(evidence.Counts{Results: raw.Scenarios[index]}, modelmeta.Evidence([]Feature{{Elements: []Scenario{sc}}})); err != nil {
 				return fmt.Errorf("%s:%d: %w: non-passing result in an unsupported execution field", f.URI, sc.Line, ErrInvalid)

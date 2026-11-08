@@ -140,7 +140,7 @@ func CheckOutcome(sc Scenario, status string, known map[int]bool) error {
 		bad = true
 	}
 	if bad {
-		return evidence.Floorf("evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug")
+		return evidence.Floorf("evidence floor: scenario outcome contradicts its execution evidence; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	return nil
 }

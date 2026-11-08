@@ -142,7 +142,7 @@ func TestEvidenceFloorFixtureMutations(t *testing.T) {
 
 func TestDisplayedEvidenceGuardDetectsDroppedResult(t *testing.T) {
 	f := []cucumber.Feature{{Elements: []cucumber.Scenario{{Steps: []cucumber.Step{{Result: cucumber.Result{Status: cucumber.StatusFailed}}}}}}}
-	if err := checkDisplayedEvidence(f, &pageData{}); err == nil || !strings.Contains(err.Error(), "reporter bug") {
+	if err := checkDisplayedEvidence(f, &pageData{}); err == nil || !strings.Contains(err.Error(), "the report was refused") {
 		t.Fatalf("missing independent guard: %v", err)
 	}
 	// The model inventory must include failure evidence in earlier attempts too.

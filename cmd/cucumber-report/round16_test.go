@@ -83,7 +83,7 @@ func TestRound16AllStrictMessages(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				out := t.TempDir()
 				_, stderr, code := command(t, "-enhanced", "-fail-on-unexpected", "-format", "messages", "-o", out, file)
-				if code != 3 || strings.Contains(stderr, "reporter bug") {
+				if code != 3 || strings.Contains(stderr, "the report was refused") {
 					t.Fatalf("%d %s", code, stderr)
 				}
 				paths, e := filepath.Glob(filepath.Join(out, "html-*", "summary.json"))

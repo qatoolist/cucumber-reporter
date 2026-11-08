@@ -129,7 +129,7 @@ func CheckRunner(encoded string, claimedFailure bool) error {
 		}
 	}
 	if !claimedFailure && (causes > 0 || covered == 0) {
-		return Floorf("evidence floor: raw runner failure is not accounted for; this is a reporter bug")
+		return Floorf("evidence floor: raw runner failure is not accounted for; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	return nil
 }
@@ -157,7 +157,7 @@ func CheckCases(encoded string, claimed map[string]Final) error {
 		raw := audit.Cases[i]
 		shown, ok := claimed[key]
 		if !ok {
-			return Floorf("evidence floor: raw scenario disappeared; this is a reporter bug")
+			return Floorf("evidence floor: raw scenario disappeared; internal consistency check failed, so the report was refused (please report this with the input)")
 		}
 		if len(raw) == 0 {
 			continue
@@ -170,14 +170,14 @@ func CheckCases(encoded string, claimed map[string]Final) error {
 		}
 		final := raw[len(raw)-1]
 		if (final.NoOwnSteps || final.MissingResults) && (shown.Status == "passed" || shown.Status == "known") && !hard(final) {
-			return Floorf("evidence floor: incomplete raw execution became green; the parsed results were edited after parsing, or this is a reporter bug")
+			return Floorf("evidence floor: incomplete raw execution became green; the parsed results were edited after parsing or are internally inconsistent, so the report was refused (please report this with the input if they were not edited)")
 		}
 		rescued := len(final.Results) > 0 && !final.NoOwnSteps
 		for _, status := range final.Results {
 			rescued = rescued && status == "passed"
 		}
 		if mustStayRed && !rescued && shown.Status != "failed" && shown.Status != "ambiguous" && shown.Status != "known" {
-			return Floorf("evidence floor: raw failure has no passed rescue; the parsed results were edited after parsing, or this is a reporter bug")
+			return Floorf("evidence floor: raw failure has no passed rescue; the parsed results were edited after parsing or are internally inconsistent, so the report was refused (please report this with the input if they were not edited)")
 		}
 	}
 	return nil
@@ -292,7 +292,7 @@ func CheckCase(encoded string, claimed Final, exists bool) error {
 		return nil
 	}
 	if !exists {
-		return Floorf("evidence floor: raw scenario disappeared; this is a reporter bug")
+		return Floorf("evidence floor: raw scenario disappeared; internal consistency check failed, so the report was refused (please report this with the input)")
 	}
 	var audit RunnerAudit
 	if err := json.Unmarshal([]byte(encoded), &audit); err != nil {

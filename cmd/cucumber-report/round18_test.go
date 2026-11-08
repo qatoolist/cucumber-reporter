@@ -54,7 +54,7 @@ func TestRound18IssuePolicyExclusionKeepsCucumberExit(t *testing.T) {
 					}
 					args = append(args, "-run-config", path, filepath.Join(dir, "run."+format))
 					_, stderr, code := command(t, args...)
-					if code != 3 || strings.Contains(stderr, "reporter bug") {
+					if code != 3 || strings.Contains(stderr, "the report was refused") {
 						t.Fatalf("wanted cucumber failure exit 3, got %d: %s", code, stderr)
 					}
 				})
