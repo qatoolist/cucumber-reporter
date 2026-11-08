@@ -1,7 +1,11 @@
 """Cross-browser offline report checks. Usage: python check.py report/index.html [browser]."""
 import pathlib
+import re
 import sys
 from playwright.sync_api import sync_playwright
+
+# The label names its target: "View evidence (1) · <attachment>".
+EVIDENCE_LINK = re.compile(r"^View evidence \(1\)( · .+)?$")
 
 report = pathlib.Path(sys.argv[1]).resolve()
 engines = sys.argv[2:] or ["chromium", "firefox", "webkit"]
@@ -33,7 +37,7 @@ with sync_playwright() as playwright:
         # Exercise effects, not merely hashes; repeating a fragment does not emit hashchange.
         from urllib.parse import parse_qs
         for link in [page.get_by_role("link", name="Jump to step", exact=True),
-                     page.get_by_role("link", name="View evidence (1)", exact=True),
+                     page.get_by_role("link", name=EVIDENCE_LINK),
                      page.locator(".clean-banner a[href*='step=']").first,
                      page.locator(".sc-aside a[href*='evidence=']").first]:
             query = parse_qs(link.get_attribute("href").split("?", 1)[1])
@@ -53,7 +57,7 @@ with sync_playwright() as playwright:
         assert page.locator(".v-sc .att-h[aria-expanded=true]").count() == 0
         assert page.get_by_role("searchbox", name="Find in attachment").count() == 0
         assert page.get_by_role("searchbox", name="Find in error").count() == 0
-        page.get_by_role("link", name="View evidence (1)", exact=True).click()
+        page.get_by_role("link", name=EVIDENCE_LINK).click()
         header = page.locator("#step-3 .att-h").first
         header.click()
         header.focus()
@@ -67,7 +71,11 @@ with sync_playwright() as playwright:
         page.get_by_role("dialog", name="Error details").wait_for()
         page.get_by_role("searchbox", name="Find in error").last.fill("invoice")
         assert page.locator("dialog .matched-line").count() > 0
+        # Escape in a filled search field first clears it (native browser behaviour); the next Escape closes.
         page.keyboard.press("Escape")
+        if page.locator("dialog[open]").count():
+            assert page.get_by_role("searchbox", name="Find in error").last.input_value() == ""
+            page.keyboard.press("Escape")
         assert page.locator("dialog[open]").count() == 0
         # Dialog closure restores focus to the invoking button.
         assert page.evaluate("document.activeElement.textContent.includes('Full screen')")
