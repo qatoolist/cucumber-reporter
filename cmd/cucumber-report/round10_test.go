@@ -32,7 +32,7 @@ func TestRound10PlainCLIAndValidation(t *testing.T) {
 }
 
 func TestRound10ModuleVersion(t *testing.T) {
-	for _, tc := range []struct{ in, want string }{{"(devel)", developmentVersion}, {"v0.2.0+dirty", developmentVersion}, {"v0.2.1-20261107000000-abcdef123456", "0.3.0-dev (abcdef123456)"}, {"v0.3.1", "0.3.1"}, {"v0.3.0-rc.1", "0.3.0-rc.1"}} {
+	for _, tc := range []struct{ in, want string }{{"(devel)", developmentVersion}, {"v0.2.0+dirty", developmentVersion}, {"v0.2.1-20261107000000-abcdef123456", "0.3.1-dev (abcdef123456)"}, {"v0.3.1", "0.3.1"}, {"v0.3.0-rc.1", "0.3.0-rc.1"}} {
 		if got := versionFromModule(tc.in); got != tc.want {
 			t.Fatal(got)
 		}

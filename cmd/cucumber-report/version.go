@@ -7,7 +7,7 @@ import (
 )
 
 // developmentVersion is the next release; RELEASE.md requires it to match the tag.
-var developmentVersion = "0.3.0"
+var developmentVersion = "0.3.1-dev"
 
 var pseudoVersion = regexp.MustCompile(`(?:^|[-.])\d{14}-([0-9a-f]{12})(?:\+dirty)?$`)
 
