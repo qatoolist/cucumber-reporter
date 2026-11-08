@@ -1,0 +1,91 @@
+[
+  {
+    "id": "around",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "Around",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "around;wrapped-one",
+        "keyword": "Scenario",
+        "name": "Wrapped one",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"W1\"",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure W1 (run ) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\n./features/support/around.rb:2:in 'block in <top (required)>'\nfeatures/a.feature:4:in `outcome \"W1\"'",
+              "duration": 102000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ar",
+            "line": 2
+          }
+        ]
+      },
+      {
+        "id": "around;wrapped-two",
+        "keyword": "Scenario",
+        "name": "Wrapped two",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"W2\"",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ar",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "id": "around;plain",
+        "keyword": "Scenario",
+        "name": "Plain",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 11,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

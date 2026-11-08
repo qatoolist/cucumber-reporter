@@ -1,0 +1,72 @@
+$ cucumber --format rerun --out rerun.txt ... (run1)
+FFF.FF
+
+(::) failed steps (::)
+
+ffp 1 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+fpend 1 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/r.feature:7:in `step fpend'
+
+fundef 1 (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `step fundef'
+
+always fails (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/r.feature:16:in `step always'
+
+fff 1 (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/r.feature:19:in `step fff_p'
+
+Failing Scenarios:
+cucumber features/r.feature:3 # Scenario: Fail fail pass
+cucumber features/r.feature:6 # Scenario: Fail then pending
+cucumber features/r.feature:9 # Scenario: Fail then undefined
+cucumber features/r.feature:15 # Scenario: Always fails
+cucumber features/r.feature:18 # Scenario: Fail x3 then pass
+
+6 scenarios (5 failed, 1 passed)
+6 steps (5 failed, 1 passed)
+0m0.137s
+exit=1
+$ cucumber @rerun.txt ... (run2)
+FFFFF
+
+(::) failed steps (::)
+
+ffp 1 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+fpend 1 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/r.feature:7:in `step fpend'
+
+fundef 1 (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `step fundef'
+
+always fails (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/r.feature:16:in `step always'
+
+fff 1 (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/r.feature:19:in `step fff_p'
+
+Failing Scenarios:
+cucumber features/r.feature:3 # Scenario: Fail fail pass
+cucumber features/r.feature:6 # Scenario: Fail then pending
+cucumber features/r.feature:9 # Scenario: Fail then undefined
+cucumber features/r.feature:15 # Scenario: Always fails
+cucumber features/r.feature:18 # Scenario: Fail x3 then pass
+
+5 scenarios (5 failed)
+5 steps (5 failed)
+0m0.021s
+exit=1

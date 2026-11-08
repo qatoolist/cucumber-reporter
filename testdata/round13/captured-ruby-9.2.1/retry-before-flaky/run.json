@@ -1,0 +1,210 @@
+[
+  {
+    "id": "before-flaky",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "Before flaky",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "before-flaky;before-raises-once",
+        "keyword": "Scenario",
+        "name": "Before raises once",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before Before raises once 1 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 55000
+            }
+          }
+        ]
+      },
+      {
+        "id": "before-flaky;before-raises-once",
+        "keyword": "Scenario",
+        "name": "Before raises once",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      },
+      {
+        "id": "before-flaky;before-raises-always",
+        "keyword": "Scenario",
+        "name": "Before raises always",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before Before raises always 1 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 173000
+            }
+          }
+        ]
+      },
+      {
+        "id": "before-flaky;before-raises-always",
+        "keyword": "Scenario",
+        "name": "Before raises always",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before Before raises always 2 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 34000
+            }
+          }
+        ]
+      },
+      {
+        "id": "before-flaky;before-raises-always",
+        "keyword": "Scenario",
+        "name": "Before raises always",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before Before raises always 3 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 173000
+            }
+          }
+        ]
+      },
+      {
+        "id": "before-flaky;untouched",
+        "keyword": "Scenario",
+        "name": "Untouched",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

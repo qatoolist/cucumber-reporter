@@ -1,0 +1,123 @@
+[
+  {
+    "id": "strictness",
+    "uri": "features/s.feature",
+    "keyword": "Feature",
+    "name": "Strictness",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "strictness;passes",
+        "keyword": "Scenario",
+        "name": "Passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-pending",
+        "keyword": "Scenario",
+        "name": "Is pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "pend",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "todo (Cucumber::Pending)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/s.feature:7:in `pend'",
+              "duration": 52000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-undefined",
+        "keyword": "Scenario",
+        "name": "Is undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "nobody defined this",
+            "line": 10,
+            "match": {
+              "location": "features/s.feature:10"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-flaky",
+        "keyword": "Scenario",
+        "name": "Is flaky",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "flaky once",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "flaky (RuntimeError)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/s.feature:13:in `flaky once'",
+              "duration": 41000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-flaky",
+        "keyword": "Scenario",
+        "name": "Is flaky",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "flaky once",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

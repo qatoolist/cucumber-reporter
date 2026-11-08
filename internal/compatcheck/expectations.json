@@ -1,0 +1,207 @@
+{
+  "testdata/runners/behave-1.2.6/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/behave-1.2.6-intdur/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/behave-1.2.6-notags/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/cucumber-js-10-json/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/cucumber-jvm-7/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/cucumber-ruby-9/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/dup-jvm-surefire-rerun/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/dup-outline-noplaceholder-godog/cucumber.json": [],
+  "testdata/runners/dup-outline-noplaceholder-js/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/dup-outline-noplaceholder-jvm/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/dup-outline-noplaceholder-ruby/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/dup-ruby-retry/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks",
+    "retries"
+  ],
+  "testdata/runners/gate-js-afterhook-only/cucumber.json": [
+    "evidence"
+  ],
+  "testdata/runners/gate-jvm-afterhook-only/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/gate-jvm-allpass/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/gate-jvm-undefined-only/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/gate-ruby-afterhook-only/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/runners/godog-0.14/cucumber.json": [],
+  "testdata/runners/pytest-bdd-7/cucumber.json": [],
+  "testdata/runners/reqnroll-2-jsonformatter/cucumber.json": [
+    "background",
+    "evidence",
+    "hooks"
+  ],
+  "testdata/plain-compat/b1run/cucumber.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/bg.json": [
+    "background",
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/kh.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/kh2.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/nobg.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/noline.json": [
+    "background"
+  ],
+  "testdata/plain-compat/bgh/orphan.json": [
+    "background"
+  ],
+  "testdata/plain-compat/bgh/r2/cucumber.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/run/cucumber.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/stepless-hook.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/bgh/stepless.json": [
+    "background"
+  ],
+  "testdata/plain-compat/hk/badb64.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/badstatus.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/emptystatus.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/floatdur.json": [],
+  "testdata/plain-compat/hk/hiddenstr.json": [],
+  "testdata/plain-compat/hk/hookoutput.json": [
+    "evidence",
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/negdur.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/noresult.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/nostatus.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/nullelem.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/nullhook.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/objhook.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/passemb.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/pending.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/run/cucumber.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/skipped.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/stephook.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/strline.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/undefined.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/hk/unknownstatus.json": [
+    "hooks"
+  ],
+  "testdata/plain-compat/js/fail.json": [],
+  "testdata/plain-compat/js/pass.json": [],
+  "testdata/plain-compat/js/run/cucumber.json": [],
+  "testdata/plain-compat/opt/run/cucumber.json": [
+    "background"
+  ],
+  "testdata/synthetic/background-failure.json": [
+    "background"
+  ],
+  "testdata/synthetic/godog-v0.16.0-stepless.json": [],
+  "testdata/synthetic/godog-v0.16.0.json": [],
+  "testdata/synthetic/malformed-redaction.json": [],
+  "testdata/synthetic/minimal.json": [],
+  "testdata/synthetic/review/duration/cucumber.json": [],
+  "testdata/synthetic/review/input/cucumber.json": [],
+  "testdata/synthetic/review/stress/cucumber.json": [],
+  "testdata/synthetic/round8/jvm-hooks.json": [
+    "background",
+    "hooks"
+  ],
+  "testdata/synthetic/round9/collision.json": [
+    "background",
+    "hooks"
+  ],
+  "testdata/synthetic/round9/distinct.json": [
+    "background",
+    "hooks"
+  ],
+  "testdata/synthetic/round9/js.json": [],
+  "testdata/synthetic/showcase/cucumber-known.json": [],
+  "testdata/synthetic/showcase/cucumber.json": [],
+  "testdata/captured/cucumber-ruby-9.2.1-retry/retry.json": [
+    "hooks",
+    "background",
+    "evidence",
+    "retries"
+  ]
+}

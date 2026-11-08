@@ -1,0 +1,108 @@
+[
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 26000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 143000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 var update = flag.Bool("update", false, "rewrite testdata/golden from the current renderer")
@@ -36,19 +36,19 @@ func loadFixture(t testing.TB, name string) []cucumber.Feature {
 	return features
 }
 
-func mustRender(t testing.TB, features []cucumber.Feature, opt Options) string {
+func mustRender(t testing.TB, features []cucumber.Feature, opt renderOptions) string {
 	t.Helper()
-	out, err := Render(features, opt)
+	out, err := renderPublicModel(features, opt)
 	if err != nil {
-		t.Fatalf("Render: %v", err)
+		t.Fatalf("renderPublicModel: %v", err)
 	}
 	return string(out)
 }
 
 // sampleOptions mirrors how a test framework would call the library: run facts, caller sections with
 // roles, and one widget and one navigation section hidden by default. All values are invented.
-func sampleOptions() Options {
-	return Options{
+func sampleOptions() renderOptions {
+	return renderOptions{
 		Version: OptionsVersion,
 		Title:   "Example suite",
 		Name:    "Example suite execution results",
@@ -77,7 +77,7 @@ func sampleOptions() Options {
 }
 
 // loadShowcase reads the synthetic showcase run and its options file (the command's -options format).
-func loadShowcase(t testing.TB, suffix string) ([]cucumber.Feature, Options) {
+func loadShowcase(t testing.TB, suffix string) ([]cucumber.Feature, renderOptions) {
 	t.Helper()
 	features := loadFixture(t, filepath.Join("showcase", "cucumber"+suffix+".json"))
 	raw, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", "showcase", "options"+suffix+".json"))
@@ -86,7 +86,7 @@ func loadShowcase(t testing.TB, suffix string) ([]cucumber.Feature, Options) {
 	}
 	dec := json.NewDecoder(bytes.NewReader(raw))
 	dec.DisallowUnknownFields()
-	var opt Options
+	var opt renderOptions
 	if err := dec.Decode(&opt); err != nil {
 		t.Fatalf("options%s.json: %v", suffix, err)
 	}
@@ -98,11 +98,11 @@ func TestGolden(t *testing.T) {
 	cases := []struct {
 		name     string
 		features []cucumber.Feature
-		opt      Options
+		opt      renderOptions
 	}{
 		{"godog-v0.16.0", loadFixture(t, "godog-v0.16.0.json"), sampleOptions()},
-		{"minimal", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion}},
-		{"minimal-defaults", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion, Title: "Defaults", Defaults: ViewDefaults{
+		{"minimal", loadFixture(t, "minimal.json"), renderOptions{Version: OptionsVersion}},
+		{"minimal-defaults", loadFixture(t, "minimal.json"), renderOptions{Version: OptionsVersion, Title: "Defaults", Defaults: ViewDefaults{
 			Theme: ThemeDark, Density: DensityCompact, Expand: ExpandAll, View: ViewFailures,
 			Widgets: map[string]bool{WidgetStatus: false}, Nav: map[string]bool{NavRun: false},
 		}}},
@@ -120,6 +120,13 @@ func TestGolden(t *testing.T) {
 			want, err := os.ReadFile(path)
 			if err != nil {
 				t.Fatalf("%v (run go test ./report -run TestGolden -update to create it)", err)
+			}
+			for name, pattern := range map[string]string{"data": `(?s)<script[^>]*id="report-data"[^>]*>(.*?)</script>`, "fallback": `(?s)<noscript>(.*?)</noscript>`} {
+				re := regexp.MustCompile(pattern)
+				actual, expected := re.FindStringSubmatch(got), re.FindStringSubmatch(string(want))
+				if len(actual) != 2 || len(expected) != 2 || actual[1] != expected[1] {
+					t.Errorf("%s golden differs for %s", name, tc.name)
+				}
 			}
 			if got != string(want) {
 				t.Errorf("output differs from %s; inspect the diff, then run go test ./report -run TestGolden -update", path)
@@ -188,7 +195,17 @@ func TestCSPMatchesInlineAssets(t *testing.T) {
 	if strings.Count(doc, "<script") != 2 || !strings.Contains(doc, `<script type="application/json" id="report-data">`) {
 		t.Error("want the data block and the app script only")
 	}
-	for _, banned := range []string{" style=", "javascript:", "<link", "<iframe", "<object", "<embed", "<img", "<base", "<form", "unsafe-"} {
+	for _, token := range tokenize(t, doc) {
+		if token.kind != 's' {
+			continue
+		}
+		for _, attribute := range token.attrs {
+			if attribute.name == "style" {
+				t.Error("document contains an inline style attribute")
+			}
+		}
+	}
+	for _, banned := range []string{"javascript:", "<link", "<iframe", "<object", "<embed", "<img", "<base", "<form", "unsafe-"} {
 		if strings.Contains(doc, banned) {
 			t.Errorf("document contains %q", banned)
 		}
@@ -204,7 +221,7 @@ func TestAssetSizes(t *testing.T) {
 		}
 		t.Logf("%s: %d bytes readable, %d bytes embedded (%s)", pair[0], len(src), len(assetText(pair[1])), pair[1])
 	}
-	doc := mustRender(t, loadFixture(t, "minimal.json"), Options{Version: OptionsVersion})
+	doc := mustRender(t, loadFixture(t, "minimal.json"), renderOptions{Version: OptionsVersion})
 	t.Logf("minimal report: %d bytes", len(doc))
 }
 
@@ -216,42 +233,42 @@ func assetText(name string) string {
 }
 
 func TestOptionsValidation(t *testing.T) {
-	ok := func(mod func(*Options)) Options { o := sampleOptions(); mod(&o); return o }
+	ok := func(mod func(*renderOptions)) renderOptions { o := sampleOptions(); mod(&o); return o }
 	tests := []struct {
 		name string
-		opt  Options
+		opt  renderOptions
 		want error
 	}{
-		{"zero version", ok(func(o *Options) { o.Version = 0 }), ErrOptionsVersion},
-		{"version 1", ok(func(o *Options) { o.Version = 1 }), ErrOptionsVersion},
-		{"future version", ok(func(o *Options) { o.Version = 3 }), ErrOptionsVersion},
-		{"section id with capitals", ok(func(o *Options) { o.Sections[0].ID = "Known" }), ErrInvalidOptions},
-		{"section id with quote", ok(func(o *Options) { o.Sections[0].ID = `a"b` }), ErrInvalidOptions},
-		{"section id empty", ok(func(o *Options) { o.Sections[0].ID = "" }), ErrInvalidOptions},
-		{"section id too long", ok(func(o *Options) { o.Sections[0].ID = "a" + strings.Repeat("b", 48) }), ErrInvalidOptions},
-		{"duplicate section", ok(func(o *Options) { o.Sections[1].ID = o.Sections[0].ID }), ErrInvalidOptions},
-		{"untitled section", ok(func(o *Options) { o.Sections[0].Title = "" }), ErrInvalidOptions},
-		{"bad tone", ok(func(o *Options) { o.Sections[0].Tone = "red" }), ErrInvalidOptions},
-		{"bad role", ok(func(o *Options) { o.Sections[0].Role = "issues" }), ErrInvalidOptions},
-		{"two known-issue sections", ok(func(o *Options) { o.Sections[1].Role = RoleKnownIssues }), ErrInvalidOptions},
-		{"verdict without label", ok(func(o *Options) { o.Verdict = &Verdict{Tone: ToneOK} }), ErrInvalidOptions},
-		{"verdict bad tone", ok(func(o *Options) { o.Verdict = &Verdict{Label: "x", Tone: "green"} }), ErrInvalidOptions},
-		{"top fact unknown", ok(func(o *Options) { o.TopFacts = []string{"Branch"} }), ErrInvalidOptions},
-		{"four top facts", ok(func(o *Options) { o.TopFacts = []string{"Started", "Revision", "Go version", "Started"} }), ErrInvalidOptions},
-		{"unknown widget", ok(func(o *Options) { o.Defaults.Widgets = map[string]bool{"pie": true} }), ErrInvalidOptions},
-		{"unknown nav", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{"help": true} }), ErrInvalidOptions},
-		{"hidden dashboard", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{NavDashboard: false} }), ErrInvalidOptions},
-		{"bad theme", ok(func(o *Options) { o.Defaults.Theme = "blue" }), ErrInvalidOptions},
-		{"bad density", ok(func(o *Options) { o.Defaults.Density = "tight" }), ErrInvalidOptions},
-		{"bad expand", ok(func(o *Options) { o.Defaults.Expand = "some" }), ErrInvalidOptions},
-		{"bad view", ok(func(o *Options) { o.Defaults.View = "timeline" }), ErrInvalidOptions},
-		{"every view", ok(func(o *Options) { o.Defaults.View = ViewScenarios }), nil},
-		{"dashboard shown explicitly", ok(func(o *Options) { o.Defaults.Nav = map[string]bool{NavDashboard: true} }), nil},
-		{"verdict with tone", ok(func(o *Options) { o.Verdict = &Verdict{Label: "Passed", Tone: ToneOK} }), nil},
+		{"zero version", ok(func(o *renderOptions) { o.Version = 0 }), ErrOptionsVersion},
+		{"version 1", ok(func(o *renderOptions) { o.Version = 1 }), ErrOptionsVersion},
+		{"future version", ok(func(o *renderOptions) { o.Version = 3 }), ErrOptionsVersion},
+		{"section id with capitals", ok(func(o *renderOptions) { o.Sections[0].ID = "Known" }), ErrInvalidOptions},
+		{"section id with quote", ok(func(o *renderOptions) { o.Sections[0].ID = `a"b` }), ErrInvalidOptions},
+		{"section id empty", ok(func(o *renderOptions) { o.Sections[0].ID = "" }), ErrInvalidOptions},
+		{"section id too long", ok(func(o *renderOptions) { o.Sections[0].ID = "a" + strings.Repeat("b", 48) }), ErrInvalidOptions},
+		{"duplicate section", ok(func(o *renderOptions) { o.Sections[1].ID = o.Sections[0].ID }), ErrInvalidOptions},
+		{"untitled section", ok(func(o *renderOptions) { o.Sections[0].Title = "" }), ErrInvalidOptions},
+		{"bad tone", ok(func(o *renderOptions) { o.Sections[0].Tone = "red" }), ErrInvalidOptions},
+		{"bad role", ok(func(o *renderOptions) { o.Sections[0].Role = "issues" }), ErrInvalidOptions},
+		{"two known-issue sections", ok(func(o *renderOptions) { o.Sections[1].Role = RoleKnownIssues }), ErrInvalidOptions},
+		{"verdict without label", ok(func(o *renderOptions) { o.Verdict = &Verdict{Tone: ToneOK} }), ErrInvalidOptions},
+		{"verdict bad tone", ok(func(o *renderOptions) { o.Verdict = &Verdict{Label: "x", Tone: "green"} }), ErrInvalidOptions},
+		{"top fact unknown", ok(func(o *renderOptions) { o.TopFacts = []string{"Branch"} }), ErrInvalidOptions},
+		{"four top facts", ok(func(o *renderOptions) { o.TopFacts = []string{"Started", "Revision", "Go version", "Started"} }), ErrInvalidOptions},
+		{"unknown widget", ok(func(o *renderOptions) { o.Defaults.Widgets = map[string]bool{"pie": true} }), ErrInvalidOptions},
+		{"unknown nav", ok(func(o *renderOptions) { o.Defaults.Nav = map[string]bool{"help": true} }), ErrInvalidOptions},
+		{"hidden dashboard", ok(func(o *renderOptions) { o.Defaults.Nav = map[string]bool{NavDashboard: false} }), ErrInvalidOptions},
+		{"bad theme", ok(func(o *renderOptions) { o.Defaults.Theme = "blue" }), ErrInvalidOptions},
+		{"bad density", ok(func(o *renderOptions) { o.Defaults.Density = "tight" }), ErrInvalidOptions},
+		{"bad expand", ok(func(o *renderOptions) { o.Defaults.Expand = "some" }), ErrInvalidOptions},
+		{"bad view", ok(func(o *renderOptions) { o.Defaults.View = "timeline" }), ErrInvalidOptions},
+		{"every view", ok(func(o *renderOptions) { o.Defaults.View = ViewScenarios }), nil},
+		{"dashboard shown explicitly", ok(func(o *renderOptions) { o.Defaults.Nav = map[string]bool{NavDashboard: true} }), nil},
+		{"verdict with tone", ok(func(o *renderOptions) { o.Verdict = &Verdict{Label: "Passed", Tone: ToneOK} }), nil},
 	}
 	features := loadFixture(t, "minimal.json")
 	for _, tt := range tests {
-		_, err := Render(features, tt.opt)
+		_, err := renderPublicModel(features, tt.opt)
 		if !errors.Is(err, tt.want) || (tt.want == nil && err != nil) {
 			t.Errorf("%s: err = %v, want %v", tt.name, err, tt.want)
 		}
@@ -262,15 +279,15 @@ func TestOptionsValidation(t *testing.T) {
 }
 
 func TestRenderRejectsInvalidModel(t *testing.T) {
-	if _, err := Render(nil, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrNoResults) {
+	if _, err := renderPublicModel(nil, renderOptions{Version: OptionsVersion}); err != nil {
 		t.Errorf("nil features: %v", err)
 	}
 	bad := []cucumber.Feature{{Elements: []cucumber.Scenario{{Steps: []cucumber.Step{{Result: cucumber.Result{Status: "exploded"}}}}}}}
-	if _, err := Render(bad, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrInvalid) {
+	if _, err := renderPublicModel(bad, renderOptions{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrInvalid) {
 		t.Errorf("invalid status: %v", err)
 	}
 	empty := []cucumber.Feature{{Name: "F"}}
-	if _, err := Render(empty, Options{Version: OptionsVersion}); !errors.Is(err, cucumber.ErrIncomplete) {
+	if _, err := renderPublicModel(empty, renderOptions{Version: OptionsVersion}); err != nil {
 		t.Errorf("feature without scenarios: %v", err)
 	}
 }
@@ -368,7 +385,7 @@ func syntheticRun(features, scenarios, steps int) []cucumber.Feature {
 // logged, not asserted.
 func TestLargeRun(t *testing.T) {
 	features := syntheticRun(50, 10, 10)
-	doc := mustRender(t, features, Options{Version: OptionsVersion})
+	doc := mustRender(t, features, renderOptions{Version: OptionsVersion})
 	d, _ := dataBlock(t, doc)
 	n := 0
 	for _, f := range d.Features {
@@ -386,7 +403,7 @@ func TestLargeRun(t *testing.T) {
 	r := testing.Benchmark(func(b *testing.B) {
 		b.ReportAllocs()
 		for b.Loop() {
-			if _, err := Render(features, Options{Version: OptionsVersion}); err != nil {
+			if _, err := renderPublicModel(features, renderOptions{Version: OptionsVersion}); err != nil {
 				b.Fatal(err)
 			}
 		}
@@ -408,7 +425,7 @@ func TestAttachmentHeavyRun(t *testing.T) {
 		steps = append(steps, step(fmt.Sprintf("evidence %d is retained", i), cucumber.StatusPassed, 1000,
 			cucumber.Embedding{Name: "retained-evidence.json", MimeType: "application/json", Data: encoded}))
 	}
-	doc := mustRender(t, one(steps...), Options{Version: OptionsVersion})
+	doc := mustRender(t, one(steps...), renderOptions{Version: OptionsVersion})
 	t.Logf("attachment-heavy run: %d decoded bytes, %d HTML bytes, ratio %.2f to decoded, %.2f to base64",
 		10*len(payload), len(doc), float64(len(doc))/float64(10*len(payload)), float64(len(doc))/float64(10*len(encoded)))
 	if strings.Count(doc, `"data":"`+encoded+`"`) != 10 {
@@ -442,7 +459,7 @@ func TestHeadlineFollowsFeatureRule(t *testing.T) {
 	}
 	for _, tt := range tests {
 		features := []cucumber.Feature{{Name: "F", Keyword: "Feature", Elements: tt.scenarios}}
-		d, _ := dataBlock(t, mustRender(t, features, Options{Version: OptionsVersion}))
+		d, _ := dataBlock(t, mustRender(t, features, renderOptions{Version: OptionsVersion}))
 		if d.Verdict != tt.verdict || d.Features[0].Status != strings.ToLower(tt.verdict.Label) {
 			t.Errorf("%s: verdict %+v, feature %s; want %+v", tt.name, d.Verdict, d.Features[0].Status, tt.verdict)
 		}
@@ -450,7 +467,7 @@ func TestHeadlineFollowsFeatureRule(t *testing.T) {
 }
 
 func TestSteplessScenarioRendersUndefined(t *testing.T) {
-	d, _ := dataBlock(t, mustRender(t, loadFixture(t, "godog-v0.16.0-stepless.json"), Options{Version: OptionsVersion}))
+	d, _ := dataBlock(t, mustRender(t, loadFixture(t, "godog-v0.16.0-stepless.json"), renderOptions{Version: OptionsVersion}))
 	var statuses []string
 	for _, s := range d.Features[0].Elements {
 		statuses = append(statuses, s.Status)

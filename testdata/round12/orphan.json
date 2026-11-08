@@ -1,0 +1,1 @@
+[{"uri":"a.feature","name":"A","elements":[{"name":"s1","line":3,"type":"scenario","steps":[{"name":"x","result":{"status":"passed"}}]}]},{"uri":"b.feature","name":"B","elements":[{"keyword":"Background","line":2,"type":"background","steps":[{"name":"bg","result":{"status":"failed","error_message":"BG"}}]}]}]

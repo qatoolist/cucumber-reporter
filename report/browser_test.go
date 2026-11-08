@@ -25,8 +25,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	pub "github.com/qatoolist/cucumber-reporter/cucumber"
+
 	"github.com/qatoolist/cucumber-reporter/internal/cdp"
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 type session struct {
@@ -39,7 +41,7 @@ type session struct {
 
 // openSession renders features with opt into a temporary file and opens it in a fresh browser at a
 // 1440 × 900 viewport.
-func openSession(t *testing.T, features []cucumber.Feature, opt Options, reducedMotion bool) *session {
+func openSession(t *testing.T, features []cucumber.Feature, opt renderOptions, reducedMotion bool) *session {
 	t.Helper()
 	return openPage(t, mustRender(t, features, opt), reducedMotion)
 }
@@ -206,11 +208,11 @@ func TestBrowserInteractions(t *testing.T) {
 	pages := []struct {
 		name     string
 		features []cucumber.Feature
-		opt      Options
+		opt      renderOptions
 	}{
 		{"showcase", showcase, showcaseOpt},
 		{"known", known, knownOpt},
-		{"stress", stressRun(), Options{Version: OptionsVersion, Title: "Stress", RunFacts: []Fact{{Label: "Environment", Value: "synthetic"}}}},
+		{"stress", stressRun(), renderOptions{Version: OptionsVersion, Title: "Stress", RunFacts: []Fact{{Label: "Environment", Value: "synthetic"}}}},
 	}
 	for _, p := range pages {
 		t.Run(p.name, func(t *testing.T) { interactionChecks(t, openSession(t, p.features, p.opt, true)) })
@@ -863,7 +865,7 @@ func TestBrowserNoScript(t *testing.T) {
 // TestBrowserStress: the 5,000-step page loads with a small DOM and a virtualised scenario list.
 // Timings are logged, not asserted.
 func TestBrowserStress(t *testing.T) {
-	s := openSession(t, stressRun(), Options{Version: OptionsVersion}, true)
+	s := openSession(t, stressRun(), renderOptions{Version: OptionsVersion}, true)
 	var m struct {
 		Nodes, Rows            int
 		Route, Filter, Palette float64
@@ -903,12 +905,12 @@ func TestBrowserPDF(t *testing.T) {
 	for _, p := range []struct {
 		name     string
 		features []cucumber.Feature
-		opt      Options
+		opt      renderOptions
 		fillRule bool // a one-scenario run has a short cover page by design; its fill is logged only
 	}{
 		{"showcase", showcase, showcaseOpt, true},
 		{"known", known, knownOpt, true},
-		{"minimal", loadFixture(t, "minimal.json"), Options{Version: OptionsVersion}, false},
+		{"minimal", loadFixture(t, "minimal.json"), renderOptions{Version: OptionsVersion}, false},
 		{"review", loadFixture(t, "review/input/cucumber.json"), loadOptions(t, "review/input/options.json"), false},
 	} {
 		t.Run(p.name, func(t *testing.T) {
@@ -1030,7 +1032,7 @@ func TestBrowserHostileData(t *testing.T) {
 			t.Fatal(err)
 		}
 		s.file = file
-		fid, sid := FeatureIDs(features)[0], ScenarioIDs(features)[0][0]
+		fid, sid := featureIDs(features)[0], scenarioIDs(features)[0][0]
 		s.check(fmt.Sprintf("string %d", i), func() error {
 			for _, r := range []string{"/", "/features", "/features/" + fid, "/scenarios", "/scenarios/" + sid, "/failures", "/known", "/skipped", "/timeline", "/run", "/print"} {
 				s.goTo(r)
@@ -1103,7 +1105,7 @@ func TestBrowserAttachmentKinds(t *testing.T) {
 		cucumber.Embedding{Name: "page.html", MimeType: "text/html", Data: b64("<b>html-attachment-body</b>")},
 		cucumber.Embedding{Name: "big.txt", MimeType: "text/plain", Data: b64(big)},
 	))
-	dir, err := RenderFeaturesDirTo(features, t.TempDir(), Options{Version: OptionsVersion, Limits: cucumber.Limits{InlineAttachment: 1024}, Defaults: ViewDefaults{Expand: ExpandAll}})
+	dir, err := renderFeaturesDirTo(features, t.TempDir(), renderOptions{Version: OptionsVersion, Limits: pub.Limits{InlineAttachment: 1024}, Defaults: ViewDefaults{Expand: ExpandAll}})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1116,7 +1118,7 @@ func TestBrowserAttachmentKinds(t *testing.T) {
 	if !strings.Contains(page, sidecar) {
 		t.Fatal("no sidecar link in the data block")
 	}
-	route := "/scenarios/" + ScenarioIDs(features)[0][0]
+	route := "/scenarios/" + scenarioIDs(features)[0][0]
 	s := openPage(t, page, true)
 	s.check("image, SVG, HTML and sidecar", func() error {
 		s.goTo(route)
@@ -1150,8 +1152,8 @@ func TestBrowserNotApplicable(t *testing.T) {
 	s := openSession(t, features, opt, true)
 	s.check("scenario banner and Known issues page", func() error {
 		s.goTo("/scenarios/accounts-L4")
-		heading := s.str(`[...document.querySelectorAll('.banner .banner-t')].map((b) => b.textContent).filter((t) => /EX-501/.test(t)).join('|')`)
-		if heading != "Known issueEX-501· not applicable in this run" || s.is(`document.querySelector('.banner .fixed')`) {
+		heading := s.str(`[...document.querySelectorAll('.banner-header')].filter((b) => /EX-501/.test(b.textContent)).map((b) => b.querySelector('.banner-t').textContent).join('|')`)
+		if heading != "Not applicable in this run" || s.is(`document.querySelector('.banner .fixed')`) {
 			return fail("banner heading %q", heading)
 		}
 		s.goTo("/known")
@@ -1172,13 +1174,13 @@ func TestBrowserNotApplicable(t *testing.T) {
 }
 
 // loadOptions reads an options file (the command's -options format) from testdata/synthetic.
-func loadOptions(t testing.TB, name string) Options {
+func loadOptions(t testing.TB, name string) renderOptions {
 	t.Helper()
 	raw, err := os.ReadFile(filepath.Join("..", "testdata", "synthetic", name))
 	if err != nil {
 		t.Fatal(err)
 	}
-	var opt Options
+	var opt renderOptions
 	if err := json.Unmarshal(raw, &opt); err != nil {
 		t.Fatal(err)
 	}
@@ -1193,7 +1195,7 @@ const noNullText = `(() => { const w = document.createTreeWalker(document.body, 
 // TestBrowserReviewFixtures replays the v0.1.0 review's fixtures (testdata/synthetic/review).
 func TestBrowserReviewFixtures(t *testing.T) {
 	t.Run("maximum duration keeps the timeline axis short", func(t *testing.T) {
-		s := openSession(t, loadFixture(t, "review/duration/cucumber.json"), Options{Version: OptionsVersion}, true)
+		s := openSession(t, loadFixture(t, "review/duration/cucumber.json"), renderOptions{Version: OptionsVersion}, true)
 		s.check("axis labels", func() error {
 			s.goTo("/timeline")
 			n := s.num(`document.querySelectorAll('.gantt-x span').length`)
@@ -1258,10 +1260,10 @@ func TestBrowserReviewFixtures(t *testing.T) {
 	t.Run("raw text keeps a leading byte order mark", func(t *testing.T) {
 		const text = "\ufeff{\"bom\": true}"
 		features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "bom.json", MimeType: "application/json", Data: b64(text)}))
-		s := openSession(t, features, Options{Version: OptionsVersion}, true)
+		s := openSession(t, features, renderOptions{Version: OptionsVersion}, true)
 		s.call("Page.addScriptToEvaluateOnNewDocument", map[string]any{"source": `window.__copied = []; Object.defineProperty(navigator, 'clipboard', { value: { writeText: (t) => { window.__copied.push(t); return Promise.resolve(); } } });`})
 		s.check("raw and copy", func() error {
-			s.goTo("/scenarios/" + ScenarioIDs(features)[0][0])
+			s.goTo("/scenarios/" + scenarioIDs(features)[0][0])
 			s.eval(`(() => { const b = document.querySelector('.att-h'); if (b.getAttribute('aria-expanded') !== 'true') b.click(); return true; })()`, nil)
 			s.eval(`document.querySelector('.att-x [role=radio]:last-child') && document.querySelector('.att-x [role=radio]:last-child').click()`, nil)
 			s.settle()
@@ -1275,7 +1277,7 @@ func TestBrowserReviewFixtures(t *testing.T) {
 		})
 	})
 	t.Run("the last virtualised row is fully visible", func(t *testing.T) {
-		s := openSession(t, loadFixture(t, "review/stress/cucumber.json"), Options{Version: OptionsVersion}, true)
+		s := openSession(t, loadFixture(t, "review/stress/cucumber.json"), renderOptions{Version: OptionsVersion}, true)
 		for _, density := range []string{"comfortable", "compact"} {
 			for _, w := range []int{1440, 768, 390} {
 				s.check(fmt.Sprintf("%s at %d px", density, w), func() error {

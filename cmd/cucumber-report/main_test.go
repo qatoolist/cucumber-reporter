@@ -192,11 +192,11 @@ func TestRefusals(t *testing.T) {
 		err  string
 	}{
 		{"no arguments", nil, 2, "usage: cucumber-report"},
-		{"two run directories", []string{good, good}, 2, "usage: cucumber-report"},
-		{"unknown flag", []string{"-x", good}, 2, "usage: cucumber-report"},
+		{"two run directories", []string{good, good}, 2, "cucumber-report: plain mode takes one directory"},
+		{"unknown flag", []string{"-x", good}, 2, "cucumber-report: flag provided but not defined: -x"},
 		{"incomplete results", []string{broken}, 1, "cucumber-report: cucumber: input contains a feature without scenarios"},
 		{"not JSON", []string{notJSON}, 1, "cucumber-report: cucumber: input is not valid cucumber JSON"},
-		{"missing run directory", []string{filepath.Join(good, "absent")}, 1, "cucumber-report: report: run directory has no cucumber.json"},
+		{"missing run directory", []string{filepath.Join(good, "absent")}, 1, "cucumber-report: input directory not found"},
 		{"symlinked cucumber.json", []string{linkDir}, 1, "cucumber-report: report: input is a symbolic link"},
 		{"options with version 1", []string{"-options", writeFile(t, `{"version":1}`), good}, 1, "cucumber-report: -options: unsupported version"},
 		{"options without version", []string{"-options", writeFile(t, `{"title":"x"}`), good}, 1, "cucumber-report: -options: unsupported version"},

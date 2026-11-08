@@ -1,0 +1,103 @@
+[
+  {
+    "id": "known",
+    "uri": "features/k.feature",
+    "keyword": "Feature",
+    "name": "Known",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "known;known-one",
+        "keyword": "Scenario",
+        "name": "Known one",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "outcome \"K1\"",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure K1 (run ) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/k.feature:4:in `outcome \"K1\"'",
+              "duration": 61000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after hook failure (RuntimeError)\n./features/support/hooks.rb:2:in 'block in <top (required)>'",
+              "duration": 60000
+            }
+          }
+        ]
+      },
+      {
+        "id": "known;second",
+        "keyword": "Scenario",
+        "name": "Second",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"K2\"",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

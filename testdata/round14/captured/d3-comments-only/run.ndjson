@@ -1,0 +1,5 @@
+{"meta":{"protocolVersion":"22.0.0","implementation":{"name":"cucumber-ruby","version":"9.2.1"},"runtime":{"name":"ruby","version":"3.4.7"},"os":{"name":"darwin25","version":"Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:32 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T6031"},"cpu":{"name":"arm64"}}}
+{"stepDefinition":{"id":"e9eb99f8-220d-4cf2-a81a-26af9eda3d01","pattern":{"source":"^outcome \"([^\"]*)\"$","type":"REGULAR_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":2}}}}
+{"stepDefinition":{"id":"21bda641-cf37-4f45-b157-f5f4d97e8df6","pattern":{"source":"^ok$","type":"REGULAR_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":13}}}}
+{"source":{"uri":"features/c.feature","data":"# just a comment\n# another\n\n# language: en\n","mediaType":"text/x.cucumber.gherkin+plain"}}
+{"parseError":{"source":{"uri":"features/c.feature","location":{"line":5}},"message":"(5:0): unexpected end of file, expected: #TagLine, #FeatureLine, #Comment, #Empty"}}

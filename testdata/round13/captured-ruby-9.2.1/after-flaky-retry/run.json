@@ -1,0 +1,147 @@
+[
+  {
+    "id": "after-flaky",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "After flaky",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "after-flaky;after-raises-first-attempt-only",
+        "keyword": "Scenario",
+        "name": "After raises first attempt only",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after After raises first attempt only (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 63000
+            }
+          }
+        ]
+      },
+      {
+        "id": "after-flaky;after-raises-first-attempt-only",
+        "keyword": "Scenario",
+        "name": "After raises first attempt only",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ]
+      },
+      {
+        "id": "after-flaky;after-raises-always",
+        "keyword": "Scenario",
+        "name": "After raises always",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after After raises always (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 44000
+            }
+          }
+        ]
+      },
+      {
+        "id": "after-flaky;after-raises-always",
+        "keyword": "Scenario",
+        "name": "After raises always",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after After raises always (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'",
+              "duration": 39000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

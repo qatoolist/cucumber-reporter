@@ -1,0 +1,26 @@
+{
+  "work": "/var/folders/7v/2bvxj5q50kl8fljg5qm0j8_h0000gp/T/cr-r14-independent-pyd4xvmb",
+  "inputs": 319,
+  "accepted": 280,
+  "new_refusals": [
+    [
+      "<review>/fixtures/r13/T/a/raw_unknown_key_result.json",
+      "cucumber-report: a.feature:3: cucumber: input contains an invalid value: non-passing result in an unsupported execution field"
+    ],
+    [
+      "<review>/fixtures/r13/T/a/raw_scen_result.json",
+      "cucumber-report: a.feature:3: cucumber: input contains an invalid value: non-passing result in an unsupported execution field"
+    ]
+  ],
+  "unrescued_greener_scenarios": [],
+  "difference_categories": {
+    "verdictSource": 278,
+    "features[0]": 1941,
+    "sections": 9,
+    "aliases": 79,
+    "verdict": 155,
+    "features[1]": 79,
+    "execution": 48,
+    "features[2]": 9
+  }
+}

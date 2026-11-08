@@ -25,7 +25,8 @@ type Browser struct {
 	ws  *wsConn
 	cmd *exec.Cmd // nil when constructed around an existing connection
 
-	nextID atomic.Int64
+	processDone chan error
+	nextID      atomic.Int64
 
 	mu       sync.Mutex
 	pending  map[int64]chan response
@@ -70,16 +71,27 @@ func FindChrome() (string, error) {
 	if p := os.Getenv("CHROME"); p != "" {
 		return p, nil
 	}
-	for _, p := range []string{
+	paths := []string{
 		"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 		"/Applications/Chromium.app/Contents/MacOS/Chromium",
 		"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-	} {
-		if st, err := os.Stat(p); err == nil && !st.IsDir() {
+	}
+	if home, e := os.UserHomeDir(); e == nil {
+		paths = append(paths, filepath.Join(home, "Applications/Google Chrome.app/Contents/MacOS/Google Chrome"))
+	}
+	for _, base := range []string{os.Getenv("PROGRAMFILES"), os.Getenv("PROGRAMFILES(X86)"), os.Getenv("LOCALAPPDATA")} {
+		if base != "" {
+			for _, sub := range []string{"Google/Chrome/Application/chrome.exe", "Microsoft/Edge/Application/msedge.exe"} {
+				paths = append(paths, filepath.Join(base, filepath.FromSlash(sub)))
+			}
+		}
+	}
+	for _, p := range paths {
+		if st, err := os.Stat(p); err == nil && !st.IsDir() { //nolint:gosec // G703: operator-selected local browser locations, never report input.
 			return p, nil
 		}
 	}
-	for _, name := range []string{"google-chrome", "chromium", "chromium-browser", "microsoft-edge"} {
+	for _, name := range []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge"} {
 		if p, err := exec.LookPath(name); err == nil {
 			return p, nil
 		}
@@ -99,37 +111,57 @@ func Launch(ctx context.Context, chromePath, userDataDir string) (*Browser, erro
 		"--headless=new", "--remote-debugging-port=0", "--user-data-dir="+userDataDir,
 		"--no-first-run", "--no-default-browser-check", "--disable-background-networking",
 		"--disable-gpu", "about:blank")
+	if flags := os.Getenv("CHROME_FLAGS"); flags != "" {
+		cmd.Args = append(cmd.Args[:len(cmd.Args)-1], append(strings.Fields(flags), "about:blank")...)
+	}
+	configureBrowserProcess(cmd)
+	cmd.WaitDelay = 2 * time.Second
+	var stderr browserOutput
+	cmd.Stderr = &stderr
 	if err := cmd.Start(); err != nil {
 		return nil, fmt.Errorf("cdp: start %s: %w", chromePath, err)
 	}
-	kill := func() {
-		_ = cmd.Process.Kill()
-		_ = cmd.Wait()
+	done := make(chan error, 1)
+	exited := make(chan struct{})
+	go func() { done <- cmd.Wait(); close(exited) }()
+	kill := func() error {
+		_ = cmd.Cancel()
+		return <-done
 	}
-	port, err := readPort(ctx, portFile)
+	startup, cancelStartup := context.WithTimeout(ctx, 15*time.Second)
+	defer cancelStartup()
+	go func() {
+		select {
+		case <-exited:
+			cancelStartup()
+		case <-startup.Done():
+		}
+	}()
+	port, err := readPort(startup, portFile)
 	if err != nil {
-		kill()
-		return nil, err
+		processErr := kill()
+		return nil, fmt.Errorf("cdp: Chrome startup failed: %w; stderr: %s", errors.Join(err, processErr), stderr.String())
 	}
-	wsURL, err := pageTarget(ctx, port)
+	wsURL, err := pageTarget(startup, port)
 	if err != nil {
-		kill()
-		return nil, err
+		_ = kill()
+		return nil, fmt.Errorf("cdp: Chrome startup: %w; stderr: %s", err, stderr.String())
 	}
-	ws, err := dialWS(ctx, wsURL)
+	ws, err := dialWS(startup, wsURL)
 	if err != nil {
-		kill()
-		return nil, err
+		_ = kill()
+		return nil, fmt.Errorf("cdp: Chrome startup: %w; stderr: %s", err, stderr.String())
 	}
 	b := newBrowser(ws)
 	b.cmd = cmd
+	b.processDone = done
 	for _, m := range []string{"Page.enable", "Runtime.enable", "Log.enable"} {
-		if err := b.Call(ctx, m, nil, nil); err != nil {
+		if err := b.Call(startup, m, nil, nil); err != nil {
 			_ = b.Close()
 			return nil, err
 		}
 	}
-	if err := b.Call(ctx, "Emulation.setFocusEmulationEnabled", map[string]any{"enabled": true}, nil); err != nil {
+	if err := b.Call(startup, "Emulation.setFocusEmulationEnabled", map[string]any{"enabled": true}, nil); err != nil {
 		_ = b.Close()
 		return nil, err
 	}
@@ -212,8 +244,8 @@ func (b *Browser) Close() error {
 	b.closeOnce.Do(func() {
 		err = b.ws.Close()
 		if b.cmd != nil {
-			_ = b.cmd.Process.Kill()
-			_ = b.cmd.Wait()
+			_ = b.cmd.Cancel()
+			<-b.processDone //nolint:errcheck // Close is best-effort process cleanup.
 		}
 	})
 	return err
@@ -381,7 +413,7 @@ func (b *Browser) Call(ctx context.Context, method string, params, result any) e
 		delete(b.pending, id)
 		b.mu.Unlock()
 	}
-	if err := b.ws.writeText(data); err != nil {
+	if err := b.ws.writeTextContext(ctx, data); err != nil {
 		forget()
 		return err
 	}
@@ -484,6 +516,8 @@ func (b *Browser) Key(ctx context.Context, key string, modifiers int) error {
 		down["text"] = key
 	}
 	switch key {
+	case "Tab":
+		down["windowsVirtualKeyCode"] = 9
 	case "Enter":
 		down["windowsVirtualKeyCode"] = 13
 	case "Escape":
@@ -519,3 +553,23 @@ func (b *Browser) PrintPDF(ctx context.Context) ([]byte, error) {
 	}
 	return pdf, nil
 }
+
+type browserOutput struct {
+	mu   sync.Mutex
+	data []byte
+}
+
+func (b *browserOutput) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	n := len(p)
+	if n > 4096 {
+		p = p[n-4096:]
+	}
+	b.data = append(b.data, p...)
+	if len(b.data) > 4096 {
+		b.data = b.data[len(b.data)-4096:]
+	}
+	return n, nil
+}
+func (b *browserOutput) String() string { b.mu.Lock(); defer b.mu.Unlock(); return string(b.data) }

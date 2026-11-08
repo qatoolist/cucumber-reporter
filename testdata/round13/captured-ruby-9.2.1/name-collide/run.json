@@ -1,0 +1,123 @@
+[
+  {
+    "id": "name-collisions",
+    "uri": "features/n.feature",
+    "keyword": "Feature",
+    "name": "Name collisions",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "name-collisions;same-outline;;2",
+        "keyword": "Scenario Outline",
+        "name": "Same outline",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "value ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17000
+            }
+          }
+        ]
+      },
+      {
+        "id": "name-collisions;same-outline;;3",
+        "keyword": "Scenario Outline",
+        "name": "Same outline",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "value ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      },
+      {
+        "id": "name-collisions;same-outline;;2",
+        "keyword": "Scenario Outline",
+        "name": "Same outline",
+        "description": "",
+        "line": 16,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "value ok",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "name-collisions;same-outline;;3",
+        "keyword": "Scenario Outline",
+        "name": "Same outline",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "value bad",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "bad value (RuntimeError)\n./features/step_definitions/s.rb:1:in 'block in <top (required)>'\nfeatures/n.feature:17:12:in `value bad'",
+              "duration": 52000
+            }
+          }
+        ]
+      },
+      {
+        "id": "name-collisions;same-outline",
+        "keyword": "Scenario",
+        "name": "Same outline",
+        "description": "",
+        "line": 19,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "value ok",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

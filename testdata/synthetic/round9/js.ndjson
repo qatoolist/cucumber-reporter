@@ -1,0 +1,20 @@
+{"gherkinDocument": {"uri": "js.feature", "feature": {"name": "JS", "children": [{"scenario": {"id": "ast", "name": "case", "location": {"line": 9}}}]}}}
+{"pickle": {"id": "p", "uri": "js.feature", "name": "case", "astNodeIds": ["ast"], "steps": [{"id": "first", "text": "first", "astNodeIds": ["first-ast"]}, {"id": "pay", "text": "pay", "astNodeIds": ["pay-ast"]}]}}
+{"hook": {"id": "before1", "name": "before1"}}
+{"hook": {"id": "before2", "name": "before2"}}
+{"hook": {"id": "after-first", "name": "after-first"}}
+{"hook": {"id": "before-pay1", "name": "before-pay1"}}
+{"hook": {"id": "before-pay2", "name": "before-pay2"}}
+{"hook": {"id": "after", "name": "after"}}
+{"testCase": {"id": "tc", "pickleId": "p", "testSteps": [{"id": "before1", "hookId": "before1"}, {"id": "before2", "hookId": "before2"}, {"id": "first", "pickleStepId": "first"}, {"id": "after-first", "hookId": "after-first"}, {"id": "before-pay1", "hookId": "before-pay1"}, {"id": "before-pay2", "hookId": "before-pay2"}, {"id": "pay", "pickleStepId": "pay"}, {"id": "after", "hookId": "after"}]}}
+{"testCaseStarted": {"id": "a", "testCaseId": "tc", "attempt": 0, "timestamp": {"seconds": "1", "nanos": 0}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "before1", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "before2", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "first", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "after-first", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "before-pay1", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "before-pay2", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "pay", "testStepResult": {"status": "FAILED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "a", "testStepId": "after", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testCaseFinished": {"testCaseStartedId": "a", "timestamp": {"seconds": "2", "nanos": 0}}}
+{"testRunFinished": {"success": false}}

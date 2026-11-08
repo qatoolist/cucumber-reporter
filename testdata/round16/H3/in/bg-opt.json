@@ -1,0 +1,1 @@
+{"version": 2, "annotations": [{"scenario": "bg-L6", "kind": "known", "ref": "BUG-1", "title": "db is down", "backgroundStep": 1, "stepText": "the database is up"}]}

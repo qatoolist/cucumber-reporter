@@ -1,0 +1,56 @@
+[
+  {
+    "id": "skipped-beside-passing",
+    "uri": "features/p.feature",
+    "keyword": "Feature",
+    "name": "Skipped beside passing",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "skipped-beside-passing;passing",
+        "keyword": "Scenario",
+        "name": "Passing",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17000
+            }
+          }
+        ]
+      },
+      {
+        "id": "skipped-beside-passing;skipped-by-code",
+        "keyword": "Scenario",
+        "name": "Skipped by code",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "skip me",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 70000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

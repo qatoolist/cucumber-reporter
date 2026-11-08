@@ -1,0 +1,221 @@
+[
+  {
+    "id": "rules-with-backgrounds",
+    "uri": "features/rules.feature",
+    "keyword": "Feature",
+    "name": "Rules with backgrounds",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "feature background",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 20000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "rule background ok",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rules-with-backgrounds;in-good-rule",
+        "keyword": "Example",
+        "name": "In good rule",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "pass",
+            "line": 11,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "feature background",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "rule background fails",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "rule bg boom (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/rules.feature:15:in `rule background fails'",
+              "duration": 48000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rules-with-backgrounds;in-bad-rule-one",
+        "keyword": "Example",
+        "name": "In bad rule one",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "pass",
+            "line": 18,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "feature background",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "rule background fails",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "rule bg boom (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/rules.feature:15:in `rule background fails'",
+              "duration": 34000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rules-with-backgrounds;in-bad-rule-two",
+        "keyword": "Example",
+        "name": "In bad rule two",
+        "description": "",
+        "line": 20,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "pass",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "feature background",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rules-with-backgrounds;plain-rule-example-fails",
+        "keyword": "Example",
+        "name": "Plain rule example fails",
+        "description": "",
+        "line": 24,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "fail",
+            "line": 25,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "example boom (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/rules.feature:25:in `fail'",
+              "duration": 208000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

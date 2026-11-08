@@ -1,0 +1,52 @@
+{
+ "statuses": [
+  [
+   "features/checkout.feature",
+   7,
+   "Successful checkout ✅",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   13,
+   "Payment declined 💳",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   56,
+   "Discount SAVE10",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   57,
+   "Discount BOGUS",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   60,
+   "Flaky search 🔁",
+   "passed"
+  ],
+  [
+   "features/profile.feature",
+   6,
+   "Background fails",
+   "failed"
+  ],
+  [
+   "features/profile.feature",
+   10,
+   "Update address",
+   "passed"
+  ]
+ ],
+ "counts": {
+  "passed": 4,
+  "failed": 3
+ },
+ "verdict": "failed",
+ "n": 7
+}

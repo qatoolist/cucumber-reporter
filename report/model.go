@@ -7,7 +7,11 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	"github.com/qatoolist/cucumber-reporter/internal/textsafe"
+
+	modelmeta "github.com/qatoolist/cucumber-reporter/internal/cucumbermodel"
+
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 // The page's view model. It is marshaled with encoding/json (HTML-safe escaping) into the
@@ -26,6 +30,12 @@ var statusLabels = map[string]string{
 }
 
 type pageData struct {
+	inlineRemaining int64
+	Aliases         map[string]string        `json:"aliases,omitempty"`
+	Analysis        *RunSummary              `json:"analysis,omitempty"`
+	Execution       map[string][]attemptData `json:"execution,omitempty"`
+	VerdictSource   string                   `json:"verdictSource"`
+
 	Schema        int              `json:"schema"`
 	Title         string           `json:"title"`
 	Name          string           `json:"name"`
@@ -60,6 +70,8 @@ const (
 // annotationData is a caller annotation as the page receives it. State and Reason are set for known
 // issues only; Reason explains a record that covers nothing.
 type annotationData struct {
+	// ExecutionStep locates the anchor; Annotation.Step remains the caller-declared own index.
+	ExecutionStep int `json:"executionStep,omitempty"`
 	Annotation
 	State  string `json:"state,omitempty"`
 	Reason string `json:"reason,omitempty"`
@@ -81,6 +93,7 @@ type featureData struct {
 }
 
 type scenarioData struct {
+	RunHook     bool       `json:"runHook,omitempty"`
 	ID          string     `json:"id"`
 	Keyword     string     `json:"keyword"`
 	Name        string     `json:"name"`
@@ -95,6 +108,7 @@ type scenarioData struct {
 }
 
 type stepData struct {
+	Label    string     `json:"label,omitempty"`
 	Keyword  string     `json:"keyword"`
 	Name     string     `json:"name"`
 	Match    string     `json:"match,omitempty"`
@@ -127,38 +141,15 @@ type attData struct {
 // combine merges display statuses by the feature rule of cucumber.Combine, with known failures ranked
 // after undefined: failed, ambiguous, undefined or known when any part has it (in that order); pending
 // only when all are pending; skipped only when all are skipped or pending; otherwise passed.
-func combine(statuses []string) string {
-	seen := map[string]bool{}
-	pending, skippedOrPending := 0, 0
-	for _, s := range statuses {
-		seen[s] = true
-		switch s {
-		case "pending":
-			pending++
-			skippedOrPending++
-		case "skipped":
-			skippedOrPending++
-		}
-	}
-	for _, s := range []string{"failed", "ambiguous", "undefined", statusKnown} {
-		if seen[s] {
-			return s
-		}
-	}
-	switch {
-	case len(statuses) > 0 && pending == len(statuses):
-		return "pending"
-	case len(statuses) > 0 && skippedOrPending == len(statuses):
-		return "skipped"
-	}
-	return "passed"
-}
+func combine(statuses []string) string { return modelmeta.CombineOutcomes(statuses) }
 
 // computedVerdict is the default headline for a run status.
 // computedVerdict is the default headline for a run status; failed carries the number of unexpected
 // failures (scenarios whose outcome is failed after the known-issue rules).
 func computedVerdict(run string, failed int) Verdict {
 	switch run {
+	case "empty":
+		return Verdict{Label: "No scenarios executed", Tone: ToneInfo}
 	case "failed":
 		label := "Failed: " + strconv.Itoa(failed) + " unexpected failure"
 		if failed != 1 {
@@ -177,16 +168,7 @@ func computedVerdict(run string, failed int) Verdict {
 
 // clean replaces each byte that is not part of valid UTF-8 with U+FFFD, as encoding/json does, so the
 // data block and the fallback show the same text.
-func clean(s string) string {
-	if utf8.ValidString(s) {
-		return s
-	}
-	var b strings.Builder
-	for _, r := range s {
-		b.WriteRune(r)
-	}
-	return b.String()
-}
+func clean(s string) string { return textsafe.Display(s) }
 
 func cleanFacts(facts []Fact) []Fact {
 	if facts == nil {
@@ -200,6 +182,8 @@ func cleanFacts(facts []Fact) []Fact {
 }
 
 func cleanAnnotation(a Annotation) Annotation {
+	a.Details = cleanFacts(a.Details)
+	a.Owner, a.PolicyReason = clean(a.Owner), clean(a.PolicyReason)
 	a.Ref, a.Title, a.Note, a.StepText = clean(a.Ref), clean(a.Title), clean(a.Note), clean(a.StepText)
 	if a.Outcomes != nil {
 		out := make([]Outcome, len(a.Outcomes))
@@ -219,21 +203,65 @@ func tagNames(tags []cucumber.Tag) []string {
 	return out
 }
 
-func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*pageData, error) {
-	sids := ScenarioIDs(features)
-	fids := FeatureIDs(features)
+func buildPage(features []cucumber.Feature, opt renderOptions, sidecar sidecarFunc) (*pageData, error) {
+	if opt.Analysis == nil {
+		var err error
+		features, err = modelmeta.PlainFeatures(features)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	sids := scenarioIDs(features)
+	fids := featureIDs(features)
+	for i, f := range features {
+		for _, a := range opt.Annotations {
+			if opt.Analysis != nil || modelmeta.FeatureMetadata(&f).ReportID != "" {
+				continue
+			}
+			for from, to := range modelmeta.FeatureMetadata(&f).BackgroundSlots {
+				if a.Scenario == fids[i]+from {
+					return nil, invalid("Background or retry results are folded into the final scenario; annotate %s with backgroundStep:N and stepText for a Background step", fids[i]+to)
+				}
+			}
+		}
+	}
 	stepCount := map[string]int{}
 	for i, f := range features {
+		if opt.renderContext != nil {
+			if err := opt.renderContext.Err(); err != nil {
+				return nil, err
+			}
+		}
 		for j, sc := range f.Elements {
-			stepCount[sids[i][j]] = len(sc.Steps)
+			stepCount[sids[i][j]] = annotationStepCount(sc)
 		}
 	}
 	if err := checkAnnotations(opt.Annotations, stepCount); err != nil {
 		return nil, err
 	}
 	p := &pageData{
-		Schema: 1, Title: clean(opt.Title), Name: clean(opt.Name), Facts: cleanFacts(opt.RunFacts),
+		Features:        []featureData{},
+		inlineRemaining: 32 << 20,
+		Analysis:        opt.Analysis, VerdictSource: "computed", Schema: 1, Title: clean(opt.Title), Name: clean(opt.Name), Facts: cleanFacts(opt.RunFacts),
 		WallClock: clean(opt.WallClock), TimingSection: opt.TimingSection, Defaults: opt.Defaults,
+	}
+	for i, f := range features {
+		for from, to := range modelmeta.FeatureMetadata(&f).BackgroundSlots {
+			if opt.Analysis != nil || modelmeta.FeatureMetadata(&f).ReportID != "" {
+				continue
+			}
+			if _, live := stepCount[fids[i]+from]; live {
+				continue
+			}
+			if _, live := stepCount[fids[i]+to]; !live {
+				continue
+			}
+			if p.Aliases == nil {
+				p.Aliases = map[string]string{}
+			}
+			p.Aliases[fids[i]+from] = fids[i] + to
+		}
 	}
 	p.Annotations = make([]annotationData, len(opt.Annotations))
 	anns := map[string][]*annotationData{}
@@ -255,43 +283,81 @@ func buildPage(features []cucumber.Feature, opt Options, sidecar sidecarFunc) (*
 	counts := map[string]int{}
 	var all []string
 	for i, f := range features {
+		if opt.renderContext != nil {
+			if err := opt.renderContext.Err(); err != nil {
+				return nil, err
+			}
+		}
 		fd := featureData{
-			ID: fids[i], URI: clean(f.URI), Name: clean(f.Name), Description: clean(strings.TrimSpace(f.Description)),
+			Elements: []scenarioData{},
+			ID:       fids[i], URI: clean(f.URI), Name: clean(f.Name), Description: clean(strings.TrimSpace(f.Description)),
 			Tags: tagNames(f.Tags),
 		}
 		var statuses []string
 		for j, sc := range f.Elements {
-			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, opt.Limits, sidecar)
+			sd, err := buildScenario(sc, sids[i][j], anns[sids[i][j]], i, j, cucumber.Limits(opt.Limits), sidecar, &p.inlineRemaining)
 			if err != nil {
 				return nil, err
 			}
+			sd.RunHook = sc.Type == "run_hook"
 			statuses = append(statuses, sd.Status)
-			counts[sd.Status]++
+			if !sd.RunHook {
+				counts[sd.Status]++
+			}
 			fd.Elements = append(fd.Elements, sd)
 		}
 		fd.Status = combine(statuses)
 		all = append(all, statuses...)
 		p.Features = append(p.Features, fd)
 	}
-	p.Verdict = computedVerdict(combine(all), counts["failed"])
+	overall := combine(all)
+	if len(all) == 0 || (len(counts) == 0 && overall == "passed") {
+		overall = "empty"
+	}
+	p.Verdict = computedVerdict(overall, failedExecutions(all))
+	flaky := 0
+	for _, f := range features {
+		for _, sc := range f.Elements {
+			if modelmeta.Decide(sc, nil, nil).Flaky {
+				flaky++
+			}
+		}
+	}
+	if flaky > 0 {
+		p.Verdict.Label += fmt.Sprintf(" (%d flaky)", flaky)
+	}
 	if v := opt.Verdict; v != nil {
+		p.VerdictSource = "caller"
 		tone := v.Tone
 		if tone == "" {
 			tone = p.Verdict.Tone
 		}
 		p.Verdict = Verdict{Label: clean(v.Label), Tone: tone}
 	}
+	if modelmeta.RunnerFailed(features) && p.Verdict.Tone != ToneFail {
+		p.Verdict = Verdict{Label: "Runner reported failure", Tone: ToneFail}
+		p.VerdictSource = "computed"
+	}
+	if opt.Analysis != nil && (opt.Verdict == nil || opt.Analysis.RunnerFailed || len(opt.Analysis.GateFailures) > 0) {
+		p.Verdict = opt.Analysis.Computed
+		p.VerdictSource = "computed"
+	}
 	for _, s := range statusOrder {
 		if counts[s] > 0 {
 			p.Summary = append(p.Summary, statusCount{s, counts[s]})
 		}
 	}
-	p.Total = len(all)
+	for _, n := range counts {
+		p.Total += n
+	}
+	if err := checkScenarioOutcomes(features, p, nil, nil); err != nil {
+		return nil, err
+	}
 	return p, nil
 }
 
 // topFacts returns the values of the facts named by TopFacts, or of the first three facts.
-func topFacts(opt Options) []string {
+func topFacts(opt renderOptions) []string {
 	var out []string
 	if len(opt.TopFacts) == 0 {
 		for i := 0; i < len(opt.RunFacts) && i < 3; i++ {
@@ -312,7 +378,7 @@ func topFacts(opt Options) []string {
 
 // buildScenario applies the known-issue rules documented on Annotation and marks known issues whose
 // declared step text does not match as invalid.
-func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, si int, lim cucumber.Limits, sidecar sidecarFunc) (scenarioData, error) {
+func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, si int, lim cucumber.Limits, sidecar sidecarFunc, budget ...*int64) (scenarioData, error) {
 	sd := scenarioData{
 		ID: id, Keyword: clean(sc.Keyword), Name: clean(sc.Name), Description: clean(strings.TrimSpace(sc.Description)),
 		Line: sc.Line, Tags: tagNames(sc.Tags), Status: string(sc.Status()),
@@ -325,44 +391,63 @@ func buildScenario(sc cucumber.Scenario, id string, anns []*annotationData, fi, 
 			break
 		}
 	}
+	for _, a := range anns {
+		if enhancedSteps(sc) {
+			if a.BackgroundStep > 0 && annotationSourcePosition(sc, a.Annotation) == 0 {
+				return sd, invalid("annotation backgroundStep is outside scenario %s", id)
+			}
+			if position := annotationSourcePosition(sc, a.Annotation); position != a.Step {
+				a.ExecutionStep = position
+			}
+		}
+	}
 	declared, observed := map[int]bool{}, map[int]bool{}
 	for _, a := range anns {
-		if a.Kind != KindKnown || a.Step == 0 {
+		if a.Kind != KindKnown || (a.Step == 0 && a.BackgroundStep == 0) || a.PolicyReason != "" {
 			continue
 		}
-		if clean(sc.Steps[a.Step-1].Name) != a.StepText {
+		if clean(sc.Steps[annotationPosition(a)-1].Name) != a.StepText {
 			a.State = stateInvalid
 			continue
 		}
-		declared[a.Step] = true
+		declared[annotationPosition(a)] = true
 		if a.Observed {
-			observed[a.Step] = true
+			observed[annotationPosition(a)] = true
 		}
 	}
+	decision := modelmeta.Decide(sc, declared, observed)
+	sd.Status = string(decision.Status)
 	marked := 0
-	switch {
-	case raw == "failed" && declared[failedAt]:
-		marked = failedAt
-	case raw == "passed" && len(observed) > 0:
-		marked = -1 // every observed declared step
-	}
-	if marked != 0 {
-		sd.Status = statusKnown
+	if decision.Status == statusKnown {
+		if raw == "passed" {
+			marked = -1
+		} else {
+			marked = failedAt
+		}
 	}
 	for _, a := range anns {
 		if a.Kind == KindKnown {
-			a.State, a.Reason = knownState(a, raw, marked, failedAt)
+			a.State, a.Reason = knownState(a, raw, marked, stepLocation(sc, failedAt))
+			if (decision.Reason == "known issue plus unexpected failure" || decision.Reason == "earlier failure was not rescued by a passing retry") && declared[annotationPosition(a)] {
+				a.Reason = "Known issue plus unexpected failure: other steps, hooks or earlier attempts are not covered."
+			}
+			if a.PolicyReason != "" {
+				a.State, a.Reason = stateNotApplied, a.PolicyReason
+			}
 		}
 		sd.Notes = append(sd.Notes, annotationNote(a))
 	}
 	for k, st := range sc.Steps {
-		d, err := buildStep(st, fi, si, k, lim, sidecar)
+		d, err := buildStep(st, fi, si, k, lim, sidecar, budget...)
 		if err != nil {
 			return sd, err
 		}
-		d.Known = marked == k+1 || (marked == -1 && observed[k+1])
+		d.Known = decision.Known[k+1]
 		if d.Duration != nil {
 			sd.Duration = saturatingAdd(sd.Duration, *d.Duration)
+		}
+		if label := stepLocation(sc, k+1); label != fmt.Sprintf("step %d", k+1) {
+			d.Label = strings.ToUpper(label[:1]) + label[1:]
 		}
 		sd.Steps = append(sd.Steps, d)
 	}
@@ -379,12 +464,15 @@ func allNotApplicable(outcomes []Outcome) bool {
 }
 
 // knownState decides whether a known-issue record covers its scenario and, when it does not, why.
-func knownState(a *annotationData, raw string, marked, failedAt int) (state, reason string) {
+func knownState(a *annotationData, raw string, marked int, failedLocation string) (state, reason string) {
 	step := strconv.Itoa(a.Step)
+	if a.BackgroundStep > 0 {
+		step = "Background " + strconv.Itoa(a.BackgroundStep)
+	}
 	switch {
 	case a.State == stateInvalid:
 		return stateInvalid, "Declared step " + step + " does not match the recorded step text, so this record covers nothing."
-	case a.Step > 0 && (marked == a.Step || (marked == -1 && a.Observed)):
+	case (a.Step > 0 || a.BackgroundStep > 0) && (marked == annotationPosition(a) || (marked == -1 && a.Observed)):
 		return stateApplied, ""
 	case raw == "passed" && marked == 0 && allNotApplicable(a.Outcomes):
 		return stateOutOfScope, "Not applicable in this run."
@@ -395,11 +483,11 @@ func knownState(a *annotationData, raw string, marked, failedAt int) (state, rea
 	case raw != "failed":
 		return stateNotApplied, "The scenario is " + raw + ", so this record covers nothing."
 	case marked != 0:
-		return stateNotApplied, "Another record covers this scenario's failure at step " + strconv.Itoa(failedAt) + "."
-	case a.Step == 0:
+		return stateNotApplied, "Another record covers this scenario's failure at " + failedLocation + "."
+	case a.Step == 0 && a.BackgroundStep == 0:
 		return stateNotApplied, "No step is declared, so the failure counts as unexpected."
 	}
-	return stateNotApplied, "The failure is at step " + strconv.Itoa(failedAt) + ", not at the declared step " + step + ", so it counts as an unexpected failure."
+	return stateNotApplied, "The failure is at " + failedLocation + ", not at the declared step " + step + ", so it counts as an unexpected failure."
 }
 
 func annotationNote(a *annotationData) string {
@@ -434,7 +522,7 @@ func saturatingAdd(a, b int64) int64 {
 	return a + b
 }
 
-func buildStep(st cucumber.Step, fi, si, ti int, lim cucumber.Limits, sidecar sidecarFunc) (stepData, error) {
+func buildStep(st cucumber.Step, fi, si, ti int, lim cucumber.Limits, sidecar sidecarFunc, budget ...*int64) (stepData, error) {
 	d := stepData{
 		Keyword: clean(st.Keyword), Name: clean(st.Name), Match: clean(st.Match.Location),
 		Status: string(st.Result.Status), Error: clean(st.Result.Error),
@@ -460,7 +548,7 @@ func buildStep(st cucumber.Step, fi, si, ti int, lim cucumber.Limits, sidecar si
 		if int64(len(e.Data)) > lim.Embedding {
 			return d, &cucumber.ParseError{Path: fmt.Sprintf("feature[%d].elements[%d].steps[%d].embeddings[%d]", fi, si, ti, ai), Offset: -1, Err: cucumber.ErrTooLarge}
 		}
-		a, err := buildAttachment(e, name, lim.InlineAttachment, sidecar)
+		a, err := buildAttachment(e, name, lim.InlineAttachment, sidecar, budget...)
 		if err != nil {
 			return d, err
 		}
@@ -475,12 +563,15 @@ func mediaType(mime string) string {
 	return strings.ToLower(strings.TrimSpace(base))
 }
 
-func isJSON(mt string) bool { return mt == "application/json" || strings.HasSuffix(mt, "+json") }
+// isJSON includes Gherkin's language label as well as JSON media types.
+func isJSON(mt string) bool {
+	return mt == "json" || strings.HasSuffix(mt, "/json") || strings.HasSuffix(mt, "/x-json") || strings.HasSuffix(mt, "+json")
+}
 
 // buildAttachment carries an attachment's base64 text when its decoded size fits the inline limit.
-// Larger text (text/* or JSON, valid UTF-8) goes to a sidecar file when one can be written (RenderDir);
+// Larger text (text/* or JSON, valid UTF-8) goes to a sidecar file when one can be written (renderDir);
 // anything else larger is left out with a note.
-func buildAttachment(e cucumber.Embedding, name string, inline int64, sidecar sidecarFunc) (attData, error) {
+func buildAttachment(e cucumber.Embedding, name string, inline int64, sidecar sidecarFunc, budget ...*int64) (attData, error) {
 	a := attData{Name: clean(e.Name), Mime: clean(e.MimeType)}
 	raw, err := e.Decode(int64(len(e.Data)))
 	if err != nil {
@@ -488,14 +579,21 @@ func buildAttachment(e cucumber.Embedding, name string, inline int64, sidecar si
 		return a, nil //nolint:nilerr // one undecodable attachment is reported in the page, not as a render failure
 	}
 	a.Size = int64(len(raw))
-	if a.Size <= inline {
+	budgetExceeded := len(budget) > 0 && int64(len(e.Data)) > *budget[0]
+	if a.Size <= inline && !budgetExceeded {
+		if len(budget) > 0 {
+			*budget[0] -= int64(len(e.Data))
+		}
 		data := e.Data
 		a.Data = &data
 		return a, nil
 	}
 	mt := mediaType(e.MimeType)
-	if sidecar != nil && (strings.HasPrefix(mt, "text/") || isJSON(mt)) && utf8.Valid(raw) {
+	if sidecar != nil && (budgetExceeded || ((strings.HasPrefix(mt, "text/") || isJSON(mt)) && utf8.Valid(raw))) {
 		file := name + ".txt"
+		if budgetExceeded && !strings.HasPrefix(mt, "text/") && !isJSON(mt) {
+			file = name + ".bin"
+		}
 		if isJSON(mt) {
 			file = name + ".json"
 		}
@@ -503,6 +601,10 @@ func buildAttachment(e cucumber.Embedding, name string, inline int64, sidecar si
 			return a, err
 		}
 		a.Href = file
+		return a, nil
+	}
+	if budgetExceeded {
+		a.Note = "Report inline attachment budget exhausted; use directory output to retain the evidence as a sidecar."
 		return a, nil
 	}
 	a.Note = "Larger than the " + formatBytes(inline) + " inline limit; content not included."
@@ -577,4 +679,14 @@ func formatNS(ns int64) string {
 	}
 	m := int64(math.Floor(s/60 + 0.5))
 	return fmt.Sprintf("%dh %02dm", m/60, m%60)
+}
+
+func failedExecutions(statuses []string) int {
+	count := 0
+	for _, status := range statuses {
+		if status == "failed" {
+			count++
+		}
+	}
+	return count
 }

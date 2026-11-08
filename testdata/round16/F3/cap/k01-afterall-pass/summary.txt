@@ -1,0 +1,7 @@
+....
+
+4 scenarios (4 passed)
+4 steps (4 passed)
+0m0.068s
+$ HOOKS=afterall cucumber 
+exit=2

@@ -1,0 +1,28 @@
+FPF-F.
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `"attempt step a"'
+
+(::) failed steps (::)
+
+first a (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `attempt step a'
+
+first b (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/r.feature:7:in `attempt step b'
+
+first c (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `attempt step c'
+
+Failing Scenarios:
+cucumber features/r.feature:3 # Scenario: Fails then pending
+cucumber features/r.feature:6 # Scenario: Fails then skipped
+
+3 scenarios (1 failed, 2 flaky)
+6 steps (3 failed, 1 skipped, 1 pending, 1 passed)
+0m0.023s
+exit=1

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "pending-beside-passing",
+    "uri": "features/p.feature",
+    "keyword": "Feature",
+    "name": "Pending beside passing",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "pending-beside-passing;passing",
+        "keyword": "Scenario",
+        "name": "Passing",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24000
+            }
+          }
+        ]
+      },
+      {
+        "id": "pending-beside-passing;pending",
+        "keyword": "Scenario",
+        "name": "Pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "this is pending",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "later (Cucumber::Pending)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/p.feature:7:in `this is pending'",
+              "duration": 69000
+            }
+          }
+        ]
+      },
+      {
+        "id": "pending-beside-passing;undefined",
+        "keyword": "Scenario",
+        "name": "Undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "nobody wrote this",
+            "line": 10,
+            "match": {
+              "location": "features/p.feature:10"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

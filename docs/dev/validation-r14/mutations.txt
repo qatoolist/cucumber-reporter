@@ -1,0 +1,26 @@
+SOURCE /var/folders/7v/2bvxj5q50kl8fljg5qm0j8_h0000gp/T/cr-r14-mut-qviq3ooq
+M1-retry-rescue retryfinal-json PASS 1 cucumber-report: features/r.feature:3: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M1-retry-rescue retryfinal-msg PASS 1 cucumber-report: features/r.feature:3: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M1-retry-rescue final_pending PASS 1 cucumber-report: features/f.feature:6: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M1-retry-rescue final_skipped PASS 1 cucumber-report: features/f.feature:6: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M2-known-isolation k5_two_failed PASS 1 cucumber-report: a.feature:3: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M2-known-isolation known-hook PASS 1 cucumber-report: a.feature:3: evidence floor: scenario outcome contradicts its execution evidence; this is a reporter bug
+M3a-bg-fold-enh background-enh PASS 1 cucumber-report: evidence floor: 2 non-passing results in the input are not represented; this is a reporter bug
+M3b-bg-fold-plain background-plain PASS 1 cucumber-report: evidence floor: 2 non-passing results in the input are not represented; this is a reporter bug
+M4a-gate-eval gate-pending PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M4a-gate-eval gate-flaky PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M4a-gate-eval gate-empty PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M4b-gate-verdict gate-pending PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M4b-gate-verdict gate-empty PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M4c-flaky-count gate-flaky PASS 1 cucumber-report: evidence floor: run verdict contradicts runner or quality policy; this is a reporter bug
+M5-runner-overlay success_false_allpass PASS 1 cucumber-report: evidence floor: runner failure signal was lost; this is a reporter bug
+M6-around around-json PASS 1 cucumber-report: <repo>/testdata/round13/captured-ruby-9.2.1/around-after-only/run.json: features/a.feature:4: cucumber: input contains an invalid value: non-passing result in an unsupported execution field
+M7a-rerun-swap rerun-json-12 PASS 1 cucumber-report: report: final attempt differs from scenario at line 2; preserve execution input order
+M7a-rerun-swap rerun-ndjson-12 PASS 1 cucumber-report: report: final attempt differs from scenario at line 2; preserve execution input order
+M7b-rerun-drop-later rerun-json-21 PASS 1 cucumber-report: evidence floor: 2 non-passing results in the input are not represented; this is a reporter bug
+M7b-rerun-drop-later rerun-ndjson-21 PASS 1 cucumber-report: evidence floor: 2 non-passing results in the input are not represented; this is a reporter bug
+M8a-zero-tone zero-tags-enh PASS 1 cucumber-report: evidence floor: empty execution cannot be green; this is a reporter bug
+M8a-zero-tone zero-tags-plain PASS 1 cucumber-report: evidence floor: empty execution cannot be green; this is a reporter bug
+M8b-zero-as-passed zero-tags-enh PASS 1 cucumber-report: evidence floor: empty execution cannot be green; this is a reporter bug
+M8b-zero-as-passed zero-tags-plain PASS 1 cucumber-report: evidence floor: empty execution cannot be green; this is a reporter bug
+FAILURES []

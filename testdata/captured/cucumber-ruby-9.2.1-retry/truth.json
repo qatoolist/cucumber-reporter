@@ -1,0 +1,11 @@
+{
+  "counts": {"passed": 3, "failed": 1},
+  "observedScenarios": 4,
+  "verdict": "failed",
+  "scenarios": [
+    {"name": "Flaky payment", "line": 6, "status": "passed", "attempts": 2, "firstStatus": "failed"},
+    {"name": "Always fails", "line": 10, "status": "failed", "attempts": 3, "firstStatus": "failed"},
+    {"name": "Discounts", "line": 20, "status": "passed", "attempts": 1},
+    {"name": "Discounts", "line": 21, "status": "passed", "attempts": 1}
+  ]
+}

@@ -1,0 +1,9 @@
+{
+ "run": {
+  "PLAN": "W1:fail1,W2:fail",
+  "args": [
+   "--retry",
+   "1"
+  ]
+ }
+}

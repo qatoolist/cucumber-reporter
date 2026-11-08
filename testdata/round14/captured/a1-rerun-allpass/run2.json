@@ -1,0 +1,56 @@
+[
+  {
+    "id": "rerun",
+    "uri": "features/r.feature",
+    "keyword": "Feature",
+    "name": "Rerun",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "rerun;alpha",
+        "keyword": "Scenario",
+        "name": "Alpha",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"A\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rerun;bravo",
+        "keyword": "Scenario",
+        "name": "Bravo",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"B\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

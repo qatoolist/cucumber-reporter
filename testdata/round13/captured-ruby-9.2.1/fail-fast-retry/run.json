@@ -1,0 +1,103 @@
+[
+  {
+    "id": "ff",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "FF",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "ff;first-flaky",
+        "keyword": "Scenario",
+        "name": "First flaky",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "flaky once",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "flaky (RuntimeError)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/a.feature:4:in `flaky once'",
+              "duration": 89000
+            }
+          }
+        ]
+      },
+      {
+        "id": "ff;first-flaky",
+        "keyword": "Scenario",
+        "name": "First flaky",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "flaky once",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      },
+      {
+        "id": "ff;second-fails",
+        "keyword": "Scenario",
+        "name": "Second fails",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "broken",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "wip broken (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/a.feature:7:in `broken'",
+              "duration": 39000
+            }
+          }
+        ]
+      },
+      {
+        "id": "ff;second-fails",
+        "keyword": "Scenario",
+        "name": "Second fails",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "broken",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "wip broken (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/a.feature:7:in `broken'",
+              "duration": 41000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

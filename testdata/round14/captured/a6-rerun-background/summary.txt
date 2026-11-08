@@ -1,0 +1,23 @@
+$ PLAN=X2:fail cucumber 
+...F
+
+(::) failed steps (::)
+
+planned failure X2 (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/b.feature:9:in `outcome "X2"'
+
+Failing Scenarios:
+cucumber features/b.feature:8 # Scenario: Two
+
+2 scenarios (1 failed, 1 passed)
+4 steps (1 failed, 3 passed)
+0m0.022s
+exit=1
+$ PLAN= cucumber @run1.rerun.txt
+..
+
+1 scenario (1 passed)
+2 steps (2 passed)
+0m0.036s
+exit=0

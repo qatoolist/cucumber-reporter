@@ -1,0 +1,7 @@
+{"meta":{"protocolVersion":"22.0.0","implementation":{"name":"cucumber-ruby","version":"9.2.1"},"runtime":{"name":"ruby","version":"3.4.7"},"os":{"name":"darwin25","version":"Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:32 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T6031"},"cpu":{"name":"arm64"}}}
+{"stepDefinition":{"id":"3268b776-2a1e-468a-ba87-bbd551fb9dbd","pattern":{"source":"^outcome \"([^\"]*)\"$","type":"REGULAR_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":2}}}}
+{"stepDefinition":{"id":"da909d6e-873a-4b4a-804e-591d21897442","pattern":{"source":"^ok$","type":"REGULAR_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":13}}}}
+{"source":{"uri":"features/empty.feature","data":"","mediaType":"text/x.cucumber.gherkin+plain"}}
+{"gherkinDocument":{"uri":"features/empty.feature","comments":[]}}
+{"testRunStarted":{"timestamp":{"seconds":1794016656,"nanos":541991000}}}
+{"testRunFinished":{"success":true,"timestamp":{"seconds":1794016656,"nanos":542075000}}}

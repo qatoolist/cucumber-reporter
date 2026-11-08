@@ -1,0 +1,1 @@
+These are hand-built runner-format fixtures supplied by reviewer O in round 11, not captured runner output. truth.json records expected outcomes. Real cucumber-ruby 9.2.1 retry JSON and Messages are preserved in ../captured/cucumber-ruby-9.2.1-retry/ with provenance. cucumber-js legacy base64 text embeddings remain unconfirmed against a capture.

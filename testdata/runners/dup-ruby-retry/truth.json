@@ -1,0 +1,28 @@
+{
+  "statuses": [
+    [
+      "features/checkout.feature",
+      7,
+      "Successful checkout \u2705",
+      "passed"
+    ],
+    [
+      "features/checkout.feature",
+      13,
+      "Payment declined \ud83d\udcb3",
+      "passed"
+    ],
+    [
+      "features/checkout.feature",
+      60,
+      "Flaky search \ud83d\udd01",
+      "passed"
+    ]
+  ],
+  "counts": {
+    "passed": 3
+  },
+  "verdict": "passed",
+  "n": 3,
+  "note": "Confirmed Ruby retry shape: final passing attempt rescues the earlier failure; report retains both attempts."
+}

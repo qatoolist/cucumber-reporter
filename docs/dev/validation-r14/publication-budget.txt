@@ -1,0 +1,7 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/qatoolist/cucumber-reporter/report
+cpu: Apple M3 Max
+BenchmarkSidecarRelativeBudget-16    	       1	2071799291 ns/op	         0.9847 durable/write-only
+PASS
+ok  	github.com/qatoolist/cucumber-reporter/report	6.190s

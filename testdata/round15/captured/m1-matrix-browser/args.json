@@ -1,0 +1,30 @@
+{
+ "chrome": {
+  "env": {
+   "CI": "",
+   "BROWSER": "chrome",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@account",
+   "or",
+   "@flaky"
+  ]
+ },
+ "firefox": {
+  "env": {
+   "CI": "",
+   "BROWSER": "firefox",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@account",
+   "or",
+   "@flaky"
+  ]
+ }
+}

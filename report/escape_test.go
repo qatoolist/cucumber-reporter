@@ -2,12 +2,14 @@ package report
 
 import (
 	"encoding/json"
+	"fmt"
 	"html"
+	"regexp"
 	"strings"
 	"testing"
 	"unicode"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 // A minimal tokenizer for the renderer's own output, written for these tests so the module needs no
@@ -216,10 +218,20 @@ func valid(s string) string {
 	return b.String()
 }
 
-// display is how a data string must read back from the fallback: the renderer replaces invalid UTF-8
-// byte by byte with U+FFFD and html/template turns NUL into U+FFFD.
+// display is the documented text presentation: strip SGR, visibly escape C0
+// and bidi controls, and replace invalid UTF-8. HTML escaping is checked separately.
 func display(s string) string {
-	return strings.ReplaceAll(valid(s), "\x00", "\uFFFD")
+	s = regexp.MustCompile(`\x1b\[[0-9;]*m`).ReplaceAllString(valid(s), "")
+	var out strings.Builder
+	for _, r := range s {
+		switch {
+		case r < 32 && r != '\t' && r != '\r' && r != '\n', r == 127, r == 0x200e, r == 0x200f, r >= 0x202a && r <= 0x202e, r >= 0x2066 && r <= 0x2069:
+			fmt.Fprintf(&out, `\u%04x`, r)
+		default:
+			out.WriteRune(r)
+		}
+	}
+	return out.String()
 }
 
 var hostile = []string{
@@ -245,7 +257,7 @@ var hostile = []string{
 }
 
 // hostileRun puts s into every data field the renderer shows.
-func hostileRun(s string) ([]cucumber.Feature, Options) {
+func hostileRun(s string) ([]cucumber.Feature, renderOptions) {
 	jsonDoc, _ := json.Marshal(map[string]string{s: s})
 	// Attachment bodies must be valid UTF-8 to be shown as text; invalid bodies are shown as binary,
 	// which TestAttachments covers.
@@ -267,8 +279,8 @@ func hostileRun(s string) ([]cucumber.Feature, Options) {
 			},
 		}},
 	}}
-	id := ScenarioIDs(features)[0][0]
-	opt := Options{
+	id := scenarioIDs(features)[0][0]
+	opt := renderOptions{
 		Version: OptionsVersion, Title: s, Name: s, WallClock: s, TopFacts: []string{s},
 		RunFacts: []Fact{{Label: s, Value: s}},
 		Verdict:  &Verdict{Label: s, Tone: ToneWarn},
@@ -318,7 +330,7 @@ func TestEscaping(t *testing.T) {
 func checkDataReadsBack(t testing.TB, doc, s string) {
 	t.Helper()
 	d, _ := dataBlock(t, doc)
-	want := valid(s)
+	want := display(s)
 	f := d.Features[0]
 	sc := f.Elements[0]
 	st := sc.Steps[0]
@@ -331,7 +343,7 @@ func checkDataReadsBack(t testing.TB, doc, s string) {
 		st.Keyword, st.Name, st.Match, st.Error, st.Doc.Value, st.Doc.Type, st.Rows[1][1], st.Att[0].Name,
 	}
 	for i, g := range got {
-		if g != strings.TrimSpace(want) && g != want {
+		if g != strings.TrimSpace(want) && g != want && g != display(strings.TrimSpace(s)) {
 			t.Errorf("data field %d = %q, want %q", i, g, want)
 		}
 	}
@@ -341,7 +353,7 @@ func checkDataReadsBack(t testing.TB, doc, s string) {
 func TestHostileMimeType(t *testing.T) {
 	for _, s := range hostile {
 		features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "a", MimeType: s, Data: b64("<b>content</b>")}))
-		doc := mustRender(t, features, Options{Version: OptionsVersion})
+		doc := mustRender(t, features, renderOptions{Version: OptionsVersion})
 		tokens := tokenize(t, doc)
 		checkSafe(t, tokens)
 		text := allText(tokens)

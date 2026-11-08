@@ -1,0 +1,57 @@
+[
+  {
+    "id": "ff",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "FF",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "ff;first-passes",
+        "keyword": "Scenario",
+        "name": "First passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ]
+      },
+      {
+        "id": "ff;second-fails",
+        "keyword": "Scenario",
+        "name": "Second fails",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "broken",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "wip broken (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/a.feature:7:in `broken'",
+              "duration": 46000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+$ cucumber --no-color --tags @does_not_exist --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+
+
+0 scenarios
+0 steps
+0m0.000s
+exit=0

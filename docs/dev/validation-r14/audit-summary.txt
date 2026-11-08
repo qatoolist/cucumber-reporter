@@ -1,0 +1,12 @@
+external corpus: 592 unique inputs
+PROBLEMS 0
+exit=0
+repository corpus: 352 unique inputs; 22 explicit ordered rerun sets
+PROBLEMS 0
+alias survey plain: with aliases 80 broken 0
+alias survey enh: with aliases 0 broken 0
+alias survey msg: with aliases 0 broken 0
+Fuzz: all eight targets passed; 5 seconds per target.
+Browser: automated Chrome startup aborted before DevTools; no automated browser pass claimed.
+Manual Comet: repeated jump/evidence/annotation/sidebar links, all-details controls, attempts, error expansion labels and collapsed-evidence Tab/AX passed.
+Final samples: dist/preview-r14-current/html-628324591/index.html and html-2669487295/index.html.

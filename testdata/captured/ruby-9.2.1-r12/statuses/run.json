@@ -1,0 +1,204 @@
+[
+  {
+    "id": "step-statuses",
+    "uri": "features/st.feature",
+    "keyword": "Feature",
+    "name": "Step statuses",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "step-statuses;passing",
+        "keyword": "Scenario",
+        "name": "Passing",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ]
+      },
+      {
+        "id": "step-statuses;pending",
+        "keyword": "Scenario",
+        "name": "Pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "this is pending",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "not yet (Cucumber::Pending)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/st.feature:8:in `this is pending'",
+              "duration": 55000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 9,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "id": "step-statuses;undefined",
+        "keyword": "Scenario",
+        "name": "Undefined",
+        "description": "",
+        "line": 11,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "nobody defined this step",
+            "line": 13,
+            "match": {
+              "location": "features/st.feature:13"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "id": "step-statuses;ambiguous",
+        "keyword": "Scenario",
+        "name": "Ambiguous",
+        "description": "",
+        "line": 16,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 17,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "this matches twice",
+            "line": 18,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:151"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Ambiguous match of \"this matches twice\":\n\nfeatures/step_definitions/s.rb:3:in `/^this matches twice$/'\nfeatures/step_definitions/s.rb:4:in `/^this matches (twice|thrice)$/'\n\nYou can run again with --guess to make Cucumber be more smart about it\n (Cucumber::Ambiguous)\nfeatures/st.feature:18:in `this matches twice'",
+              "duration": 21000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "id": "step-statuses;failing-then-skipped",
+        "keyword": "Scenario",
+        "name": "Failing then skipped",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "it fails",
+            "line": 22,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "boom (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/st.feature:22:in `it fails'",
+              "duration": 40000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 23,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+$ PLAN=Z:fail cucumber --tags not @a and not @b
+
+
+0 scenarios
+0 steps
+0m0.000s
+exit=0

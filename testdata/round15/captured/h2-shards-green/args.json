@@ -1,0 +1,31 @@
+{
+ "shard1": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "features/account.feature"
+  ]
+ },
+ "shard2": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "gw-retry:1",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@flaky",
+   "and",
+   "not",
+   "@x",
+   "--retry",
+   "1",
+   "features/checkout.feature"
+  ]
+ }
+}

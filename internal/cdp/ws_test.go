@@ -2,6 +2,7 @@ package cdp
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"crypto/sha1" //nolint:gosec // RFC 6455 mandates SHA-1 for the handshake accept value.
 	"encoding/base64"
@@ -316,5 +317,30 @@ func TestEvalAndEvents(t *testing.T) {
 	cancel()
 	if err := b.Call(cctx, "X", nil, nil); err == nil {
 		t.Fatal("expected context error")
+	}
+}
+
+func TestWSRejectsProtocolViolations(t *testing.T) {
+	for _, frame := range [][]byte{{0xc1, 0}, {0x81, 0x80}, {0x09, 0}, {0x8b, 0}, {0x81, 126, 0, 1, 'x'}, {0x80, 0}, {0x81, 1, 0xff}, {0x88, 1, 0}, {0x88, 2, 3, 0xed}} {
+		c := &wsConn{br: bufio.NewReader(bytes.NewReader(frame))}
+		if _, err := c.readMessage(); err == nil {
+			t.Fatalf("accepted malformed frame %x", frame)
+		}
+	}
+	if headerToken("notupgrade", "upgrade") || !headerToken("keep-alive, Upgrade", "upgrade") {
+		t.Fatal("invalid Connection token handling")
+	}
+}
+
+func TestWSWriteHonorsDeadline(t *testing.T) {
+	client, server := net.Pipe()
+	defer client.Close()
+	defer server.Close()
+	c := &wsConn{conn: client}
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Millisecond)
+	defer cancel()
+	start := time.Now()
+	if err := c.writeTextContext(ctx, []byte("blocked")); err == nil || time.Since(start) > time.Second {
+		t.Fatalf("write ignored deadline: %v", err)
 	}
 }

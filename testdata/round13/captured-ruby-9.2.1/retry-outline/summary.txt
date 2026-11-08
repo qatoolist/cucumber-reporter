@@ -1,0 +1,41 @@
+$ cucumber --no-color --retry 2 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+.F.FFFF.FP
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `/^row (\d+) behaves (\w+)$/'
+
+(::) failed steps (::)
+
+row 2 flaky (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/o.feature:9:4:in `row 2 behaves flaky'
+
+row 3 broken (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/o.feature:10:4:in `row 3 behaves broken'
+
+row 3 broken (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/o.feature:10:4:in `row 3 behaves broken'
+
+row 3 broken (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/o.feature:10:4:in `row 3 behaves broken'
+
+row 4 flaky (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/o.feature:14:4:in `row 4 behaves flaky'
+
+row 5 first (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/o.feature:15:4:in `row 5 behaves pending_after'
+
+Failing Scenarios:
+cucumber features/o.feature:10 # Scenario Outline: Row 3
+cucumber features/o.feature:15 # Scenario Outline: Row 5
+
+5 scenarios (2 failed, 2 flaky, 1 passed)
+10 steps (6 failed, 1 pending, 3 passed)
+0m0.030s
+exit=1

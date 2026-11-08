@@ -1,0 +1,102 @@
+[
+  {
+    "id": "rerun",
+    "uri": "features/r.feature",
+    "keyword": "Feature",
+    "name": "Rerun",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "rerun;alpha",
+        "keyword": "Scenario",
+        "name": "Alpha",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"A\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure A (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/r.feature:3:in `outcome \"A\"'",
+              "duration": 96000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rerun;bravo",
+        "keyword": "Scenario",
+        "name": "Bravo",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"B\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure B (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/r.feature:6:in `outcome \"B\"'",
+              "duration": 46000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rerun;charlie",
+        "keyword": "Scenario",
+        "name": "Charlie",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"C\"",
+            "line": 9,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      },
+      {
+        "id": "rerun;delta",
+        "keyword": "Scenario",
+        "name": "Delta",
+        "description": "",
+        "line": 11,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"D\"",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

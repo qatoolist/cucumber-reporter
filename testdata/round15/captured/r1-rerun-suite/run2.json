@@ -1,0 +1,949 @@
+[
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 7 items (row-7 wrong)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 127000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;8",
+        "keyword": "Scenario Outline",
+        "name": "Add 7 items (row-7 wrong)",
+        "description": "",
+        "line": 31,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 7 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 8 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 8 items but had 7 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\nfeatures/checkout.feature:31:21:in `the cart has 8 items'",
+              "duration": 59000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Add 7 items (row-7 wrong): \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 361000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Invalid coupon has ANSI colour in the error"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 69000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;invalid-coupon-has-ansi-colour-in-the-error",
+        "keyword": "Scenario",
+        "name": "Invalid coupon has ANSI colour in the error",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply an invalid coupon \"BAD<1>\"",
+            "line": 57,
+            "match": {
+              "location": "features/step_definitions/steps.rb:15"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "\u001b[31mCoupon BAD<1> rejected\u001b[0m\n  \u001b[1mexpected\u001b[0m: a valid coupon\n  \u001b[1mgot\u001b[0m:      \u001b[33mBAD<1>\u001b[0m <script>alert(1)</script> & 'single' \"double\"\nlong-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff- (ArgumentError)\n./features/step_definitions/steps.rb:16:in 'block in <top (required)>'\nfeatures/checkout.feature:57:in `I apply an invalid coupon \"BAD<1>\"'",
+              "duration": 53000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 100",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Invalid coupon has ANSI colour in the error: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 171000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 208000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "panier-en-français-—-àéîõü",
+    "uri": "features/francais.feature",
+    "keyword": "Fonctionnalité",
+    "name": "Panier en français — àéîõü",
+    "description": "  Description avec **gras**.",
+    "line": 3,
+    "tags": [
+      {
+        "name": "@fr",
+        "line": 2
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ajouter 2 articles"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;ajouter-<n>-articles;;3",
+        "keyword": "Plan du scénario",
+        "name": "Ajouter 2 articles",
+        "description": "",
+        "line": 20,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 2 articles",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 3 articles",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "panier attendu 3, obtenu 2 — élève à l'école (RuntimeError)\n./features/step_definitions/steps.rb:49:in 'block in <top (required)>'\nfeatures/francais.feature:20:15:in `le panier contient 3 articles'",
+              "duration": 46000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Ajouter 2 articles: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Échec accentué"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;échec-accentué",
+        "keyword": "Scénario",
+        "name": "Échec accentué",
+        "description": "",
+        "line": 24,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 1 articles",
+            "line": 25,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 9 articles",
+            "line": 26,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "panier attendu 9, obtenu 1 — élève à l'école (RuntimeError)\n./features/step_definitions/steps.rb:49:in 'block in <top (required)>'\nfeatures/francais.feature:26:in `le panier contient 9 articles'",
+              "duration": 41000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Échec accentué: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 148000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "search",
+    "uri": "features/search.feature",
+    "keyword": "Feature",
+    "name": "Search",
+    "description": "  Search **must** be fast.",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@search",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "search;nested-step-fails-inside",
+        "keyword": "Scenario",
+        "name": "Nested step fails inside",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I do the failing composite action",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/steps.rb:30"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 5 items but had 2 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\n./features/step_definitions/steps.rb:32:in 'block in <top (required)>'\nfeatures/search.feature:13:in `I do the failing composite action'",
+              "duration": 292000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Nested step fails inside"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 71000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Nested step fails inside: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 140000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;deep-multiline-exception-with-backtrace",
+        "keyword": "Scenario",
+        "name": "Deep multiline exception with backtrace",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the deep call fails with \"search index exploded\"",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/steps.rb:34"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "search index exploded\nline two — ünïcödé ✓ 東京\n\tline three (tab)\nline four <b>&amp;</b> (RuntimeError)\n./features/support/env.rb:25:in 'Deep.level_c'\n./features/support/env.rb:23:in 'Deep.level_b'\n./features/support/env.rb:22:in 'Deep.level_a'\n./features/step_definitions/steps.rb:34:in 'block in <top (required)>'\nfeatures/search.feature:16:in `the deep call fails with \"search index exploded\"'",
+              "duration": 50000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Deep multiline exception with backtrace"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Deep multiline exception with backtrace: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 244000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;ambiguous-step",
+        "keyword": "Scenario",
+        "name": "Ambiguous step",
+        "description": "",
+        "line": 28,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I am ambiguous",
+            "line": 29,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:151"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Ambiguous match of \"I am ambiguous\":\n\nfeatures/step_definitions/steps.rb:36:in `/^I am ambig(uous)?$/'\nfeatures/step_definitions/steps.rb:37:in `\"I am ambiguous\"'\n\nYou can run again with --guess to make Cucumber be more smart about it\n (Cucumber::Ambiguous)\nfeatures/search.feature:29:in `I am ambiguous'",
+              "duration": 21000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ambiguous step"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Ambiguous step: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 171000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;failure-with-screenshots-attached",
+        "keyword": "Scenario",
+        "name": "Failure with screenshots attached",
+        "description": "",
+        "line": 45,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I take a screenshot as \"png\"",
+            "line": 46,
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 113000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"html\"",
+            "line": 47,
+            "embeddings": [
+              {
+                "mime_type": "text/html",
+                "data": "PGh0bWw+PGJvZHk+PGgxPkNoZWNrb3V0IPCfm5I8L2gxPjxzY3JpcHQ+d2luZG93LnB3bmVkPTE8L3NjcmlwdD48aW1nIHNyYz14IG9uZXJyb3I9YWxlcnQoMSk+PC9ib2R5PjwvaHRtbD4="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 449000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "the step \"render\" fails",
+            "line": 48,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step render failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:48:in `the step \"render\" fails'",
+              "duration": 54000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Failure with screenshots attached"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Failure with screenshots attached: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 173000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;5",
+        "keyword": "Scenario Outline",
+        "name": "Search term term4 fails",
+        "description": "",
+        "line": 58,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term4\" fails",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step term4 failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:58:51:in `the step \"term4\" fails'",
+              "duration": 45000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term4 fails"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Search term term4 fails: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;12",
+        "keyword": "Scenario Outline",
+        "name": "Search term term11 fails",
+        "description": "",
+        "line": 65,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term11\" fails",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step term11 failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:65:51:in `the step \"term11\" fails'",
+              "duration": 37000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term11 fails"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 176000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Search term term11 fails: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 131000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

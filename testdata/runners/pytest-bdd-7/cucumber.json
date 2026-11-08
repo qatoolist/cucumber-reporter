@@ -1,0 +1,366 @@
+[
+  {
+    "keyword": "Feature",
+    "uri": "features/checkout.feature",
+    "name": "Checkout 🛒 – Ünïcode",
+    "id": "features/checkout.feature",
+    "line": 2,
+    "description": "",
+    "language": "en",
+    "tags": [
+      {
+        "name": "checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Scenario",
+        "id": "test_successful_checkout",
+        "name": "Successful checkout ✅",
+        "line": 7,
+        "description": "",
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "smoke",
+            "line": 6
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given",
+            "name": "a cart with 3 items",
+            "line": 8,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000000
+            }
+          },
+          {
+            "keyword": "When",
+            "name": "I pay with a valid card",
+            "line": 9,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1500000000
+            }
+          },
+          {
+            "keyword": "Then",
+            "name": "I see the receipt",
+            "line": 10,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Scenario",
+        "id": "test_payment_declined",
+        "name": "Payment declined 💳",
+        "line": 13,
+        "description": "",
+        "type": "scenario",
+        "tags": [],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given",
+            "name": "a cart with 1 items",
+            "line": 14,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "keyword": "When",
+            "name": "I pay with a declined card",
+            "line": 15,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "def test_step(...):\n>       assert response.status_code == 200\nE       assert 402 == 200\n\ntests/step_defs/test_checkout.py:44: AssertionError",
+              "duration": 87000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Scenario Outline",
+        "id": "test_discount_save10[SAVE10]",
+        "name": "Discount SAVE10",
+        "line": 56,
+        "description": "",
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "discount",
+            "line": 55
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given",
+            "name": "a coupon SAVE10",
+            "line": 51,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then",
+            "name": "the discount is 10%",
+            "line": 52,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Scenario Outline",
+        "id": "test_discount_bogus[BOGUS]",
+        "name": "Discount BOGUS",
+        "line": 57,
+        "description": "",
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "discount",
+            "line": 56
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given",
+            "name": "a coupon BOGUS",
+            "line": 51,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then",
+            "name": "the discount is 0%",
+            "line": 52,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "def test_step(...):\n>       assert response.status_code == 200\nE       assert 402 == 200\n\ntests/step_defs/test_checkout.py:44: AssertionError",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Scenario",
+        "id": "test_flaky_search",
+        "name": "Flaky search 🔁",
+        "line": 60,
+        "description": "",
+        "type": "scenario",
+        "tags": [],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "When",
+            "name": "I search for \"тест\"",
+            "line": 61,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 300000000
+            }
+          },
+          {
+            "keyword": "Then",
+            "name": "I see 3 results",
+            "line": 62,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "keyword": "Feature",
+    "uri": "features/profile.feature",
+    "name": "Profile",
+    "id": "features/profile.feature",
+    "line": 1,
+    "description": "",
+    "language": "en",
+    "tags": [],
+    "elements": [
+      {
+        "keyword": "Scenario",
+        "id": "test_background_fails",
+        "name": "Background fails",
+        "line": 6,
+        "description": "",
+        "type": "scenario",
+        "tags": [],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "a registered user \"zoë@example.com\"",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "def test_step(...):\n>       assert response.status_code == 200\nE       assert 402 == 200\n\ntests/step_defs/test_checkout.py:44: AssertionError",
+              "duration": 2000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Scenario",
+        "id": "test_update_address",
+        "name": "Update address",
+        "line": 10,
+        "description": "",
+        "type": "scenario",
+        "tags": [],
+        "steps": [
+          {
+            "keyword": "Given",
+            "name": "a registered user \"zoë@example.com\"",
+            "line": 4,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "When",
+            "name": "I submit the address",
+            "line": 11,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000000
+            }
+          },
+          {
+            "keyword": "Then",
+            "name": "my addresses are",
+            "line": 16,
+            "match": {
+              "location": ""
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

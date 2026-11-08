@@ -1,0 +1,9 @@
+{
+ "run": {
+  "PLAN": "Z:fail",
+  "args": [
+   "--tags",
+   "not @a and not @b"
+  ]
+ }
+}

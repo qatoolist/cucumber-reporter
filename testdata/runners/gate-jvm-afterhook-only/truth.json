@@ -1,0 +1,34 @@
+{
+ "statuses": [
+  [
+   "features/checkout.feature",
+   7,
+   "Successful checkout ✅",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   56,
+   "Discount SAVE10",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   60,
+   "Flaky search 🔁",
+   "passed"
+  ],
+  [
+   "features/profile.feature",
+   10,
+   "Update address",
+   "passed"
+  ]
+ ],
+ "counts": {
+  "failed": 1,
+  "passed": 3
+ },
+ "verdict": "failed",
+ "n": 4
+}

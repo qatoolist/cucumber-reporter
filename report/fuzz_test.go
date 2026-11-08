@@ -16,7 +16,7 @@ func FuzzRender(f *testing.F) {
 	f.Add("plain text")
 	baseline := strings.Join(shape(tokenize(f, renderHostile(f, "placeholder"))), "\n")
 	f.Fuzz(func(t *testing.T, s string) {
-		if s == "" {
+		if display(s) == "" {
 			return // a section must have a title; TestOptionsValidation covers the refusal
 		}
 		features, opt := hostileRun(s)
@@ -24,7 +24,7 @@ func FuzzRender(f *testing.F) {
 		tokens := tokenize(t, doc)
 		checkSafe(t, tokens)
 		checkDataReadsBack(t, doc, s)
-		if strings.TrimSpace(s) == "" {
+		if strings.TrimSpace(display(s)) == "" || strings.TrimSpace(s) == "" {
 			return // empty fields are left out of the page, which changes the skeleton legitimately
 		}
 		if got := strings.Join(shape(tokens), "\n"); got != baseline {

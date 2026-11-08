@@ -1,0 +1,11 @@
+{
+ "run": {
+  "env": {
+   "CI": "true",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": []
+ }
+}

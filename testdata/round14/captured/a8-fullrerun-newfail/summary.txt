@@ -1,0 +1,32 @@
+$ PLAN=A:fail cucumber 
+F.
+
+(::) failed steps (::)
+
+planned failure A (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:3:in `outcome "A"'
+
+Failing Scenarios:
+cucumber features/r.feature:2 # Scenario: Alpha
+
+2 scenarios (1 failed, 1 passed)
+2 steps (1 failed, 1 passed)
+0m0.021s
+exit=1
+$ PLAN=D:fail cucumber 
+.F
+
+(::) failed steps (::)
+
+planned failure D (run 2) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:6:in `outcome "D"'
+
+Failing Scenarios:
+cucumber features/r.feature:5 # Scenario: Delta
+
+2 scenarios (1 failed, 1 passed)
+2 steps (1 failed, 1 passed)
+0m0.017s
+exit=1

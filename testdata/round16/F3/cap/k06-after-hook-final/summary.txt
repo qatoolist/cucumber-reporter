@@ -1,0 +1,10 @@
+...F.F.
+
+Failing Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+
+4 scenarios (1 failed, 3 passed)
+5 steps (5 passed)
+0m0.098s
+$ PLAN= HOOKS=after,afterlast cucumber --retry 1
+exit=1

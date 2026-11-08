@@ -1,0 +1,40 @@
+{
+ "statuses": [
+  [
+   "features/checkout.feature",
+   7,
+   "Successful checkout ✅",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   13,
+   "Payment declined 💳",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   56,
+   "Discount",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   57,
+   "Discount",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   60,
+   "Flaky search 🔁",
+   "passed"
+  ]
+ ],
+ "counts": {
+  "passed": 3,
+  "failed": 2
+ },
+ "verdict": "failed",
+ "n": 5
+}

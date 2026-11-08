@@ -1,0 +1,5 @@
+[{"uri":"f.feature","name":"F","elements":[
+{"name":"","line":2,"keyword":"Background","type":"background","steps":[{"name":"login","result":{"status":"failed","error_message":"BG BOOM","duration":1}}]},
+{"name":"one","line":5,"type":"scenario","steps":[{"name":"s","result":{"status":"skipped","duration":5}}]},
+{"name":"","line":2,"keyword":"Background","type":"background","steps":[{"name":"login","result":{"status":"passed","duration":1}}]},
+{"name":"two","line":8,"type":"scenario","steps":[{"name":"s","result":{"status":"passed","duration":5}}]}]}]

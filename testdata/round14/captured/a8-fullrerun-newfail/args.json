@@ -1,0 +1,10 @@
+{
+ "run1": {
+  "PLAN": "A:fail",
+  "args": []
+ },
+ "run2": {
+  "PLAN": "D:fail",
+  "args": []
+ }
+}

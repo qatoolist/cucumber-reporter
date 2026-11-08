@@ -1,0 +1,15 @@
+{
+ "run": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "gw-retry:1",
+   "FAIL": ""
+  },
+  "args": [
+   "--retry",
+   "1",
+   "--strict"
+  ]
+ }
+}

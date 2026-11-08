@@ -1,0 +1,22 @@
+$ [run] CI= BROWSER= FLAKY= FAIL= cucumber --order random:4242
+Failing Scenarios:
+cucumber features/search.feature:58 # Scenario Outline: Search term term4 fails
+cucumber features/search.feature:28 # Scenario: Ambiguous step
+cucumber features/search.feature:45 # Scenario: Failure with screenshots attached
+cucumber features/francais.feature:20 # Plan du scénario: Ajouter 2 articles
+cucumber features/checkout.feature:56 # Scenario: Invalid coupon has ANSI colour in the error
+cucumber features/search.feature:65 # Scenario Outline: Search term term11 fails
+cucumber features/francais.feature:24 # Scénario: Échec accentué
+cucumber features/search.feature:12 # Scenario: Nested step fails inside
+cucumber features/checkout.feature:31 # Scenario Outline: Add 7 items (row-7 wrong)
+cucumber features/search.feature:15 # Scenario: Deep multiline exception with backtrace
+73 scenarios (10 failed, 1 undefined, 1 pending, 61 passed)
+147 steps (10 failed, 3 skipped, 1 undefined, 1 pending, 132 passed)
+0m0.099s
+Randomized with seed 4242
+You can implement step definitions for undefined steps with these snippets:
+When('I search for {string} with {int} filters') do |string, int|
+# When('I search for {string} with {float} filters') do |string, float|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+exit=1

@@ -1,0 +1,19 @@
+....
+
+4 scenarios (4 passed)
+4 steps (4 passed)
+0m0.017s
+
+The --wip switch was used, so I didn't expect anything to pass. These scenarios passed:
+(::) passed scenarios (::)
+
+features/a.feature:2:in `Scenario: X'
+
+features/a.feature:5:in `Scenario: Y'
+
+features/a.feature:9:in `Scenario: Z'
+
+features/a.feature:12:in `Scenario: U'
+
+$  cucumber --wip
+exit=1

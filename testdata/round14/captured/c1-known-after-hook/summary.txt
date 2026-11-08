@@ -1,0 +1,16 @@
+$ PLAN=K1:fail cucumber 
+.F-F.
+
+(::) failed steps (::)
+
+planned failure K1 (run ) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/k.feature:4:in `outcome "K1"'
+
+Failing Scenarios:
+cucumber features/k.feature:2 # Scenario: Known one
+
+2 scenarios (1 failed, 1 passed)
+4 steps (1 failed, 1 skipped, 2 passed)
+0m0.024s
+exit=1

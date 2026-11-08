@@ -1,0 +1,1 @@
+[{"uri": "a.feature", "name": "A", "elements": [{"type": "scenario", "name": "S", "line": 2, "steps": [{"name": "check secret-original", "result": {"status": "failed", "error_message": "BOOM SECRET123"}}]}]}]

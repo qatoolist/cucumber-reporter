@@ -1,0 +1,23 @@
+$ cucumber --no-color --wip --tags @wip and not @x --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+FF
+
+(::) failed steps (::)
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/w.feature:5:in `broken'
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/w.feature:9:in `broken'
+
+Failing Scenarios:
+cucumber features/w.feature:4 # Scenario: Wip passes
+cucumber features/w.feature:8 # Scenario: Wip fails
+
+2 scenarios (2 failed)
+2 steps (2 failed)
+0m0.018s
+
+The --wip switch was used, so the failures were expected. All is good.
+exit=0

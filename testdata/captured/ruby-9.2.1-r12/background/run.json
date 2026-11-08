@@ -1,0 +1,98 @@
+[
+  {
+    "id": "background-failure",
+    "uri": "features/bg.feature",
+    "keyword": "Feature",
+    "name": "Background failure",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the database is up",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "db down (RuntimeError)\n./features/step_definitions/s.rb:1:in 'block in <top (required)>'\nfeatures/bg.feature:4:in `the database is up'",
+              "duration": 64000
+            }
+          }
+        ]
+      },
+      {
+        "id": "background-failure;first-uses-background",
+        "keyword": "Scenario",
+        "name": "First uses background",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "it works",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the database is up",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "db down (RuntimeError)\n./features/step_definitions/s.rb:1:in 'block in <top (required)>'\nfeatures/bg.feature:4:in `the database is up'",
+              "duration": 37000
+            }
+          }
+        ]
+      },
+      {
+        "id": "background-failure;second-uses-background",
+        "keyword": "Scenario",
+        "name": "Second uses background",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "it works",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

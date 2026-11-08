@@ -1,0 +1,7 @@
+..-.
+
+4 scenarios (1 pending, 3 passed)
+4 steps (1 skipped, 3 passed)
+0m0.039s
+$ HOOKS=beforepending cucumber 
+exit=0

@@ -1,0 +1,15 @@
+.F.
+
+(::) failed steps (::)
+
+first c (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/f.feature:7:in `attempt step c'
+
+Flaky Scenarios:
+cucumber features/f.feature:6 # Scenario: Fails then passes
+
+2 scenarios (1 flaky, 1 passed)
+3 steps (1 failed, 2 passed)
+0m0.028s
+exit=1

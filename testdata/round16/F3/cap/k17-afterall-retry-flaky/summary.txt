@@ -1,0 +1,15 @@
+F....
+
+(::) failed steps (::)
+
+boom x attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:3:in `step x'
+
+
+
+4 scenarios (1 flaky, 3 passed)
+5 steps (1 failed, 4 passed)
+0m0.029s
+$ PLAN=x:fail/pass HOOKS=afterall cucumber --retry 1
+exit=2

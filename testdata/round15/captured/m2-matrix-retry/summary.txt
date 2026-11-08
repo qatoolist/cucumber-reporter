@@ -1,0 +1,10 @@
+$ [chrome] CI= BROWSER=chrome FLAKY=gw-retry:1 FAIL= cucumber --tags @account or @flaky --retry 1
+22 scenarios (1 flaky, 21 passed)
+exit=0
+$ [firefox] CI= BROWSER=firefox FLAKY= FAIL= cucumber --tags @account or @flaky --retry 1
+Failing Scenarios:
+cucumber features/checkout.feature:75 # Scenario: Payment gateway (chrome-ok, firefox-broken)
+22 scenarios (1 failed, 21 passed)
+29 steps (2 failed, 27 passed)
+0m0.059s
+exit=1

@@ -1,0 +1,17 @@
+{
+ "run1": {
+  "PLAN": "A:fail,B:fail1,C:fail",
+  "args": [
+   "--retry",
+   "1"
+  ]
+ },
+ "run2": {
+  "PLAN": "A:fail1,C:fail",
+  "args": [
+   "--retry",
+   "1",
+   "@run1.rerun.txt"
+  ]
+ }
+}

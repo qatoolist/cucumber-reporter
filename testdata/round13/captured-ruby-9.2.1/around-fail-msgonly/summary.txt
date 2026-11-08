@@ -1,0 +1,11 @@
+$ cucumber --no-color --format progress --out progress.txt --format message --out run.ndjson   (messages only; json formatter crashes on Around-before failure, see ../around-fail)
+..
+
+Failing Scenarios:
+cucumber features/a.feature:4 # Scenario: Around fails before block
+cucumber features/a.feature:8 # Scenario: Around fails after block
+
+3 scenarios (2 failed, 1 passed)
+2 steps (2 passed)
+0m0.017s
+exit=1

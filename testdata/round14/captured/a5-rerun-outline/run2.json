@@ -1,0 +1,56 @@
+[
+  {
+    "id": "outline-rerun",
+    "uri": "features/o.feature",
+    "keyword": "Feature",
+    "name": "Outline rerun",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "outline-rerun;row-<k>;;3",
+        "keyword": "Scenario Outline",
+        "name": "Row R2",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"R2\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 35000
+            }
+          }
+        ]
+      },
+      {
+        "id": "outline-rerun;same-name-rows;;3",
+        "keyword": "Scenario Outline",
+        "name": "Same name rows",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"S2\"",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

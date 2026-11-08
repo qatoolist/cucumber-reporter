@@ -1,0 +1,124 @@
+[
+  {
+    "id": "outline-rerun",
+    "uri": "features/o.feature",
+    "keyword": "Feature",
+    "name": "Outline rerun",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "outline-rerun;row-<k>;;2",
+        "keyword": "Scenario Outline",
+        "name": "Row R1",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"R1\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 21000
+            }
+          }
+        ]
+      },
+      {
+        "id": "outline-rerun;row-<k>;;3",
+        "keyword": "Scenario Outline",
+        "name": "Row R2",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"R2\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure R2 (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/o.feature:8:3:in `outcome \"R2\"'",
+              "duration": 58000
+            }
+          }
+        ]
+      },
+      {
+        "id": "outline-rerun;row-<k>;;4",
+        "keyword": "Scenario Outline",
+        "name": "Row R3",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"R3\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ]
+      },
+      {
+        "id": "outline-rerun;same-name-rows;;2",
+        "keyword": "Scenario Outline",
+        "name": "Same name rows",
+        "description": "",
+        "line": 16,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"S1\"",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "outline-rerun;same-name-rows;;3",
+        "keyword": "Scenario Outline",
+        "name": "Same name rows",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"S2\"",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure S2 (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/o.feature:17:12:in `outcome \"S2\"'",
+              "duration": 269000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

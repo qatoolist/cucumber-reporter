@@ -1,0 +1,148 @@
+[
+  {
+    "uri": "pay.feature",
+    "name": "pay",
+    "elements": [
+      {
+        "type": "background",
+        "steps": [
+          {
+            "name": "background",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "s1",
+        "name": "pay alice",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "line": 10,
+        "before": [
+          {
+            "name": "before",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ],
+        "after": [
+          {
+            "name": "after",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "name": "pay",
+            "result": {
+              "status": "failed",
+              "duration": 0
+            },
+            "before": [
+              {
+                "name": "step-before",
+                "result": {
+                  "status": "passed",
+                  "duration": 0
+                }
+              }
+            ],
+            "after": [
+              {
+                "name": "step-after",
+                "result": {
+                  "status": "passed",
+                  "duration": 0
+                },
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "ZXZpZGVuY2U="
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "background",
+        "steps": [
+          {
+            "name": "background",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ]
+      },
+      {
+        "id": "s2",
+        "name": "pay bob",
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "line": 11,
+        "before": [
+          {
+            "name": "before",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ],
+        "after": [
+          {
+            "name": "after",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          }
+        ],
+        "steps": [
+          {
+            "name": "pay",
+            "result": {
+              "status": "failed",
+              "duration": 0
+            },
+            "before": [
+              {
+                "name": "step-before",
+                "result": {
+                  "status": "passed",
+                  "duration": 0
+                }
+              }
+            ],
+            "after": [
+              {
+                "name": "step-after",
+                "result": {
+                  "status": "passed",
+                  "duration": 0
+                },
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "ZXZpZGVuY2U="
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

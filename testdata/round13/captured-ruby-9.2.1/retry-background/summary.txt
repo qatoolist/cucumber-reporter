@@ -1,0 +1,28 @@
+$ cucumber --no-color --retry 2 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+F--...F--F--F--
+
+(::) failed steps (::)
+
+bg down Bg flaky once 1 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/bg.feature:4:in `the env is flaky per scenario'
+
+bg down Bg always fails 1 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/bg.feature:4:in `the env is flaky per scenario'
+
+bg down Bg always fails 2 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/bg.feature:4:in `the env is flaky per scenario'
+
+bg down Bg always fails 3 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/bg.feature:4:in `the env is flaky per scenario'
+
+Failing Scenarios:
+cucumber features/bg.feature:10 # Scenario: Bg always fails
+
+2 scenarios (1 failed, 1 flaky)
+15 steps (4 failed, 8 skipped, 3 passed)
+0m0.030s
+exit=1

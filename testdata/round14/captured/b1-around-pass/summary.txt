@@ -1,0 +1,7 @@
+$ PLAN= cucumber 
+...
+
+3 scenarios (3 passed)
+3 steps (3 passed)
+0m0.131s
+exit=0

@@ -1,0 +1,19 @@
+$ cucumber --no-color --retry 3 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+FF..
+
+(::) failed steps (::)
+
+ffp 1 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+ffp 2 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+
+
+2 scenarios (1 flaky, 1 passed)
+4 steps (2 failed, 2 passed)
+0m0.018s
+exit=0

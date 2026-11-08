@@ -1,0 +1,2 @@
+# Development-only browser verification. No runtime dependency is added to the reporter.
+playwright==1.63.0

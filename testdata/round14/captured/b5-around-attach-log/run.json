@@ -1,0 +1,114 @@
+[
+  {
+    "id": "around",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "Around",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "around;wrapped-one",
+        "keyword": "Scenario",
+        "name": "Wrapped one",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"W1\"",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23000
+            },
+            "output": [
+              "around-after-log Wrapped one",
+              "around-before-log Wrapped two"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YXJvdW5kLWFmdGVyLWF0dGFjaCBXcmFwcGVkIG9uZQ=="
+              },
+              {
+                "mime_type": "text/plain",
+                "data": "YXJvdW5kLWJlZm9yZS1hdHRhY2ggV3JhcHBlZCB0d28="
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ar",
+            "line": 2
+          }
+        ]
+      },
+      {
+        "id": "around;wrapped-two",
+        "keyword": "Scenario",
+        "name": "Wrapped two",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"W2\"",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure W2 (run ) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\n./features/support/around.rb:4:in 'block in <top (required)>'\nfeatures/a.feature:8:in `outcome \"W2\"'",
+              "duration": 64000
+            },
+            "output": [
+              "around-after-log Wrapped two"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YXJvdW5kLWFmdGVyLWF0dGFjaCBXcmFwcGVkIHR3bw=="
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ar",
+            "line": 6
+          }
+        ]
+      },
+      {
+        "id": "around;plain",
+        "keyword": "Scenario",
+        "name": "Plain",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 11,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

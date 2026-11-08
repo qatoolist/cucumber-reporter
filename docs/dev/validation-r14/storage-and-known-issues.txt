@@ -1,0 +1,1 @@
+ok  	github.com/qatoolist/cucumber-reporter/report	1.697s

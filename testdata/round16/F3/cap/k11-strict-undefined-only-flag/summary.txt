@@ -1,0 +1,17 @@
+...U
+
+Undefined Scenarios:
+cucumber features/a.feature:12 # Scenario: U
+
+4 scenarios (1 undefined, 3 passed)
+4 steps (1 undefined, 3 passed)
+0m0.043s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('only u') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+$ UNDEF_U=1 cucumber --strict-undefined
+exit=1

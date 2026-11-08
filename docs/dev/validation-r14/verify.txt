@@ -1,0 +1,20 @@
+go vet ./...
+go vet -tags browser ./...
+golangci-lint has version 2.15.0 built with go1.27.3 from (unknown, modified: ?, mod sum: "h1:w94zf8HAYI7hm3164kwKsvZRuqXvY+YxeFoTbu1OLg8=") on (unknown)
+golangci-lint run ./...
+0 issues.
+golangci-lint run --build-tags browser ./...
+0 issues.
+go test -race -count=1 ./...
+ok  	github.com/qatoolist/cucumber-reporter/cmd/cucumber-report	73.492s
+ok  	github.com/qatoolist/cucumber-reporter/cucumber	1.781s
+ok  	github.com/qatoolist/cucumber-reporter/internal/cdp	1.196s
+ok  	github.com/qatoolist/cucumber-reporter/internal/cmd/minify	1.796s
+ok  	github.com/qatoolist/cucumber-reporter/internal/cucumberinput	2.002s
+ok  	github.com/qatoolist/cucumber-reporter/internal/cucumbermodel	1.074s
+ok  	github.com/qatoolist/cucumber-reporter/internal/evidence	1.072s
+ok  	github.com/qatoolist/cucumber-reporter/internal/minify	2.800s
+?   	github.com/qatoolist/cucumber-reporter/internal/sidecar	[no test files]
+ok  	github.com/qatoolist/cucumber-reporter/pdf	20.120s
+ok  	github.com/qatoolist/cucumber-reporter/report	64.356s
+66 v0.2.0-accepted fixtures checked; 0 unexplained differences

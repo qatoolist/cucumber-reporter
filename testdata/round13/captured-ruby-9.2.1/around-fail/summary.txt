@@ -1,0 +1,2 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+exit=2

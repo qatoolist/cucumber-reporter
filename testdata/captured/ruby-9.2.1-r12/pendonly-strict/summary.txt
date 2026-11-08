@@ -1,0 +1,13 @@
+.P
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `"this is pending"'
+
+Pending Scenarios:
+cucumber features/p.feature:6 # Scenario: Pending
+
+2 scenarios (1 pending, 1 passed)
+2 steps (1 pending, 1 passed)
+0m0.057s
+exit=1

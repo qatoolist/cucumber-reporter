@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "devDependencies": {
+    "jsdom": "20.0.3"
+  },
+  "scripts": {
+    "test:dom": "node --test dom/*.test.cjs"
+  },
+  "name": "cucumber-reporter-dom-check",
+  "version": "0.0.0"
+}

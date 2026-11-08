@@ -1,0 +1,121 @@
+[
+  {
+    "id": "strictness",
+    "uri": "features/d.feature",
+    "keyword": "Feature",
+    "name": "Strictness",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "strictness;passes",
+        "keyword": "Scenario",
+        "name": "Passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:101"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-pending",
+        "keyword": "Scenario",
+        "name": "Is pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "pend",
+            "line": 7,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:101"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-undefined",
+        "keyword": "Scenario",
+        "name": "Is undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "nobody defined this",
+            "line": 10,
+            "match": {
+              "location": "features/d.feature:10"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;is-flaky",
+        "keyword": "Scenario",
+        "name": "Is flaky",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "flaky once",
+            "line": 13,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:101"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 2000
+            }
+          }
+        ]
+      },
+      {
+        "id": "strictness;would-fail",
+        "keyword": "Scenario",
+        "name": "Would fail",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "broken",
+            "line": 16,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:101"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 3000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

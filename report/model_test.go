@@ -10,24 +10,30 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	pub "github.com/qatoolist/cucumber-reporter/cucumber"
+
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 // Independently written mirror of the data block's shape (DESIGN-UI §8); the tests decode the page's
 // JSON into it rather than reusing the renderer's own types.
 type (
 	tData struct {
-		Schema      int           `json:"schema"`
-		Title       string        `json:"title"`
-		Name        string        `json:"name"`
-		Verdict     Verdict       `json:"verdict"`
-		Facts       []Fact        `json:"facts"`
-		Top         []string      `json:"top"`
-		WallClock   string        `json:"wallClock"`
-		Sections    []Section     `json:"sections"`
-		Annotations []tAnnotation `json:"annotations"`
-		Defaults    ViewDefaults  `json:"defaults"`
-		Features    []tFeature    `json:"features"`
+		VerdictSource string                   `json:"verdictSource"`
+		Analysis      *RunSummary              `json:"analysis,omitempty"`
+		Execution     map[string][]attemptData `json:"execution,omitempty"`
+		TimingSection string                   `json:"timingSection,omitempty"`
+		Schema        int                      `json:"schema"`
+		Title         string                   `json:"title"`
+		Name          string                   `json:"name"`
+		Verdict       Verdict                  `json:"verdict"`
+		Facts         []Fact                   `json:"facts"`
+		Top           []string                 `json:"top"`
+		WallClock     string                   `json:"wallClock"`
+		Sections      []Section                `json:"sections"`
+		Annotations   []tAnnotation            `json:"annotations"`
+		Defaults      ViewDefaults             `json:"defaults"`
+		Features      []tFeature               `json:"features"`
 	}
 	tAnnotation struct {
 		Annotation
@@ -109,8 +115,8 @@ func TestIDs(t *testing.T) {
 		{URI: `C:\suite\Ünïcode Name.feature`, Elements: []cucumber.Scenario{{Line: 2}}},
 	}
 	wantF := []string{"order-processing", "order-processing-2", "feature", "order-processing-2-2", "n-code-name"}
-	if got := FeatureIDs(features); !reflect.DeepEqual(got, wantF) {
-		t.Errorf("FeatureIDs = %q\nwant         %q", got, wantF)
+	if got := featureIDs(features); !reflect.DeepEqual(got, wantF) {
+		t.Errorf("featureIDs = %q\nwant         %q", got, wantF)
 	}
 	wantS := [][]string{
 		{"order-processing-L6", "order-processing-L30", "order-processing-L30-2", "order-processing-L30-3"},
@@ -119,8 +125,8 @@ func TestIDs(t *testing.T) {
 		{"order-processing-2-2-L9"},
 		{"n-code-name-L2"},
 	}
-	if got := ScenarioIDs(features); !reflect.DeepEqual(got, wantS) {
-		t.Errorf("ScenarioIDs = %q\nwant          %q", got, wantS)
+	if got := scenarioIDs(features); !reflect.DeepEqual(got, wantS) {
+		t.Errorf("scenarioIDs = %q\nwant          %q", got, wantS)
 	}
 }
 
@@ -162,7 +168,7 @@ func annotationsOf(d tData) []Annotation {
 }
 
 func TestKnownIssueRules(t *testing.T) {
-	doc := mustRender(t, knownRun(), Options{Version: OptionsVersion, Annotations: knownAnnotations()})
+	doc := mustRender(t, knownRun(), renderOptions{Version: OptionsVersion, Annotations: knownAnnotations()})
 	d, _ := dataBlock(t, doc)
 	for _, tc := range []struct {
 		id, status string
@@ -206,7 +212,7 @@ func TestKnownIssueRules(t *testing.T) {
 			anns = append(anns, a)
 		}
 	}
-	d, _ = dataBlock(t, mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns}))
+	d, _ = dataBlock(t, mustRender(t, run, renderOptions{Version: OptionsVersion, Annotations: anns}))
 	if d.Features[0].Status != "known" || d.Verdict != (Verdict{Label: "Passed with known failures", Tone: ToneWarn}) {
 		t.Errorf("feature %s, verdict %+v", d.Features[0].Status, d.Verdict)
 	}
@@ -225,17 +231,17 @@ func TestAnnotationValidation(t *testing.T) {
 		"step on a skip":         {Scenario: "k-L3", Kind: KindSkip, Step: 1},
 	}
 	for name, a := range cases {
-		_, err := Render(knownRun(), Options{Version: OptionsVersion, Annotations: []Annotation{a}})
+		_, err := renderPublicModel(knownRun(), renderOptions{Version: OptionsVersion, Annotations: []Annotation{a}})
 		if !errors.Is(err, ErrInvalidOptions) {
 			t.Errorf("%s: err = %v", name, err)
 		}
 	}
 	dup := []Annotation{{Scenario: "k-L3", Kind: KindKnown, Ref: "EX-1"}, {Scenario: "k-L3", Kind: KindKnown, Ref: "EX-1"}}
-	if _, err := Render(knownRun(), Options{Version: OptionsVersion, Annotations: dup}); !errors.Is(err, ErrInvalidOptions) {
+	if _, err := renderPublicModel(knownRun(), renderOptions{Version: OptionsVersion, Annotations: dup}); !errors.Is(err, ErrInvalidOptions) {
 		t.Errorf("duplicate known issue: err = %v", err)
 	}
 	two := []Annotation{{Scenario: "k-L3", Kind: KindKnown, Ref: "EX-1"}, {Scenario: "k-L3", Kind: KindKnown, Ref: "EX-2"}}
-	if _, err := Render(knownRun(), Options{Version: OptionsVersion, Annotations: two}); err != nil {
+	if _, err := renderPublicModel(knownRun(), renderOptions{Version: OptionsVersion, Annotations: two}); err != nil {
 		t.Errorf("two issues on one scenario: %v", err)
 	}
 }
@@ -293,7 +299,7 @@ func TestAttachments(t *testing.T) {
 		cucumber.Embedding{Name: "big.json", MimeType: "application/json", Data: b64(`{"a":"` + strings.Repeat("x", 2000) + `"}`)},
 		cucumber.Embedding{Name: "big.bin", MimeType: "application/octet-stream", Data: b64(strings.Repeat("\x00", 2000))},
 	))
-	d, _ := dataBlock(t, mustRender(t, features, Options{Version: OptionsVersion, Limits: cucumber.Limits{InlineAttachment: 1024}}))
+	d, _ := dataBlock(t, mustRender(t, features, renderOptions{Version: OptionsVersion, Limits: pub.Limits{InlineAttachment: 1024}}))
 	att := d.Features[0].Elements[0].Steps[0].Att
 	want := []tAtt{
 		{Name: "note.txt", Mime: "text/plain", Data: b64("line 1\n  line <2>\n"), Size: 18},
@@ -350,7 +356,7 @@ func TestKnownIssueRuleEdges(t *testing.T) {
 		{Scenario: "e-L8", Kind: KindKnown, Ref: "EX-3", Step: 2, StepText: "b", Observed: true},
 		{Scenario: "e-L12", Kind: KindKnown, Ref: "EX-4", Step: 1, StepText: "a", Observed: true},
 	}
-	d, _ := dataBlock(t, mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns}))
+	d, _ := dataBlock(t, mustRender(t, run, renderOptions{Version: OptionsVersion, Annotations: anns}))
 	if got, want := statesOf(d), []string{"not-applied", "applied", "not-applied", "not-applied"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("states %q, want %q", got, want)
 	}
@@ -395,7 +401,7 @@ func TestKnownIssueDeclaredStep(t *testing.T) {
 		anns = append(anns, Annotation{Scenario: id, Kind: KindKnown, Ref: "EX-9", Title: "verify is broken", Step: 3, StepText: "verify"})
 	}
 	anns = append(anns, Annotation{Scenario: "d-L5", Kind: KindKnown, Ref: "EX-9", Step: 3, StepText: "submit"})
-	doc := mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns})
+	doc := mustRender(t, run, renderOptions{Version: OptionsVersion, Annotations: anns})
 	d, _ := dataBlock(t, doc)
 	for _, tc := range []struct {
 		id, status string
@@ -433,7 +439,7 @@ func TestKnownIssueDeclaredStep(t *testing.T) {
 // TestScenarioOutcomes: the exported classifier returns exactly the outcomes the page shows.
 func TestScenarioOutcomes(t *testing.T) {
 	features, opt := loadShowcase(t, "")
-	got, err := ScenarioOutcomes(features, opt.Annotations)
+	got, err := scenarioOutcomes(features, opt.Annotations)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -442,7 +448,7 @@ func TestScenarioOutcomes(t *testing.T) {
 	for i, f := range d.Features {
 		for j, s := range f.Elements {
 			if got[i][j] != s.Status {
-				t.Errorf("%s: ScenarioOutcomes %s, page %s", s.ID, got[i][j], s.Status)
+				t.Errorf("%s: scenarioOutcomes %s, page %s", s.ID, got[i][j], s.Status)
 			}
 			counts[got[i][j]]++
 		}
@@ -453,7 +459,7 @@ func TestScenarioOutcomes(t *testing.T) {
 	}
 	// The known variant is a pass with known failures only.
 	kf, kopt := loadShowcase(t, "-known")
-	kout, err := ScenarioOutcomes(kf, kopt.Annotations)
+	kout, err := scenarioOutcomes(kf, kopt.Annotations)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -466,10 +472,10 @@ func TestScenarioOutcomes(t *testing.T) {
 	if !reflect.DeepEqual(kc, map[string]int{OutcomePassed: 34, OutcomeKnown: 4, OutcomeSkipped: 2}) {
 		t.Errorf("known variant counts %v", kc)
 	}
-	if _, err := ScenarioOutcomes(features, []Annotation{{Scenario: "nope", Kind: KindKnown}}); !errors.Is(err, ErrInvalidOptions) {
+	if _, err := scenarioOutcomes(features, []Annotation{{Scenario: "nope", Kind: KindKnown}}); !errors.Is(err, ErrInvalidOptions) {
 		t.Errorf("unknown scenario: %v", err)
 	}
-	if _, err := ScenarioOutcomes(nil, nil); !errors.Is(err, cucumber.ErrNoResults) {
+	if _, err := scenarioOutcomes(nil, nil); err != nil {
 		t.Errorf("no features: %v", err)
 	}
 }
@@ -496,7 +502,7 @@ func TestNotApplicableOutcomes(t *testing.T) {
 		{Scenario: "n-L1", Kind: KindKnown, Ref: "EX-7", Step: 2, StepText: "b", Outcomes: []Outcome{{Step: 2, Outcome: "not applicable", NotApplicable: true}}},
 		{Scenario: "n-L2", Kind: KindKnown, Ref: "EX-7", Step: 2, StepText: "b", Outcomes: []Outcome{{Step: 1, Outcome: "not applicable", NotApplicable: true}, {Step: 2, Outcome: "passed unexpectedly"}}},
 	}
-	doc := mustRender(t, run, Options{Version: OptionsVersion, Annotations: anns})
+	doc := mustRender(t, run, renderOptions{Version: OptionsVersion, Annotations: anns})
 	d, _ := dataBlock(t, doc)
 	if got, want := statesOf(d), []string{"not-applicable", "passed"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("states %q, want %q", got, want)
@@ -519,20 +525,20 @@ func TestNotApplicableOutcomes(t *testing.T) {
 func TestEmbeddingLimitOnEveryPath(t *testing.T) {
 	const secret = "long attachment SECRET-CONTENT"
 	features := one(step("s", cucumber.StatusPassed, 1, cucumber.Embedding{Name: "probe", MimeType: "text/plain", Data: b64(secret)}))
-	opt := Options{Version: OptionsVersion, Limits: cucumber.Limits{Embedding: 4}}
-	if _, err := Render(features, opt); !errors.Is(err, cucumber.ErrTooLarge) || strings.Contains(err.Error(), "SECRET") {
-		t.Errorf("Render: %v", err)
+	opt := renderOptions{Version: OptionsVersion, Limits: pub.Limits{Embedding: 4}}
+	if _, err := renderPublicModel(features, opt); !errors.Is(err, cucumber.ErrTooLarge) || strings.Contains(err.Error(), "SECRET") {
+		t.Errorf("renderPublicModel: %v", err)
 	}
 	parent := t.TempDir()
-	if _, err := RenderFeaturesDirTo(features, parent, opt); !errors.Is(err, cucumber.ErrTooLarge) {
-		t.Errorf("RenderFeaturesDirTo: %v", err)
+	if _, err := renderFeaturesDirTo(features, parent, opt); !errors.Is(err, cucumber.ErrTooLarge) {
+		t.Errorf("renderFeaturesDirTo: %v", err)
 	}
 	if entries, _ := os.ReadDir(parent); len(entries) != 0 {
 		t.Errorf("a refused render left %d entries", len(entries))
 	}
 	// At the limit the attachment is accepted.
 	opt.Limits.Embedding = int64(len(b64(secret)))
-	if _, err := Render(features, opt); err != nil {
+	if _, err := renderPublicModel(features, opt); err != nil {
 		t.Errorf("at the limit: %v", err)
 	}
 }
@@ -544,7 +550,7 @@ func TestScenarioDurationSaturates(t *testing.T) {
 	if got := features[0].Elements[0].Duration(); got != math.MaxInt64 {
 		t.Fatalf("cucumber duration %d", got)
 	}
-	doc := mustRender(t, features, Options{Version: OptionsVersion})
+	doc := mustRender(t, features, renderOptions{Version: OptionsVersion})
 	if !strings.Contains(noscript(t, doc), "Scenario: <bdi>S</bdi> · "+formatNS(math.MaxInt64)) {
 		t.Errorf("fallback scenario duration is not the saturated maximum %q", formatNS(math.MaxInt64))
 	}
@@ -552,7 +558,7 @@ func TestScenarioDurationSaturates(t *testing.T) {
 
 // TestEmptyAttachmentIsContent: an empty attachment is carried as empty data, not as missing data.
 func TestEmptyAttachmentIsContent(t *testing.T) {
-	doc := mustRender(t, one(step("s", "passed", 1, cucumber.Embedding{Name: "empty.txt", MimeType: "text/plain", Data: ""})), Options{Version: OptionsVersion})
+	doc := mustRender(t, one(step("s", "passed", 1, cucumber.Embedding{Name: "empty.txt", MimeType: "text/plain", Data: ""})), renderOptions{Version: OptionsVersion})
 	if _, raw := dataBlock(t, doc); !strings.Contains(raw, `{"name":"empty.txt","mime":"text/plain","data":""}`) {
 		t.Errorf("empty attachment not carried as empty data")
 	}

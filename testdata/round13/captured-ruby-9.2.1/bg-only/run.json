@@ -1,0 +1,34 @@
+[
+  {
+    "id": "other",
+    "uri": "features/other.feature",
+    "keyword": "Feature",
+    "name": "Other",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "other;other-passes",
+        "keyword": "Scenario",
+        "name": "Other passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

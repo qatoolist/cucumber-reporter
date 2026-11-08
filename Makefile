@@ -29,8 +29,14 @@ generate: ## Re-minify assets/app.js and assets/app.css into the committed .min 
 	$(GO) generate ./report
 
 fuzz-smoke: ## Run each fuzz target for FUZZTIME (default 30s)
-	$(GO) test ./cucumber -run '^$$' -fuzz FuzzParse -fuzztime $(FUZZTIME)
-	$(GO) test ./report -run '^$$' -fuzz FuzzRender -fuzztime $(FUZZTIME)
+	$(GO) test ./internal/cucumberinput -run '^$$' -fuzz '^FuzzParse$$' -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./internal/cucumberinput -run '^$$' -fuzz FuzzMessages -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./internal/cucumberinput -run '^$$' -fuzz FuzzParseDifferential -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./report -run '^$$' -fuzz FuzzRender -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./report -run '^$$' -fuzz FuzzRedactionJSON -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./internal/minify -run '^$$' -fuzz '^FuzzJS$$' -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./internal/minify -run '^$$' -fuzz FuzzJSParseOracle -parallel 2 -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
+	$(GO) test ./internal/minify -run '^$$' -fuzz FuzzCSS -fuzztime $(FUZZTIME) -fuzzminimizetime 1s
 
 golden-update: ## Rewrite testdata/golden from the current renderer (review the diff)
 	$(GO) test ./report -run TestGolden -update
@@ -38,4 +44,24 @@ golden-update: ## Rewrite testdata/golden from the current renderer (review the 
 browser-check: ## Interaction, print and stress checks in local headless Chrome (CHROME selects one; PDF checks need Ghostscript, GS selects one)
 	$(GO) test -tags browser -count=1 ./internal/cdp ./report
 
-verify: fmt-check vet lint test ## The offline gate: formatting, vet, lint and tests
+compat-check: ## Compare every fixture with a locally available v0.2.0 tag
+	@if git rev-parse --verify refs/tags/v0.2.0 >/dev/null 2>&1; then python3 internal/compatcheck/check.py; else echo "Compatibility check failed: local v0.2.0 tag unavailable; fetch the baseline tag before release verification"; exit 1; fi
+
+verify: fmt-check vet lint test compat-check ## The offline gate: formatting, vet, lint and tests
+
+.PHONY: surface-check
+surface-check: ## Compare public API and artifacts over every unique repository fixture
+	python3 internal/surfacecheck/run.py
+
+.PHONY: release-gate corpus-check api-check dom-check
+release-gate: ## Clean-commit release gate with full output in dist/release-gate.log (browser CI remains separate)
+	python3 internal/releasecheck/run.py
+
+corpus-check: ## All 121 real Ruby capture groups and runner fixtures, including regenerated large evidence
+	python3 internal/runnercheck/check.py
+
+api-check: ## Freeze exported API and kill type-leak/signature/constant mutants
+	python3 internal/apicheck/check.py
+
+dom-check: ## Reviewer DOM interactions and UI mutants, without launching a browser
+	python3 internal/browsercheck/dom/check.py --mutants

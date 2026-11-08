@@ -1,0 +1,69 @@
+[
+  {
+    "id": "wip",
+    "uri": "features/w.feature",
+    "keyword": "Feature",
+    "name": "Wip",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "wip;wip-passes",
+        "keyword": "Scenario",
+        "name": "Wip passes",
+        "description": "",
+        "line": 4,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 22000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@wip",
+            "line": 3
+          }
+        ]
+      },
+      {
+        "id": "wip;wip-fails",
+        "keyword": "Scenario",
+        "name": "Wip fails",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "broken",
+            "line": 9,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "wip broken (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/w.feature:9:in `broken'",
+              "duration": 55000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@wip",
+            "line": 7
+          }
+        ]
+      }
+    ]
+  }
+]

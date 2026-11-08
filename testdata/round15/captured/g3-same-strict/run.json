@@ -1,0 +1,1695 @@
+[
+  {
+    "id": "account",
+    "uri": "features/account.feature",
+    "keyword": "Feature",
+    "name": "Account",
+    "description": "",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@account",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "account;account-check-01",
+        "keyword": "Scenario",
+        "name": "Account check 01",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-1\" passes",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 01"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 306000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-02",
+        "keyword": "Scenario",
+        "name": "Account check 02",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-2\" passes",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 02"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-03-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 03 🔒",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-3\" passes",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 03 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-04",
+        "keyword": "Scenario",
+        "name": "Account check 04",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-4\" passes",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 04"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 130000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-05",
+        "keyword": "Scenario",
+        "name": "Account check 05",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-5\" passes",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 05"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 97000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-06-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 06 🔒",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-6\" passes",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 06 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-07",
+        "keyword": "Scenario",
+        "name": "Account check 07",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-7\" passes",
+            "line": 22,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 07"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-08",
+        "keyword": "Scenario",
+        "name": "Account check 08",
+        "description": "",
+        "line": 24,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-8\" passes",
+            "line": 25,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 08"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 95000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-09-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 09 🔒",
+        "description": "",
+        "line": 27,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-9\" passes",
+            "line": 28,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 09 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-10",
+        "keyword": "Scenario",
+        "name": "Account check 10",
+        "description": "",
+        "line": 30,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-10\" passes",
+            "line": 31,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 10"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-11",
+        "keyword": "Scenario",
+        "name": "Account check 11",
+        "description": "",
+        "line": 33,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-11\" passes",
+            "line": 34,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 11"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-12-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 12 🔒",
+        "description": "",
+        "line": 36,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-12\" passes",
+            "line": 37,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 12 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-13",
+        "keyword": "Scenario",
+        "name": "Account check 13",
+        "description": "",
+        "line": 39,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-13\" passes",
+            "line": 40,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 13"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 94000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-14",
+        "keyword": "Scenario",
+        "name": "Account check 14",
+        "description": "",
+        "line": 42,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-14\" passes",
+            "line": 43,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 14"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 87000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-15-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 15 🔒",
+        "description": "",
+        "line": 45,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-15\" passes",
+            "line": 46,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 15 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-16",
+        "keyword": "Scenario",
+        "name": "Account check 16",
+        "description": "",
+        "line": 48,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-16\" passes",
+            "line": 49,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 16"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-17",
+        "keyword": "Scenario",
+        "name": "Account check 17",
+        "description": "",
+        "line": 51,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-17\" passes",
+            "line": 52,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 17"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-18-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 18 🔒",
+        "description": "",
+        "line": 54,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-18\" passes",
+            "line": 55,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 18 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 91000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-19",
+        "keyword": "Scenario",
+        "name": "Account check 19",
+        "description": "",
+        "line": 57,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-19\" passes",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 19"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-20",
+        "keyword": "Scenario",
+        "name": "Account check 20",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-20\" passes",
+            "line": 61,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 20"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 831000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Net::ReadTimeout: gateway gw-retry timed out after 30s (browser=) (IOError)\n./features/step_definitions/steps.rb:23:in 'block in <top (required)>'\nfeatures/checkout.feature:80:in `the payment gateway responds for \"gw-retry\"'",
+              "duration": 399000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Payment gateway retried: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1023000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 134000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 864000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "search",
+    "uri": "features/search.feature",
+    "keyword": "Feature",
+    "name": "Search",
+    "description": "  Search **must** be fast.",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@search",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "search;pending-with-a-message",
+        "keyword": "Scenario",
+        "name": "Pending with a message",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"S\" is open",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the feature is pending",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:35"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "waiting on JIRA-123: \"pending\" with <msg> & ünï (Cucumber::Pending)\n./features/step_definitions/steps.rb:35:in 'block in <top (required)>'\nfeatures/search.feature:20:in `the feature is pending'",
+              "duration": 64000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "the cart has 0 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Pending with a message"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;undefined-step-with-snippet",
+        "keyword": "Scenario",
+        "name": "Undefined step with snippet",
+        "description": "",
+        "line": 23,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"S\" is open",
+            "line": 24,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I search for \"ünï 🎉\" with 3 filters",
+            "line": 25,
+            "match": {
+              "location": "features/search.feature:25"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 0 items",
+            "line": 26,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Undefined step with snippet"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;printer-test-skipped-by-before-hook-on-ci",
+        "keyword": "Scenario",
+        "name": "Printer test skipped by Before hook on CI",
+        "description": "",
+        "line": 32,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 33,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 34,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          },
+          {
+            "name": "@skip_on_ci",
+            "line": 31
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/support/env.rb:28"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 49000
+            }
+          },
+          {
+            "output": [
+              "browser=none scenario=Printer test skipped by Before hook on CI"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;screenshot-attachments-of-every-kind",
+        "keyword": "Scenario",
+        "name": "Screenshot attachments of every kind",
+        "description": "",
+        "line": 36,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I take a screenshot as \"png\"",
+            "line": 37,
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 121000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"jpg\"",
+            "line": 38,
+            "embeddings": [
+              {
+                "mime_type": "image/jpeg",
+                "data": "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 766000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"svg\"",
+            "line": 39,
+            "embeddings": [
+              {
+                "mime_type": "image/svg+xml",
+                "data": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJyZWQiLz48c2NyaXB0PmFsZXJ0KCJzdmciKTwvc2NyaXB0Pjwvc3ZnPg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 674000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"pdf\"",
+            "line": 40,
+            "embeddings": [
+              {
+                "mime_type": "application/pdf",
+                "data": "JVBERi0xLjEKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMTAwIDEwMF0+PmVuZG9iagp0cmFpbGVyPDwvUm9vdCAxIDAgUj4+CiUlRU9GCg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 671000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"json\"",
+            "line": 41,
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJyZXNwb25zZSI6IHsic3RhdHVzIjogNTAyLCAiYm9keSI6ICJCYWQgR2F0ZXdheSDinJcgw7xuw68iLCAiaXRlbXMiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTAsIDExLCAxMiwgMTMsIDE0LCAxNSwgMTYsIDE3LCAxOCwgMTldfX0="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 615000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"html\"",
+            "line": 42,
+            "embeddings": [
+              {
+                "mime_type": "text/html",
+                "data": "PGh0bWw+PGJvZHk+PGgxPkNoZWNrb3V0IPCfm5I8L2gxPjxzY3JpcHQ+d2luZG93LnB3bmVkPTE8L3NjcmlwdD48aW1nIHNyYz14IG9uZXJyb3I9YWxlcnQoMSk+PC9ib2R5PjwvaHRtbD4="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 684000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I attach a text log",
+            "line": 43,
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "cGxhaW4gbG9nIMO8bsOvIPCfjokKc2Vjb25kIGxpbmU="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:43"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Screenshot attachments of every kind"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

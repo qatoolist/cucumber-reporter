@@ -1,0 +1,394 @@
+[
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 24000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 1 items (row-1)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;2",
+        "keyword": "Scenario Outline",
+        "name": "Add 1 items (row-1)",
+        "description": "",
+        "line": 25,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 2 items (row-2)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 51000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;3",
+        "keyword": "Scenario Outline",
+        "name": "Add 2 items (row-2)",
+        "description": "",
+        "line": 26,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 2 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 2 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 3 items (row-3)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 39000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;4",
+        "keyword": "Scenario Outline",
+        "name": "Add 3 items (row-3)",
+        "description": "",
+        "line": 27,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 3 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 3 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Apply coupons from a data table"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 38000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;apply-coupons-from-a-data-table",
+        "keyword": "Scenario",
+        "name": "Apply coupons from a data table",
+        "description": "",
+        "line": 49,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply coupons:",
+            "line": 50,
+            "rows": [
+              {
+                "cells": [
+                  "code",
+                  "pct"
+                ]
+              },
+              {
+                "cells": [
+                  "SAVE5",
+                  "5"
+                ]
+              },
+              {
+                "cells": [
+                  "SAVE10",
+                  "5"
+                ]
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 42000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 90",
+            "line": 54,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

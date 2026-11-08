@@ -1,0 +1,25 @@
+F...U
+
+(::) failed steps (::)
+
+boom x attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:3:in `step x'
+
+Flaky Scenarios:
+cucumber features/a.feature:2 # Scenario: X
+Undefined Scenarios:
+cucumber features/a.feature:12 # Scenario: U
+
+4 scenarios (1 flaky, 1 undefined, 2 passed)
+5 steps (1 failed, 1 undefined, 3 passed)
+0m0.024s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('only u') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+$ PLAN=x:fail/pass UNDEF_U=1 cucumber --retry 1 --strict
+exit=1

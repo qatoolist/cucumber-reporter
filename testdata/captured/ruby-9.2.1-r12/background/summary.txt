@@ -1,0 +1,20 @@
+F-F-
+
+(::) failed steps (::)
+
+db down (RuntimeError)
+./features/step_definitions/s.rb:1:in 'block in <top (required)>'
+features/bg.feature:4:in `the database is up'
+
+db down (RuntimeError)
+./features/step_definitions/s.rb:1:in 'block in <top (required)>'
+features/bg.feature:4:in `the database is up'
+
+Failing Scenarios:
+cucumber features/bg.feature:6 # Scenario: First uses background
+cucumber features/bg.feature:9 # Scenario: Second uses background
+
+2 scenarios (2 failed)
+4 steps (2 failed, 2 skipped)
+0m0.022s
+exit=1

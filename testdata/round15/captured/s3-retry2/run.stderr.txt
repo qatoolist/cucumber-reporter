@@ -1,0 +1,4 @@
+~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-messages-22.0.0/lib/cucumber/messages/message/serialization.rb:59: warning: JSON.generate: UTF-8 string passed as BINARY, this will raise an encoding error in json 3.0
+~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-messages-22.0.0/lib/cucumber/messages/message/serialization.rb:59: warning: JSON.generate: UTF-8 string passed as BINARY, this will raise an encoding error in json 3.0
+~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-messages-22.0.0/lib/cucumber/messages/message/serialization.rb:59: warning: JSON.generate: UTF-8 string passed as BINARY, this will raise an encoding error in json 3.0
+~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-messages-22.0.0/lib/cucumber/messages/message/serialization.rb:59: warning: JSON.generate: UTF-8 string passed as BINARY, this will raise an encoding error in json 3.0

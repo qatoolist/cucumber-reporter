@@ -1,0 +1,31 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+
+before log before raise
+F-
+step log line
+.F
+step log line
+.F-
+before hook log
+
+step log line
+.
+after hook log
+
+before hook log
+
+step log line
+.
+after hook log
+F
+
+Failing Scenarios:
+cucumber features/h.feature:4 # Scenario: Before fails
+cucumber features/h.feature:8 # Scenario: After fails after pass
+cucumber features/h.feature:12 # Scenario: AfterStep fails
+cucumber features/h.feature:21 # Scenario: Hooks attach then After fails
+
+5 scenarios (4 failed, 1 passed)
+6 steps (2 skipped, 4 passed)
+0m0.027s
+exit=1

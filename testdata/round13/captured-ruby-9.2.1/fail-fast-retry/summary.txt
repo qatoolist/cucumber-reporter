@@ -1,0 +1,24 @@
+$ cucumber --no-color --fail-fast --retry 1 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+F.FF
+
+(::) failed steps (::)
+
+flaky (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/a.feature:4:in `flaky once'
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/a.feature:7:in `broken'
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/a.feature:7:in `broken'
+
+Failing Scenarios:
+cucumber features/a.feature:6 # Scenario: Second fails
+
+2 scenarios (1 failed, 1 flaky)
+4 steps (3 failed, 1 passed)
+0m0.017s
+exit=2

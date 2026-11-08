@@ -1,0 +1,34 @@
+{
+ "chrome": {
+  "env": {
+   "CI": "",
+   "BROWSER": "chrome",
+   "FLAKY": "gw-retry:1",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@account",
+   "or",
+   "@flaky",
+   "--retry",
+   "1"
+  ]
+ },
+ "firefox": {
+  "env": {
+   "CI": "",
+   "BROWSER": "firefox",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@account",
+   "or",
+   "@flaky",
+   "--retry",
+   "1"
+  ]
+ }
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "id": "u",
+    "uri": "features/s.feature",
+    "keyword": "Feature",
+    "name": "U",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "u;passes",
+        "keyword": "Scenario",
+        "name": "Passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ]
+      },
+      {
+        "id": "u;is-undefined",
+        "keyword": "Scenario",
+        "name": "Is undefined",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "nobody defined this",
+            "line": 7,
+            "match": {
+              "location": "features/s.feature:7"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

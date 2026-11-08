@@ -1,0 +1,12 @@
+{
+ "run1": {
+  "PLAN": "BG:fail",
+  "args": []
+ },
+ "run2": {
+  "PLAN": "BG:fail1",
+  "args": [
+   "@run1.rerun.txt"
+  ]
+ }
+}

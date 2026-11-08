@@ -1,0 +1,10 @@
+$ cucumber --no-color --retry 1 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+...
+
+Failing Scenarios:
+cucumber features/a.feature:4 # Scenario: Around fails after block
+
+2 scenarios (1 failed, 1 passed)
+3 steps (3 passed)
+0m0.018s
+exit=1

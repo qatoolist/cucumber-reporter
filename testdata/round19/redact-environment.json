@@ -1,0 +1,1 @@
+{"environment": "env-SECRET9", "issues": [{"ref": "K", "environments": ["env-SECRET2"]}], "redaction": {"patterns": ["SECRET\\d"]}}

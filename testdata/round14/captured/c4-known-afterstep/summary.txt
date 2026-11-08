@@ -1,0 +1,11 @@
+$ PLAN=K1:fail cucumber 
+.F--.F
+
+Failing Scenarios:
+cucumber features/k.feature:2 # Scenario: Known one
+cucumber features/k.feature:7 # Scenario: Second
+
+2 scenarios (2 failed)
+4 steps (2 skipped, 2 passed)
+0m0.028s
+exit=1

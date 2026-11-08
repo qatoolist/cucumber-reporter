@@ -1,0 +1,74 @@
+[
+  {
+    "id": "around",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "Around",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "around;around-fails-after-block",
+        "keyword": "Scenario",
+        "name": "Around fails after block",
+        "description": "",
+        "line": 4,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@around_after",
+            "line": 3
+          }
+        ],
+        "around": [
+          {
+            "match": {
+              "location": "unknown_hook_location:1"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "around boom after (RuntimeError)\n./features/support/hooks.rb:1:in 'block in <top (required)>'",
+              "duration": 15050000
+            }
+          }
+        ]
+      },
+      {
+        "id": "around;plain-pass",
+        "keyword": "Scenario",
+        "name": "Plain pass",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

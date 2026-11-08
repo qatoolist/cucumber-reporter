@@ -1,0 +1,2 @@
+default: --tags "not @wip"
+ci: --tags "@account or @flaky or @skip_on_ci" --strict --retry 1

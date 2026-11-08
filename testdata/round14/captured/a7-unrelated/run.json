@@ -1,0 +1,56 @@
+[
+  {
+    "id": "unrelated",
+    "uri": "features/u.feature",
+    "keyword": "Feature",
+    "name": "Unrelated",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "unrelated;alpha",
+        "keyword": "Scenario",
+        "name": "Alpha",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"UA\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23000
+            }
+          }
+        ]
+      },
+      {
+        "id": "unrelated;other",
+        "keyword": "Scenario",
+        "name": "Other",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

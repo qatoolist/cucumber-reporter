@@ -1,24 +1,32 @@
 package report
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	pub "github.com/qatoolist/cucumber-reporter/cucumber"
 )
 
 // OptionsVersion is the only Options.Version this release accepts.
 const OptionsVersion = 2
 
 // Errors returned by Render, RenderDir and RenderDirTo, in addition to the cucumber package's parse
-// errors. Messages never contain report data.
+// errors. Messages may name input files, feature URIs, lines and scenario names to locate a problem;
+// compare errors with errors.Is rather than by text.
 var (
+	// ErrEvidence identifies a runtime contradiction between execution evidence and a report.
+	ErrEvidence = errors.New("report: inconsistent execution evidence")
+	// ErrInvalidInput identifies incompatible or inconsistent execution inputs.
+	ErrInvalidInput = errors.New("report: invalid input")
 	// ErrOptionsVersion: Options.Version is not OptionsVersion.
 	ErrOptionsVersion = errors.New("report: unsupported options version")
 	// ErrInvalidOptions: an option value is outside its documented set.
 	ErrInvalidOptions = errors.New("report: invalid options")
+	// ErrNoOutputDir identifies an absent output parent directory.
+	ErrNoOutputDir = errors.New("report: output directory does not exist")
 	// ErrNoInput: the run directory has no cucumber.json.
 	ErrNoInput = errors.New("report: run directory has no cucumber.json")
 	// ErrNotRegular: cucumber.json or a directory argument is a symbolic link, or not of the expected kind.
@@ -27,9 +35,19 @@ var (
 	ErrEmptyOutput = errors.New("report: renderer produced no report")
 )
 
-// Options configure one render. The zero value is not valid: Version must be set. The JSON names are
-// the format of the command's -options file.
-type Options struct {
+// renderOptions configure one render. The zero value is not valid: Version must be set. The JSON names are
+// the format of the command's -options file, except the Go-only fields below.
+type renderOptions struct {
+	renderContext context.Context
+	// Analysis is trusted run intelligence, normally produced by PrepareRun.
+	// Never decode it from untrusted JSON; Go callers are responsible for its truth.
+	// CLI options files refuse it.
+	Analysis *RunSummary `json:"-"`
+	// BundleAttachments preserves oversized binary evidence as deduplicated sidecars.
+	// CLI options files refuse it; use enhanced -bundle instead.
+	BundleAttachments bool `json:"-"`
+	execution         map[string]ScenarioMeta
+
 	// Version is the options schema version; it must be OptionsVersion (2).
 	Version int `json:"version"`
 	// Title is the document title and the brand line of the printed cover. Default "Cucumber report".
@@ -61,7 +79,7 @@ type Options struct {
 	// Limits bound the input size (RenderDir and RenderDirTo, which parse cucumber.json), the encoded
 	// size of each attachment (Embedding: every render path, checked before decoding) and the inline
 	// attachment size (all renders).
-	Limits cucumber.Limits `json:"limits"`
+	Limits pub.Limits `json:"limits"`
 }
 
 // Fact is one label and value pair.
@@ -125,7 +143,7 @@ const (
 	KindLimit = "limit"
 )
 
-// Annotation attaches caller knowledge to one scenario, named by its ScenarioIDs value.
+// Annotation attaches caller knowledge to one scenario, named by its ScenarioIDs or RunScenarioIDs value.
 //
 // Known issues follow these rules, applied by the renderer so that callers need no post-processing.
 // A known issue covers only its declared step; any other unexpected result still fails.
@@ -134,9 +152,9 @@ const (
 //     StepText is that step's text; it is required with Step. When the step at Step has a different
 //     text, the annotation is shown with a warning and covers nothing.
 //   - Observed reports that an expected-failure outcome was recorded at Step; it requires Step.
-//   - A failed scenario is a known failure only when its first failed step is a declared step. A
-//     failure at any other step, or with no declared step, stays an unexpected failure, and the
-//     annotation is shown as context.
+//   - A failed scenario is known only when every failure is covered by a matching declared
+//     step. An unrelated failed step or hook remains unexpected; the annotation is still
+//     shown as context. Earlier retry failures must satisfy the same coverage rule.
 //   - A passed scenario with an observed declared step is a known failure (the expected failure was
 //     recorded while the step passed). A passed scenario with only unobserved issues stays passed and
 //     is flagged "the issue may be fixed", unless every outcome of the record is NotApplicable: then
@@ -145,6 +163,16 @@ const (
 //     declared steps of a passed scenario. Outcomes are listed as detail and never mark a step.
 //   - The default headline and the "As expected" figure count known failures as expected.
 type Annotation struct {
+	// BackgroundStep selects a folded Background step by its one-based position.
+	// It is mutually exclusive with Step and requires StepText.
+	BackgroundStep int `json:"backgroundStep,omitempty"`
+	// Structured details are optional; Note remains supported verbatim.
+	Details      []Fact `json:"details,omitempty"`
+	Owner        string `json:"owner,omitempty"`
+	Expires      string `json:"expires,omitempty"`
+	ReviewDate   string `json:"reviewDate,omitempty"`
+	PolicyReason string `json:"policyReason,omitempty"`
+
 	Scenario string `json:"scenario"`
 	// Kind is KindKnown, KindSkip or KindLimit.
 	Kind string `json:"kind"`
@@ -206,7 +234,8 @@ const (
 	WidgetSections  = "sections"
 )
 
-// Widgets lists every dashboard widget in display order.
+// Widgets lists every dashboard widget in display order. Treat this compatibility
+// slice as read-only; changing it does not alter validation.
 var Widgets = []string{WidgetHero, WidgetKPIs, WidgetStatus, WidgetFeatures, WidgetAttention, WidgetKnown, WidgetDuration, WidgetSections}
 
 // Navigation sections, in display order. ViewDefaults.Nav keys must be one of these; NavDashboard
@@ -222,7 +251,8 @@ const (
 	NavRun       = "run"
 )
 
-// NavSections lists every navigation section in display order.
+// NavSections lists every navigation section in display order. Treat this
+// compatibility slice as read-only; changing it does not alter validation.
 var NavSections = []string{NavDashboard, NavFeatures, NavScenarios, NavFailures, NavKnown, NavSkipped, NavTimeline, NavRun}
 
 // ViewDefaults are the generation-time settings. Zero values select ThemeAuto, DensityComfortable,
@@ -288,7 +318,7 @@ func switches(in map[string]bool, field string, keys []string) (map[string]bool,
 
 // normalize validates opt without the features and returns a copy with defaults applied. Annotations
 // are checked against the features by checkAnnotations. Error messages name the field and index only.
-func normalize(opt Options) (Options, error) {
+func normalize(opt renderOptions) (renderOptions, error) {
 	if opt.Version != OptionsVersion {
 		return opt, ErrOptionsVersion
 	}
@@ -297,6 +327,11 @@ func normalize(opt Options) (Options, error) {
 	}
 	if opt.Name == "" {
 		opt.Name = opt.Title
+	}
+	if opt.Analysis != nil {
+		if err := validateSummary(*opt.Analysis); err != nil {
+			return opt, err
+		}
 	}
 	opt.WallClock = strings.TrimSpace(opt.WallClock)
 	opt.Limits = opt.Limits.WithDefaults()
@@ -353,13 +388,16 @@ func normalize(opt Options) (Options, error) {
 		if !oneOf(a.Kind, KindKnown, KindSkip, KindLimit) {
 			return opt, invalid("annotations[%d].kind", i)
 		}
-		if a.Kind != KindKnown && (a.Step != 0 || a.StepText != "" || a.Observed || len(a.Outcomes) > 0) {
+		if a.Kind != KindKnown && (a.Step != 0 || a.BackgroundStep != 0 || a.StepText != "" || a.Observed || len(a.Outcomes) > 0) {
 			return opt, invalid("annotations[%d]: step, stepText, observed and outcomes apply to known issues only", i)
 		}
-		if (a.Step != 0) != (a.StepText != "") {
+		if a.BackgroundStep < 0 || (a.Step != 0 && a.BackgroundStep != 0) {
+			return opt, invalid("annotations[%d]: select either step or backgroundStep", i)
+		}
+		if (a.Step != 0 || a.BackgroundStep != 0) != (a.StepText != "") {
 			return opt, invalid("annotations[%d]: step and stepText go together", i)
 		}
-		if a.Observed && a.Step == 0 {
+		if a.Observed && a.Step == 0 && a.BackgroundStep == 0 {
 			return opt, invalid("annotations[%d].observed needs a declared step", i)
 		}
 	}
@@ -380,10 +418,10 @@ func normalize(opt Options) (Options, error) {
 		}
 	}
 	var err error
-	if d.Widgets, err = switches(d.Widgets, "widgets", Widgets); err != nil {
+	if d.Widgets, err = switches(d.Widgets, "widgets", []string{WidgetHero, WidgetKPIs, WidgetStatus, WidgetFeatures, WidgetAttention, WidgetKnown, WidgetDuration, WidgetSections}); err != nil {
 		return opt, err
 	}
-	if d.Nav, err = switches(d.Nav, "nav", NavSections); err != nil {
+	if d.Nav, err = switches(d.Nav, "nav", []string{NavDashboard, NavFeatures, NavScenarios, NavFailures, NavKnown, NavSkipped, NavTimeline, NavRun}); err != nil {
 		return opt, err
 	}
 	if !d.Nav[NavDashboard] {
@@ -420,4 +458,8 @@ func checkAnnotations(anns []Annotation, steps map[string]int) error {
 		}
 	}
 	return nil
+}
+
+func invalidInput(format string, args ...any) error {
+	return fmt.Errorf("%w: %s", ErrInvalidInput, fmt.Sprintf(format, args...))
 }

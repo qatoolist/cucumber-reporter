@@ -1,8 +1,15 @@
 package minify
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"os"
+	"os/exec"
 	"strings"
 	"testing"
+	"time"
 )
 
 type minifyFunc func(string) (string, error)
@@ -133,10 +140,13 @@ func TestErrors(t *testing.T) {
 }
 
 func FuzzJS(f *testing.F) {
-	for _, s := range []string{"a + +b", "return /re/g", "`a${ `b${x}` }c`", "/* x\n */ a", "'s\\'x'", "x = a\n/ 2", "é \\u0061"} {
+	for _, s := range []string{"a + +b", "return /re/g", "`a${ `b${x}` }c`", "/* x\n */ a", "'s\\'x'", "x = a\n/ 2", "é \\u0061", "class A {}\n/a  b/", "class A extends B {}\n/a  b/", "lbl: {} /a  b/", "switch(x){case 1: {}/a  b/}", "class A {static {}} /a  b/", "\u202f/"} {
 		f.Add(s)
 	}
 	f.Fuzz(func(t *testing.T, in string) {
+		if len(in) > 4096 {
+			return
+		}
 		out, err := JS(in)
 		if err != nil {
 			return
@@ -156,6 +166,9 @@ func FuzzCSS(f *testing.F) {
 		f.Add(s)
 	}
 	f.Fuzz(func(t *testing.T, in string) {
+		if len(in) > 4096 {
+			return
+		}
 		out, err := CSS(in)
 		if err != nil {
 			return
@@ -170,4 +183,160 @@ func FuzzCSS(f *testing.F) {
 			t.Fatalf("not idempotent: %q -> %q -> %q", in, out, again)
 		}
 	})
+}
+
+func TestURLAndControlRegex(t *testing.T) {
+	for _, input := range []string{`a{background:url(data:image/svg+xml;base64,abc==)}`, `a{background:url(https://example.test/a//b.png)}`, `a{background:url(data:x;a;b)}`} {
+		got, err := CSS(input)
+		if err != nil || strings.TrimSpace(got) != input {
+			t.Fatalf("CSS %q: %q %v", input, got, err)
+		}
+	}
+	for _, input := range []string{`if (ready) /a[ /]b/.test(value);`, `while (next()) /https?:\/\//.test(value);`, `function f() { return (value) / 2; }`} {
+		got, err := JS(input)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !nodeParses(t, got) {
+			t.Fatalf("minification changed valid syntax: %q => %q", input, got)
+		}
+	}
+}
+
+func nodeParses(t testing.TB, input string) bool {
+	t.Helper()
+	node, err := exec.LookPath("node")
+	if err != nil {
+		t.Skip("Node syntax oracle requires node")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, node, "--check", "--input-type=commonjs")
+	cmd.Stdin = strings.NewReader(input)
+	err = cmd.Run()
+	if ctx.Err() != nil {
+		t.Skip("Node syntax oracle timed out")
+	}
+	return err == nil
+}
+
+func FuzzJSParseOracle(f *testing.F) {
+	for _, input := range []string{`if (x) /a[ /]b/.test(y);`, `while (x()) /x/.test(y);`, `const x = (a) / 2;`, "const x = `hello ${1+2}`;"} {
+		f.Add(input)
+	}
+	f.Fuzz(func(t *testing.T, input string) {
+		if len(input) > 4096 {
+			return
+		}
+		output, err := JS(input)
+		if err == nil {
+			checkLiteralOracle(t, [][2]string{{input, output}})
+		}
+	})
+}
+
+func TestBlockRegexLiteralsAndIdempotency(t *testing.T) {
+	for _, input := range []string{`if (true) {} /a  b/.test("a  b");`, `function f() {} /a  b/g.test('a  b');`, `const f = () => {}; /a  b/.test("a  b");`, `const x = {} / 2;`, `/0/ return/ /`} {
+		out, err := JS(input)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(input, `/a  b/`) && !strings.Contains(out, `/a  b/`) {
+			t.Fatalf("regex literal changed: %s", out)
+		}
+		for _, literal := range []string{`"a  b"`, `'a  b'`} {
+			if strings.Contains(input, literal) && !strings.Contains(out, literal) {
+				t.Fatalf("string literal changed: %s", out)
+			}
+		}
+		again, err := JS(out)
+		if err != nil || again != out {
+			t.Fatalf("not idempotent: %q => %q (%v)", out, again, err)
+		}
+	}
+}
+
+// Node's bundled parser provides a literal oracle independent of our tokenizer.
+// Batch inputs keep the deterministic mutation corpus fast even without fuzz coverage.
+func checkLiteralOracle(t testing.TB, pairs [][2]string) {
+	t.Helper()
+	node, err := exec.LookPath("node")
+	if err != nil {
+		t.Skip("literal oracle requires Node")
+	}
+	program := `const fs=require('fs'),acorn=require('internal/deps/acorn/acorn/dist/acorn');
+const pairs=JSON.parse(fs.readFileSync(0,'utf8'));const options={ecmaVersion:'latest'};
+function literals(s){return [...acorn.tokenizer(s,options)].filter(t=>['string','regexp','template'].includes(t.type.label)).map(t=>s.slice(t.start,t.end))}
+for(let i=0;i<pairs.length;i++){const [a,b]=pairs[i];try{acorn.parse(a,options)}catch{continue}try{acorn.parse(b,options)}catch{throw Error('output syntax changed at pair '+i)}if(JSON.stringify(literals(a))!==JSON.stringify(literals(b)))throw Error('literal changed at pair '+i)}`
+	encoded, err := json.Marshal(pairs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, node, "--expose-internals", "-e", program)
+	cmd.Stdin = bytes.NewReader(encoded)
+	if output, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("literal oracle: %v: %s", err, output)
+	}
+}
+
+func TestJSDeterministicLiteralMutations(t *testing.T) {
+	var pairs [][2]string
+	for i := 0; i < 1000; i++ {
+		space := strings.Repeat(" ", i%9+1)
+		input := fmt.Sprintf(`if (true) {%s} /a%sb[ /]c/g.test("a%sb"); const value={x:%d}/2; const text='escaped\\value';`, space, space, space, i)
+		output, err := JS(input)
+		if err != nil {
+			t.Fatal(err)
+		}
+		again, err := JS(output)
+		if err != nil || again != output {
+			t.Fatalf("mutation %d not idempotent", i)
+		}
+		pairs = append(pairs, [2]string{input, output})
+	}
+	checkLiteralOracle(t, pairs)
+}
+
+func TestReportAssetLiteralParity(t *testing.T) {
+	source, err := os.ReadFile("../../report/assets/app.js")
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, err := JS(string(source))
+	if err != nil {
+		t.Fatal(err)
+	}
+	checkLiteralOracle(t, [][2]string{{string(source), output}})
+}
+
+func TestRound13BlockRegex(t *testing.T) {
+	inputs := []string{"class A {}\n/a  b/", "class A extends B {}\n/a  b/", "switch(x){case 1: {}/a  b/.test(x)}", "lbl: {}\n/a  b/", "class A {static {}}\n/a  b/", "const C=class A {}; /a  b/"}
+	var pairs [][2]string
+	for _, input := range inputs {
+		out, e := JS(input)
+		if e != nil {
+			t.Fatal(e)
+		}
+		pairs = append(pairs, [2]string{input, out})
+	}
+	checkLiteralOracle(t, pairs)
+}
+
+func TestCSSStringLineContinuation(t *testing.T) {
+	for _, newline := range []string{"\n", "\r\n", "\r"} {
+		source := "a { content: \"before\\" + newline + "after\"; }"
+		got, err := CSS(source)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(got, "\"before\\"+newline+"after\"") {
+			t.Fatalf("string continuation changed: %q", got)
+		}
+		again, err := CSS(got)
+		if err != nil || got != again {
+			t.Fatalf("unstable: %q -> %q (%v)", got, again, err)
+		}
+	}
 }

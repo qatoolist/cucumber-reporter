@@ -1,5 +1,7 @@
 package cucumber
 
+import modelmeta "github.com/qatoolist/cucumber-reporter/internal/cucumbermodel"
+
 // Status is a step outcome as Godog writes it.
 type Status string
 
@@ -13,7 +15,8 @@ const (
 	StatusAmbiguous Status = "ambiguous"
 )
 
-// Statuses lists every valid status in display order.
+// Statuses lists every valid status in display order. Treat this compatibility
+// variable as read-only; validation does not depend on its mutable contents.
 var Statuses = []Status{StatusPassed, StatusFailed, StatusSkipped, StatusPending, StatusUndefined, StatusAmbiguous}
 
 // rank orders statuses by severity: a scenario or feature takes the most severe status among its parts.
@@ -38,81 +41,28 @@ func (s Status) rank() int {
 // Valid reports whether s is one of the six statuses.
 func (s Status) Valid() bool { return s.rank() > 0 }
 
-// worse returns the more severe of a and b.
-func worse(a, b Status) Status {
-	if b.rank() > a.rank() {
-		return b
-	}
-	return a
-}
-
-// Status is the scenario's overall outcome: the most severe step status, in the order failed,
-// ambiguous, undefined, pending, skipped, passed. A failed step followed by skipped steps is a failure.
+// Status is the effective scenario outcome, including hooks and retry evidence.
+// A failure is rescued only by a strictly passed final attempt.
 // A scenario without steps is undefined, as Godog counts it.
-func (s Scenario) Status() Status {
-	if len(s.Steps) == 0 {
-		return StatusUndefined
-	}
-	status := StatusPassed
-	for _, st := range s.Steps {
-		status = worse(status, st.Result.Status)
-	}
-	return status
-}
+func (s Scenario) Status() Status { return Status(internalScenario(s).Status()) }
 
 // Combine merges scenario statuses by multiple-cucumber-html-reporter's feature rule: failed,
 // ambiguous or undefined when any scenario has that status (in that order); pending only when every
 // scenario is pending; skipped only when every scenario is skipped or pending; otherwise passed. So a
 // skipped or pending scenario beside passed ones leaves the whole passed. No statuses is passed.
 func Combine(statuses ...Status) Status {
-	var failed, ambiguous, undefined bool
-	pending, skippedOrPending := 0, 0
-	for _, s := range statuses {
-		switch s {
-		case StatusFailed:
-			failed = true
-		case StatusAmbiguous:
-			ambiguous = true
-		case StatusUndefined:
-			undefined = true
-		case StatusPending:
-			pending++
-			skippedOrPending++
-		case StatusSkipped:
-			skippedOrPending++
-		}
+	values := make([]modelmeta.Status, len(statuses))
+	for i, s := range statuses {
+		values[i] = modelmeta.Status(s)
 	}
-	switch {
-	case failed:
-		return StatusFailed
-	case ambiguous:
-		return StatusAmbiguous
-	case undefined:
-		return StatusUndefined
-	case len(statuses) > 0 && pending == len(statuses):
-		return StatusPending
-	case len(statuses) > 0 && skippedOrPending == len(statuses):
-		return StatusSkipped
-	}
-	return StatusPassed
+	return Status(modelmeta.Combine(values...))
 }
 
-// Status is the feature's overall outcome: Combine over its scenarios.
-func (f Feature) Status() Status {
-	statuses := make([]Status, len(f.Elements))
-	for i, sc := range f.Elements {
-		statuses[i] = sc.Status()
-	}
-	return Combine(statuses...)
-}
+// Status is the feature outcome after Background, hook and retry normalization.
+func (f Feature) Status() Status { return RunStatus([]Feature{f}) }
 
-// RunStatus is the outcome of a whole run: Combine over every scenario of every feature.
+// RunStatus returns the effective outcome after Background and retry folding.
+// An empty execution has StatusUndefined; its report headline is informational.
 func RunStatus(features []Feature) Status {
-	var statuses []Status
-	for _, f := range features {
-		for _, sc := range f.Elements {
-			statuses = append(statuses, sc.Status())
-		}
-	}
-	return Combine(statuses...)
+	return Status(modelmeta.RunStatus(internalFeatures(features)))
 }

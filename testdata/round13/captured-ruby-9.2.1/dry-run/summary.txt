@@ -1,0 +1,13 @@
+$ cucumber --no-color --dry-run --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+--U--
+
+5 scenarios (4 skipped, 1 undefined)
+5 steps (4 skipped, 1 undefined)
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('nobody defined this') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+exit=0

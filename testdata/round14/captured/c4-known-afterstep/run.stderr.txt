@@ -1,0 +1,1 @@
+/work/scratch:2: warning: found '= literal' in conditional, should be ==

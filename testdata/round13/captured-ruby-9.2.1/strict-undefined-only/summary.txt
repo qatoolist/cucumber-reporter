@@ -1,0 +1,17 @@
+$ cucumber --no-color --strict-undefined --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+.U
+
+Undefined Scenarios:
+cucumber features/s.feature:6 # Scenario: Is undefined
+
+2 scenarios (1 undefined, 1 passed)
+2 steps (1 undefined, 1 passed)
+0m0.014s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('nobody defined this') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+exit=1

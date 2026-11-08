@@ -23,8 +23,13 @@
 <p>{{.}}</p>
 {{- end}}
 {{- end}}
+{{with .Analysis}}<h2>Run analysis</h2><p>Completeness: {{.Completeness}}. Verdict source: {{.VerdictSource}}.</p>
+{{with .Comparison}}<p>Baseline: {{.Baseline}}. New failures: {{len .NewFailures}}; fixed: {{len .Fixed}}; missing: {{len .Missing}} (not assumed removed).</p>{{end}}
+{{range .GateFailures}}<p>Quality gate: {{.}}</p>{{end}}
+{{if .History}}<h3>History</h3><table><thead><tr><th>Run</th><th>Recorded</th><th>Summed duration</th></tr></thead><tbody>{{range .History}}<tr><td>{{.ID}}</td><td>{{.RecordedAt}}</td><td>{{dur .Duration}}</td></tr>{{end}}</tbody></table>{{end}}{{end}}
 <h2>Features</h2>
-{{- range .Features}}
+{{if gt .Total 1000}}<p>Static detail includes the first 1,000 scenarios and every non-passing scenario. Enable JavaScript for the complete searchable report and full printing.</p>{{end}}
+{{- range fallbackFeatures .Features}}
 <h2><bdi>{{.Name}}</bdi></h2><p><code>{{.URI}}</code> {{join .Tags}}</p>
 {{- range .Elements}}
 <details{{if open .Status}} open{{end}}><summary><span class="st s-{{.Status}}">{{label .Status}}</span> {{.Keyword}}: <bdi>{{.Name}}</bdi> · {{dur .Duration}} {{join .Tags}}</summary>

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "known",
+    "uri": "features/k.feature",
+    "keyword": "Feature",
+    "name": "Known",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "known;known-one",
+        "keyword": "Scenario",
+        "name": "Known one",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:1"
+                },
+                "result": {
+                  "status": "failed",
+                  "error_message": "afterstep failure (RuntimeError)\n./features/support/hooks.rb:2:in 'block in <top (required)>'",
+                  "duration": 65000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "And ",
+            "name": "outcome \"K1\"",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:1"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "And ",
+            "name": "ok",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:13"
+            },
+            "result": {
+              "status": "skipped"
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:1"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "known;second",
+        "keyword": "Scenario",
+        "name": "Second",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"K2\"",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:1"
+                },
+                "result": {
+                  "status": "failed",
+                  "error_message": "afterstep failure (RuntimeError)\n./features/support/hooks.rb:2:in 'block in <top (required)>'",
+                  "duration": 47000
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

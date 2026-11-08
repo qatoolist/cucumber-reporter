@@ -1,0 +1,98 @@
+[
+  {
+    "id": "background-rerun",
+    "uri": "features/b.feature",
+    "keyword": "Feature",
+    "name": "Background rerun",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 2,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"BG\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure BG (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/b.feature:3:in `outcome \"BG\"'",
+              "duration": 72000
+            }
+          }
+        ]
+      },
+      {
+        "id": "background-rerun;one",
+        "keyword": "Scenario",
+        "name": "One",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"X1\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 2,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"BG\"",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "planned failure BG (run 1) (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/b.feature:3:in `outcome \"BG\"'",
+              "duration": 43000
+            }
+          }
+        ]
+      },
+      {
+        "id": "background-rerun;two",
+        "keyword": "Scenario",
+        "name": "Two",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "outcome \"X2\"",
+            "line": 9,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

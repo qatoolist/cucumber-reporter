@@ -1,0 +1,148 @@
+[
+  {
+    "id": "retry-final-non-pass",
+    "uri": "features/r.feature",
+    "keyword": "Feature",
+    "name": "Retry final non-pass",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "retry-final-non-pass;fails-then-pending",
+        "keyword": "Scenario",
+        "name": "Fails then pending",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step a",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "first a (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/r.feature:4:in `attempt step a'",
+              "duration": 60000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-final-non-pass;fails-then-pending",
+        "keyword": "Scenario",
+        "name": "Fails then pending",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step a",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "now pending (Cucumber::Pending)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/r.feature:4:in `attempt step a'",
+              "duration": 53000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-final-non-pass;fails-then-skipped",
+        "keyword": "Scenario",
+        "name": "Fails then skipped",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step b",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "first b (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/r.feature:7:in `attempt step b'",
+              "duration": 36000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-final-non-pass;fails-then-skipped",
+        "keyword": "Scenario",
+        "name": "Fails then skipped",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step b",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 42000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-final-non-pass;fails-then-passes",
+        "keyword": "Scenario",
+        "name": "Fails then passes",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step c",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "first c (RuntimeError)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/r.feature:10:in `attempt step c'",
+              "duration": 30000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-final-non-pass;fails-then-passes",
+        "keyword": "Scenario",
+        "name": "Fails then passes",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step c",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

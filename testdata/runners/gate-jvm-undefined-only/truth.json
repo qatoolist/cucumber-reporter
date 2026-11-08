@@ -1,0 +1,40 @@
+{
+ "statuses": [
+  [
+   "features/checkout.feature",
+   7,
+   "Successful checkout ✅",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   56,
+   "Discount SAVE10",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   60,
+   "Flaky search 🔁",
+   "passed"
+  ],
+  [
+   "features/profile.feature",
+   10,
+   "Update address",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   24,
+   "Loyalty points",
+   "undefined"
+  ]
+ ],
+ "counts": {
+  "passed": 4,
+  "undefined": 1
+ },
+ "verdict": "other",
+ "n": 5
+}

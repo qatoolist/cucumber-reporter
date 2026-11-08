@@ -1,0 +1,27 @@
+{
+ "run1": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "gw-retry:1",
+   "FAIL": ""
+  },
+  "args": [
+   "--tags",
+   "@account",
+   "or",
+   "@flaky"
+  ]
+ },
+ "run2": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "@run1.rerun.txt"
+  ]
+ }
+}

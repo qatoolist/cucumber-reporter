@@ -1,0 +1,21 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+..FF.
+
+(::) failed steps (::)
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/b.feature:4:in `broken'
+
+wip broken (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/b.feature:7:in `broken'
+
+Failing Scenarios:
+cucumber features/b.feature:3 # Scenario: B fails
+cucumber features/b.feature:6 # Scenario: Same name
+
+5 scenarios (2 failed, 3 passed)
+5 steps (2 failed, 3 passed)
+0m0.018s
+exit=1

@@ -1,0 +1,3 @@
+$ [run] CI=true BROWSER= FLAKY=gw-retry:1 FAIL= cucumber --retry 1 --strict features/account.feature features/checkout.feature:79 features/search.feature:19:24:33:38
+25 scenarios (1 flaky, 1 skipped, 1 undefined, 1 pending, 21 passed)
+exit=1

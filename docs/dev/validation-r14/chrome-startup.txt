@@ -1,0 +1,11 @@
+=== RUN   TestBrowserRound14StepAndEvidenceControls
+    review_browser_test.go:27: cdp: Chrome startup failed: cdp: waiting for DevToolsActivePort: context canceled
+        signal: abort trap; stderr: 
+--- FAIL: TestBrowserRound14StepAndEvidenceControls (0.11s)
+=== RUN   TestBrowserRound14EnhancedRetryNavigation
+    review_browser_test.go:59: cdp: Chrome startup failed: cdp: waiting for DevToolsActivePort: context canceled
+        signal: abort trap; stderr: 
+--- FAIL: TestBrowserRound14EnhancedRetryNavigation (0.04s)
+FAIL
+FAIL	github.com/qatoolist/cucumber-reporter/report	0.528s
+FAIL

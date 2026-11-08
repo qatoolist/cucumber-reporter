@@ -1,0 +1,26 @@
+F..FF.
+
+(::) failed steps (::)
+
+boom x attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:3:in `step x'
+
+boom z attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:10:in `step z'
+
+boom z attempt 2 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:10:in `step z'
+
+Failing Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+Flaky Scenarios:
+cucumber features/a.feature:2 # Scenario: X
+
+4 scenarios (1 failed, 1 flaky, 2 passed)
+6 steps (3 failed, 3 passed)
+0m0.025s
+$ PLAN=x:fail/pass,z:fail cucumber --retry 1 --strict-flaky
+exit=1

@@ -1,0 +1,1018 @@
+[
+  {
+    "keyword": "Feature",
+    "name": "Checkout 🛒 – Ünïcode",
+    "location": "features/checkout.feature:2",
+    "status": "failed",
+    "elements": [
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Successful checkout ✅",
+        "location": "features/checkout.feature:7",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 3 items",
+            "location": "features/checkout.feature:8",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.004
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I pay with a valid card",
+            "location": "features/checkout.feature:9",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1.5
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "I see the receipt",
+            "location": "features/checkout.feature:10",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.025
+            }
+          }
+        ],
+        "status": "passed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Payment declined 💳",
+        "location": "features/checkout.feature:13",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 1 items",
+            "location": "features/checkout.feature:14",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.003
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I pay with a declined card",
+            "location": "features/checkout.feature:15",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "failed",
+              "duration": 0.087,
+              "error_message": [
+                "java.lang.AssertionError: expected status <200> but was <402>",
+                "\tat com.example.checkout.PaymentSteps.frame0(PaymentSteps.java:100)",
+                "\tat com.example.checkout.PaymentSteps.frame1(PaymentSteps.java:101)",
+                "\tat com.example.checkout.PaymentSteps.frame2(PaymentSteps.java:102)",
+                "\tat com.example.checkout.PaymentSteps.frame3(PaymentSteps.java:103)",
+                "\tat com.example.checkout.PaymentSteps.frame4(PaymentSteps.java:104)",
+                "\tat com.example.checkout.PaymentSteps.frame5(PaymentSteps.java:105)",
+                "\tat com.example.checkout.PaymentSteps.frame6(PaymentSteps.java:106)",
+                "\tat com.example.checkout.PaymentSteps.frame7(PaymentSteps.java:107)",
+                "\tat com.example.checkout.PaymentSteps.frame8(PaymentSteps.java:108)",
+                "\tat com.example.checkout.PaymentSteps.frame9(PaymentSteps.java:109)",
+                "\tat com.example.checkout.PaymentSteps.frame10(PaymentSteps.java:110)",
+                "\tat com.example.checkout.PaymentSteps.frame11(PaymentSteps.java:111)",
+                "\tat com.example.checkout.PaymentSteps.frame12(PaymentSteps.java:112)",
+                "\tat com.example.checkout.PaymentSteps.frame13(PaymentSteps.java:113)",
+                "\tat com.example.checkout.PaymentSteps.frame14(PaymentSteps.java:114)",
+                "\tat com.example.checkout.PaymentSteps.frame15(PaymentSteps.java:115)",
+                "\tat com.example.checkout.PaymentSteps.frame16(PaymentSteps.java:116)",
+                "\tat com.example.checkout.PaymentSteps.frame17(PaymentSteps.java:117)",
+                "\tat com.example.checkout.PaymentSteps.frame18(PaymentSteps.java:118)",
+                "\tat com.example.checkout.PaymentSteps.frame19(PaymentSteps.java:119)",
+                "\tat com.example.checkout.PaymentSteps.frame20(PaymentSteps.java:120)",
+                "\tat com.example.checkout.PaymentSteps.frame21(PaymentSteps.java:121)",
+                "\tat com.example.checkout.PaymentSteps.frame22(PaymentSteps.java:122)",
+                "\tat com.example.checkout.PaymentSteps.frame23(PaymentSteps.java:123)",
+                "\tat com.example.checkout.PaymentSteps.frame24(PaymentSteps.java:124)",
+                "\tat com.example.checkout.PaymentSteps.frame25(PaymentSteps.java:125)",
+                "\tat com.example.checkout.PaymentSteps.frame26(PaymentSteps.java:126)",
+                "\tat com.example.checkout.PaymentSteps.frame27(PaymentSteps.java:127)",
+                "\tat com.example.checkout.PaymentSteps.frame28(PaymentSteps.java:128)",
+                "\tat com.example.checkout.PaymentSteps.frame29(PaymentSteps.java:129)",
+                "\tat com.example.checkout.PaymentSteps.frame30(PaymentSteps.java:130)",
+                "\tat com.example.checkout.PaymentSteps.frame31(PaymentSteps.java:131)",
+                "\tat com.example.checkout.PaymentSteps.frame32(PaymentSteps.java:132)",
+                "\tat com.example.checkout.PaymentSteps.frame33(PaymentSteps.java:133)",
+                "\tat com.example.checkout.PaymentSteps.frame34(PaymentSteps.java:134)",
+                "\tat com.example.checkout.PaymentSteps.frame35(PaymentSteps.java:135)",
+                "\tat com.example.checkout.PaymentSteps.frame36(PaymentSteps.java:136)",
+                "\tat com.example.checkout.PaymentSteps.frame37(PaymentSteps.java:137)",
+                "\tat com.example.checkout.PaymentSteps.frame38(PaymentSteps.java:138)",
+                "\tat com.example.checkout.PaymentSteps.frame39(PaymentSteps.java:139)",
+                "\tat com.example.checkout.PaymentSteps.frame40(PaymentSteps.java:140)",
+                "\tat com.example.checkout.PaymentSteps.frame41(PaymentSteps.java:141)",
+                "\tat com.example.checkout.PaymentSteps.frame42(PaymentSteps.java:142)",
+                "\tat com.example.checkout.PaymentSteps.frame43(PaymentSteps.java:143)",
+                "\tat com.example.checkout.PaymentSteps.frame44(PaymentSteps.java:144)",
+                "\tat com.example.checkout.PaymentSteps.frame45(PaymentSteps.java:145)",
+                "\tat com.example.checkout.PaymentSteps.frame46(PaymentSteps.java:146)",
+                "\tat com.example.checkout.PaymentSteps.frame47(PaymentSteps.java:147)",
+                "\tat com.example.checkout.PaymentSteps.frame48(PaymentSteps.java:148)",
+                "\tat com.example.checkout.PaymentSteps.frame49(PaymentSteps.java:149)",
+                "\tat com.example.checkout.PaymentSteps.frame50(PaymentSteps.java:150)",
+                "\tat com.example.checkout.PaymentSteps.frame51(PaymentSteps.java:151)",
+                "\tat com.example.checkout.PaymentSteps.frame52(PaymentSteps.java:152)",
+                "\tat com.example.checkout.PaymentSteps.frame53(PaymentSteps.java:153)",
+                "\tat com.example.checkout.PaymentSteps.frame54(PaymentSteps.java:154)",
+                "\tat com.example.checkout.PaymentSteps.frame55(PaymentSteps.java:155)",
+                "\tat com.example.checkout.PaymentSteps.frame56(PaymentSteps.java:156)",
+                "\tat com.example.checkout.PaymentSteps.frame57(PaymentSteps.java:157)",
+                "\tat com.example.checkout.PaymentSteps.frame58(PaymentSteps.java:158)",
+                "\tat com.example.checkout.PaymentSteps.frame59(PaymentSteps.java:159)",
+                "\tat com.example.checkout.PaymentSteps.frame60(PaymentSteps.java:160)",
+                "\tat com.example.checkout.PaymentSteps.frame61(PaymentSteps.java:161)",
+                "\tat com.example.checkout.PaymentSteps.frame62(PaymentSteps.java:162)",
+                "\tat com.example.checkout.PaymentSteps.frame63(PaymentSteps.java:163)",
+                "\tat com.example.checkout.PaymentSteps.frame64(PaymentSteps.java:164)",
+                "\tat com.example.checkout.PaymentSteps.frame65(PaymentSteps.java:165)",
+                "\tat com.example.checkout.PaymentSteps.frame66(PaymentSteps.java:166)",
+                "\tat com.example.checkout.PaymentSteps.frame67(PaymentSteps.java:167)",
+                "\tat com.example.checkout.PaymentSteps.frame68(PaymentSteps.java:168)",
+                "\tat com.example.checkout.PaymentSteps.frame69(PaymentSteps.java:169)",
+                "\tat com.example.checkout.PaymentSteps.frame70(PaymentSteps.java:170)",
+                "\tat com.example.checkout.PaymentSteps.frame71(PaymentSteps.java:171)",
+                "\tat com.example.checkout.PaymentSteps.frame72(PaymentSteps.java:172)",
+                "\tat com.example.checkout.PaymentSteps.frame73(PaymentSteps.java:173)",
+                "\tat com.example.checkout.PaymentSteps.frame74(PaymentSteps.java:174)",
+                "\tat com.example.checkout.PaymentSteps.frame75(PaymentSteps.java:175)",
+                "\tat com.example.checkout.PaymentSteps.frame76(PaymentSteps.java:176)",
+                "\tat com.example.checkout.PaymentSteps.frame77(PaymentSteps.java:177)",
+                "\tat com.example.checkout.PaymentSteps.frame78(PaymentSteps.java:178)",
+                "\tat com.example.checkout.PaymentSteps.frame79(PaymentSteps.java:179)",
+                "\tat com.example.checkout.PaymentSteps.frame80(PaymentSteps.java:180)",
+                "\tat com.example.checkout.PaymentSteps.frame81(PaymentSteps.java:181)",
+                "\tat com.example.checkout.PaymentSteps.frame82(PaymentSteps.java:182)",
+                "\tat com.example.checkout.PaymentSteps.frame83(PaymentSteps.java:183)",
+                "\tat com.example.checkout.PaymentSteps.frame84(PaymentSteps.java:184)",
+                "\tat com.example.checkout.PaymentSteps.frame85(PaymentSteps.java:185)",
+                "\tat com.example.checkout.PaymentSteps.frame86(PaymentSteps.java:186)",
+                "\tat com.example.checkout.PaymentSteps.frame87(PaymentSteps.java:187)",
+                "\tat com.example.checkout.PaymentSteps.frame88(PaymentSteps.java:188)",
+                "\tat com.example.checkout.PaymentSteps.frame89(PaymentSteps.java:189)",
+                "\tat com.example.checkout.PaymentSteps.frame90(PaymentSteps.java:190)",
+                "\tat com.example.checkout.PaymentSteps.frame91(PaymentSteps.java:191)",
+                "\tat com.example.checkout.PaymentSteps.frame92(PaymentSteps.java:192)",
+                "\tat com.example.checkout.PaymentSteps.frame93(PaymentSteps.java:193)",
+                "\tat com.example.checkout.PaymentSteps.frame94(PaymentSteps.java:194)",
+                "\tat com.example.checkout.PaymentSteps.frame95(PaymentSteps.java:195)",
+                "\tat com.example.checkout.PaymentSteps.frame96(PaymentSteps.java:196)",
+                "\tat com.example.checkout.PaymentSteps.frame97(PaymentSteps.java:197)",
+                "\tat com.example.checkout.PaymentSteps.frame98(PaymentSteps.java:198)",
+                "\tat com.example.checkout.PaymentSteps.frame99(PaymentSteps.java:199)",
+                "\tat com.example.checkout.PaymentSteps.frame100(PaymentSteps.java:200)",
+                "\tat com.example.checkout.PaymentSteps.frame101(PaymentSteps.java:201)",
+                "\tat com.example.checkout.PaymentSteps.frame102(PaymentSteps.java:202)",
+                "\tat com.example.checkout.PaymentSteps.frame103(PaymentSteps.java:203)",
+                "\tat com.example.checkout.PaymentSteps.frame104(PaymentSteps.java:204)",
+                "\tat com.example.checkout.PaymentSteps.frame105(PaymentSteps.java:205)",
+                "\tat com.example.checkout.PaymentSteps.frame106(PaymentSteps.java:206)",
+                "\tat com.example.checkout.PaymentSteps.frame107(PaymentSteps.java:207)",
+                "\tat com.example.checkout.PaymentSteps.frame108(PaymentSteps.java:208)",
+                "\tat com.example.checkout.PaymentSteps.frame109(PaymentSteps.java:209)",
+                "\tat com.example.checkout.PaymentSteps.frame110(PaymentSteps.java:210)",
+                "\tat com.example.checkout.PaymentSteps.frame111(PaymentSteps.java:211)",
+                "\tat com.example.checkout.PaymentSteps.frame112(PaymentSteps.java:212)",
+                "\tat com.example.checkout.PaymentSteps.frame113(PaymentSteps.java:213)",
+                "\tat com.example.checkout.PaymentSteps.frame114(PaymentSteps.java:214)",
+                "\tat com.example.checkout.PaymentSteps.frame115(PaymentSteps.java:215)",
+                "\tat com.example.checkout.PaymentSteps.frame116(PaymentSteps.java:216)",
+                "\tat com.example.checkout.PaymentSteps.frame117(PaymentSteps.java:217)",
+                "\tat com.example.checkout.PaymentSteps.frame118(PaymentSteps.java:218)",
+                "\tat com.example.checkout.PaymentSteps.frame119(PaymentSteps.java:219)",
+                "\tat com.example.checkout.PaymentSteps.frame120(PaymentSteps.java:220)",
+                "\tat com.example.checkout.PaymentSteps.frame121(PaymentSteps.java:221)",
+                "\tat com.example.checkout.PaymentSteps.frame122(PaymentSteps.java:222)",
+                "\tat com.example.checkout.PaymentSteps.frame123(PaymentSteps.java:223)",
+                "\tat com.example.checkout.PaymentSteps.frame124(PaymentSteps.java:224)",
+                "\tat com.example.checkout.PaymentSteps.frame125(PaymentSteps.java:225)",
+                "\tat com.example.checkout.PaymentSteps.frame126(PaymentSteps.java:226)",
+                "\tat com.example.checkout.PaymentSteps.frame127(PaymentSteps.java:227)",
+                "\tat com.example.checkout.PaymentSteps.frame128(PaymentSteps.java:228)",
+                "\tat com.example.checkout.PaymentSteps.frame129(PaymentSteps.java:229)",
+                "\tat com.example.checkout.PaymentSteps.frame130(PaymentSteps.java:230)",
+                "\tat com.example.checkout.PaymentSteps.frame131(PaymentSteps.java:231)",
+                "\tat com.example.checkout.PaymentSteps.frame132(PaymentSteps.java:232)",
+                "\tat com.example.checkout.PaymentSteps.frame133(PaymentSteps.java:233)",
+                "\tat com.example.checkout.PaymentSteps.frame134(PaymentSteps.java:234)",
+                "\tat com.example.checkout.PaymentSteps.frame135(PaymentSteps.java:235)",
+                "\tat com.example.checkout.PaymentSteps.frame136(PaymentSteps.java:236)",
+                "\tat com.example.checkout.PaymentSteps.frame137(PaymentSteps.java:237)",
+                "\tat com.example.checkout.PaymentSteps.frame138(PaymentSteps.java:238)",
+                "\tat com.example.checkout.PaymentSteps.frame139(PaymentSteps.java:239)",
+                "\tat com.example.checkout.PaymentSteps.frame140(PaymentSteps.java:240)",
+                "\tat com.example.checkout.PaymentSteps.frame141(PaymentSteps.java:241)",
+                "\tat com.example.checkout.PaymentSteps.frame142(PaymentSteps.java:242)",
+                "\tat com.example.checkout.PaymentSteps.frame143(PaymentSteps.java:243)",
+                "\tat com.example.checkout.PaymentSteps.frame144(PaymentSteps.java:244)",
+                "\tat com.example.checkout.PaymentSteps.frame145(PaymentSteps.java:245)",
+                "\tat com.example.checkout.PaymentSteps.frame146(PaymentSteps.java:246)",
+                "\tat com.example.checkout.PaymentSteps.frame147(PaymentSteps.java:247)",
+                "\tat com.example.checkout.PaymentSteps.frame148(PaymentSteps.java:248)",
+                "\tat com.example.checkout.PaymentSteps.frame149(PaymentSteps.java:249)",
+                "\tat com.example.checkout.PaymentSteps.frame150(PaymentSteps.java:250)",
+                "\tat com.example.checkout.PaymentSteps.frame151(PaymentSteps.java:251)",
+                "\tat com.example.checkout.PaymentSteps.frame152(PaymentSteps.java:252)",
+                "\tat com.example.checkout.PaymentSteps.frame153(PaymentSteps.java:253)",
+                "\tat com.example.checkout.PaymentSteps.frame154(PaymentSteps.java:254)",
+                "\tat com.example.checkout.PaymentSteps.frame155(PaymentSteps.java:255)",
+                "\tat com.example.checkout.PaymentSteps.frame156(PaymentSteps.java:256)",
+                "\tat com.example.checkout.PaymentSteps.frame157(PaymentSteps.java:257)",
+                "\tat com.example.checkout.PaymentSteps.frame158(PaymentSteps.java:258)",
+                "\tat com.example.checkout.PaymentSteps.frame159(PaymentSteps.java:259)",
+                "\tat com.example.checkout.PaymentSteps.frame160(PaymentSteps.java:260)",
+                "\tat com.example.checkout.PaymentSteps.frame161(PaymentSteps.java:261)",
+                "\tat com.example.checkout.PaymentSteps.frame162(PaymentSteps.java:262)",
+                "\tat com.example.checkout.PaymentSteps.frame163(PaymentSteps.java:263)",
+                "\tat com.example.checkout.PaymentSteps.frame164(PaymentSteps.java:264)",
+                "\tat com.example.checkout.PaymentSteps.frame165(PaymentSteps.java:265)",
+                "\tat com.example.checkout.PaymentSteps.frame166(PaymentSteps.java:266)",
+                "\tat com.example.checkout.PaymentSteps.frame167(PaymentSteps.java:267)",
+                "\tat com.example.checkout.PaymentSteps.frame168(PaymentSteps.java:268)",
+                "\tat com.example.checkout.PaymentSteps.frame169(PaymentSteps.java:269)",
+                "\tat com.example.checkout.PaymentSteps.frame170(PaymentSteps.java:270)",
+                "\tat com.example.checkout.PaymentSteps.frame171(PaymentSteps.java:271)",
+                "\tat com.example.checkout.PaymentSteps.frame172(PaymentSteps.java:272)",
+                "\tat com.example.checkout.PaymentSteps.frame173(PaymentSteps.java:273)",
+                "\tat com.example.checkout.PaymentSteps.frame174(PaymentSteps.java:274)",
+                "\tat com.example.checkout.PaymentSteps.frame175(PaymentSteps.java:275)",
+                "\tat com.example.checkout.PaymentSteps.frame176(PaymentSteps.java:276)",
+                "\tat com.example.checkout.PaymentSteps.frame177(PaymentSteps.java:277)",
+                "\tat com.example.checkout.PaymentSteps.frame178(PaymentSteps.java:278)",
+                "\tat com.example.checkout.PaymentSteps.frame179(PaymentSteps.java:279)",
+                "\tat com.example.checkout.PaymentSteps.frame180(PaymentSteps.java:280)",
+                "\tat com.example.checkout.PaymentSteps.frame181(PaymentSteps.java:281)",
+                "\tat com.example.checkout.PaymentSteps.frame182(PaymentSteps.java:282)",
+                "\tat com.example.checkout.PaymentSteps.frame183(PaymentSteps.java:283)",
+                "\tat com.example.checkout.PaymentSteps.frame184(PaymentSteps.java:284)",
+                "\tat com.example.checkout.PaymentSteps.frame185(PaymentSteps.java:285)",
+                "\tat com.example.checkout.PaymentSteps.frame186(PaymentSteps.java:286)",
+                "\tat com.example.checkout.PaymentSteps.frame187(PaymentSteps.java:287)",
+                "\tat com.example.checkout.PaymentSteps.frame188(PaymentSteps.java:288)",
+                "\tat com.example.checkout.PaymentSteps.frame189(PaymentSteps.java:289)",
+                "\tat com.example.checkout.PaymentSteps.frame190(PaymentSteps.java:290)",
+                "\tat com.example.checkout.PaymentSteps.frame191(PaymentSteps.java:291)",
+                "\tat com.example.checkout.PaymentSteps.frame192(PaymentSteps.java:292)",
+                "\tat com.example.checkout.PaymentSteps.frame193(PaymentSteps.java:293)",
+                "\tat com.example.checkout.PaymentSteps.frame194(PaymentSteps.java:294)",
+                "\tat com.example.checkout.PaymentSteps.frame195(PaymentSteps.java:295)",
+                "\tat com.example.checkout.PaymentSteps.frame196(PaymentSteps.java:296)",
+                "\tat com.example.checkout.PaymentSteps.frame197(PaymentSteps.java:297)",
+                "\tat com.example.checkout.PaymentSteps.frame198(PaymentSteps.java:298)",
+                "\tat com.example.checkout.PaymentSteps.frame199(PaymentSteps.java:299)",
+                "\tat com.example.checkout.PaymentSteps.frame200(PaymentSteps.java:300)",
+                "\tat com.example.checkout.PaymentSteps.frame201(PaymentSteps.java:301)",
+                "\tat com.example.checkout.PaymentSteps.frame202(PaymentSteps.java:302)",
+                "\tat com.example.checkout.PaymentSteps.frame203(PaymentSteps.java:303)",
+                "\tat com.example.checkout.PaymentSteps.frame204(PaymentSteps.java:304)",
+                "\tat com.example.checkout.PaymentSteps.frame205(PaymentSteps.java:305)",
+                "\tat com.example.checkout.PaymentSteps.frame206(PaymentSteps.java:306)",
+                "\tat com.example.checkout.PaymentSteps.frame207(PaymentSteps.java:307)",
+                "\tat com.example.checkout.PaymentSteps.frame208(PaymentSteps.java:308)",
+                "\tat com.example.checkout.PaymentSteps.frame209(PaymentSteps.java:309)",
+                "\tat com.example.checkout.PaymentSteps.frame210(PaymentSteps.java:310)",
+                "\tat com.example.checkout.PaymentSteps.frame211(PaymentSteps.java:311)",
+                "\tat com.example.checkout.PaymentSteps.frame212(PaymentSteps.java:312)",
+                "\tat com.example.checkout.PaymentSteps.frame213(PaymentSteps.java:313)",
+                "\tat com.example.checkout.PaymentSteps.frame214(PaymentSteps.java:314)",
+                "\tat com.example.checkout.PaymentSteps.frame215(PaymentSteps.java:315)",
+                "\tat com.example.checkout.PaymentSteps.frame216(PaymentSteps.java:316)",
+                "\tat com.example.checkout.PaymentSteps.frame217(PaymentSteps.java:317)",
+                "\tat com.example.checkout.PaymentSteps.frame218(PaymentSteps.java:318)",
+                "\tat com.example.checkout.PaymentSteps.frame219(PaymentSteps.java:319)"
+              ]
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "I see an error",
+            "location": "features/checkout.feature:16",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Gift wrap later",
+        "location": "features/checkout.feature:19",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 1 items",
+            "location": "features/checkout.feature:20",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.003
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I ask for gift wrap",
+            "location": "features/checkout.feature:21",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "pending",
+              "duration": 0.001,
+              "error_message": [
+                "io.cucumber.java.PendingException: TODO: implement me"
+              ]
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the parcel is wrapped",
+            "location": "features/checkout.feature:22",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "pending"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Loyalty points",
+        "location": "features/checkout.feature:24",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 1 items",
+            "location": "features/checkout.feature:25",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.003
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I redeem 500 loyalty points",
+            "location": "features/checkout.feature:26"
+          }
+        ],
+        "status": "undefined"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Ambiguous coupon",
+        "location": "features/checkout.feature:28",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a coupon SAVE10",
+            "location": "features/checkout.feature:29",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "ambiguous",
+              "duration": 0.0,
+              "error_message": [
+                "io.cucumber.core.runner.AmbiguousStepDefinitionsException: \"a coupon SAVE10\" matches more than one step definition:",
+                "  \"a coupon {word}\" in com.example.CouponSteps.coupon(String)",
+                "  \"a coupon SAVE{int}\" in com.example.CouponSteps.save(int)"
+              ]
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the coupon applies",
+            "location": "features/checkout.feature:30",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "ambiguous"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Not on this platform",
+        "location": "features/checkout.feature:33",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a Safari browser",
+            "location": "features/checkout.feature:34",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0,
+              "error_message": [
+                "org.opentest4j.TestAbortedException: Assumption failed: Safari not available"
+              ]
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "Apple Pay is offered",
+            "location": "features/checkout.feature:35",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "skipped"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Before hook fails",
+        "location": "features/checkout.feature:37",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 2 items",
+            "location": "features/checkout.feature:38",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the total is 20.00",
+            "location": "features/checkout.feature:39",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "After hook fails",
+        "location": "features/checkout.feature:41",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 2 items",
+            "location": "features/checkout.feature:42",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.003
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the total is 20.00",
+            "location": "features/checkout.feature:43",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.002
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "AfterStep hook fails",
+        "location": "features/checkout.feature:45",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a cart with 2 items",
+            "location": "features/checkout.feature:46",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.003
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the total is 20.00",
+            "location": "features/checkout.feature:47",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "name": "Discount SAVE10",
+        "location": "features/checkout.feature:56",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a coupon SAVE10",
+            "location": "features/checkout.feature:51",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.002
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the discount is 10%",
+            "location": "features/checkout.feature:52",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          }
+        ],
+        "status": "passed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "name": "Discount BOGUS",
+        "location": "features/checkout.feature:57",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a coupon BOGUS",
+            "location": "features/checkout.feature:51",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.002
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "the discount is 0%",
+            "location": "features/checkout.feature:52",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "failed",
+              "duration": 0.001,
+              "error_message": [
+                "java.lang.AssertionError: expected discount 0% but got 10%",
+                "\tat com.example.CouponSteps.discount(CouponSteps.java:55)"
+              ]
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Flaky search 🔁",
+        "location": "features/checkout.feature:60",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "the shop is open",
+            "location": "features/checkout.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.001
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I search for \"тест\"",
+            "location": "features/checkout.feature:61",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.3
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "I see 3 results",
+            "location": "features/checkout.feature:62",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.005
+            }
+          }
+        ],
+        "status": "passed"
+      }
+    ],
+    "background": {
+      "keyword": "Background",
+      "name": "",
+      "location": "features/checkout.feature:3"
+    }
+  },
+  {
+    "keyword": "Feature",
+    "name": "Profile",
+    "location": "features/profile.feature:1",
+    "status": "failed",
+    "elements": [
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Background fails",
+        "location": "features/profile.feature:6",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a registered user \"zoë@example.com\"",
+            "location": "features/profile.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "failed",
+              "duration": 0.002,
+              "error_message": [
+                "java.lang.IllegalStateException: user service returned 503",
+                "\tat com.example.UserSteps.registered(UserSteps.java:12)"
+              ]
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I open my profile",
+            "location": "features/profile.feature:7",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "I see my name",
+            "location": "features/profile.feature:8",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "untested",
+              "duration": 0.0
+            }
+          }
+        ],
+        "status": "failed"
+      },
+      {
+        "type": "scenario",
+        "keyword": "Scenario",
+        "name": "Update address",
+        "location": "features/profile.feature:10",
+        "steps": [
+          {
+            "keyword": "Given",
+            "step_type": "given",
+            "name": "a registered user \"zoë@example.com\"",
+            "location": "features/profile.feature:4",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.002
+            }
+          },
+          {
+            "keyword": "When",
+            "step_type": "when",
+            "name": "I submit the address",
+            "location": "features/profile.feature:11",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.009
+            }
+          },
+          {
+            "keyword": "Then",
+            "step_type": "then",
+            "name": "my addresses are",
+            "location": "features/profile.feature:16",
+            "match": {
+              "location": "features/steps/checkout.py:12",
+              "arguments": []
+            },
+            "result": {
+              "status": "passed",
+              "duration": 0.002
+            }
+          }
+        ],
+        "status": "passed"
+      }
+    ],
+    "background": {
+      "keyword": "Background",
+      "name": "",
+      "location": "features/profile.feature:3"
+    }
+  }
+]

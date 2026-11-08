@@ -1,0 +1,388 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "checkout;successful-checkout",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "Successful checkout ✅",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the shop is open",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 8,
+            "name": "a cart with 3 items",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "I pay with a valid card",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1500000000
+            },
+            "embeddings": [
+              {
+                "data": "R0VUIC9hcGkvY2FydCAyMDAgMTJtcwpQT1NUIC9hcGkvY2hlY2tvdXQgMjAxIDM0MG1zCsO8w7HDrSDwn5uSIGRvbmUK",
+                "mime_type": "text/x.cucumber.log+plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 10,
+            "name": "I see the receipt",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000000
+            },
+            "embeddings": [
+              {
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC",
+                "mime_type": "image/png"
+              }
+            ]
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "java.lang.IllegalStateException: cleanup failed",
+              "duration": 15000000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@smoke",
+            "line": 6
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "checkout;discount-save10",
+        "keyword": "Scenario Outline",
+        "line": 56,
+        "name": "Discount SAVE10",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the shop is open",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 51,
+            "name": "a coupon SAVE10",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 52,
+            "name": "the discount is 10%",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@discount",
+            "line": 49
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "checkout;flaky-search",
+        "keyword": "Scenario",
+        "line": 60,
+        "name": "Flaky search 🔁",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "the shop is open",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 61,
+            "name": "I search for \"тест\"",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 300000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 62,
+            "name": "I see 3 results",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "checkout",
+    "line": 2,
+    "keyword": "Feature",
+    "name": "Checkout 🛒 – Ünïcode",
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "uri": "features/checkout.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "profile;update-address",
+        "keyword": "Scenario",
+        "line": 10,
+        "name": "Update address",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a registered user \"zoë@example.com\"",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "arguments": [
+              {
+                "content": "{\n  \"street\": \"Hauptstraße 1\",\n  \"city\": \"Zürich\"\n}",
+                "line": 12
+              }
+            ],
+            "keyword": "When ",
+            "line": 11,
+            "name": "I submit the address",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000000
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "street",
+                      "city"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "Hauptstraße 1",
+                      "Zürich"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "my addresses are",
+            "match": {
+              "location": "features/step_definitions/checkout_steps.js:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "match": {
+              "location": "features/support/hooks.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "profile",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Profile",
+    "tags": [],
+    "uri": "features/profile.feature"
+  }
+]

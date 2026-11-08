@@ -1,0 +1,921 @@
+[
+  {
+    "id": "hook-failures-and-output",
+    "uri": "features/h.feature",
+    "keyword": "Feature",
+    "name": "Hook failures and output",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "hook-failures-and-output;before-fails",
+        "keyword": "Scenario",
+        "name": "Before fails",
+        "description": "",
+        "line": 4,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@before_fail",
+            "line": 3
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before log before raise"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before boom (RuntimeError)\n./features/support/hooks.rb:3:in 'block in <top (required)>'",
+              "duration": 230000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;before-fails",
+        "keyword": "Scenario",
+        "name": "Before fails",
+        "description": "",
+        "line": 4,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@before_fail",
+            "line": 3
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before log before raise"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before boom (RuntimeError)\n./features/support/hooks.rb:3:in 'block in <top (required)>'",
+              "duration": 284000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;before-fails",
+        "keyword": "Scenario",
+        "name": "Before fails",
+        "description": "",
+        "line": 4,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 5,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@before_fail",
+            "line": 3
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before log before raise"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "before boom (RuntimeError)\n./features/support/hooks.rb:3:in 'block in <top (required)>'",
+              "duration": 212000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;after-fails-after-pass",
+        "keyword": "Scenario",
+        "name": "After fails after pass",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 9,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@after_fail",
+            "line": 7
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 79000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;after-fails-after-pass",
+        "keyword": "Scenario",
+        "name": "After fails after pass",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 9,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@after_fail",
+            "line": 7
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 83000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;after-fails-after-pass",
+        "keyword": "Scenario",
+        "name": "After fails after pass",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 9,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 82000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@after_fail",
+            "line": 7
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 86000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;afterstep-fails",
+        "keyword": "Scenario",
+        "name": "AfterStep fails",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 13,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "failed",
+                  "error_message": "afterstep boom (RuntimeError)\n./features/support/hooks.rb:5:in 'block in <top (required)>'",
+                  "duration": 31000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "And ",
+            "name": "a step",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@afterstep_fail",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;afterstep-fails",
+        "keyword": "Scenario",
+        "name": "AfterStep fails",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 13,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 45000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "failed",
+                  "error_message": "afterstep boom (RuntimeError)\n./features/support/hooks.rb:5:in 'block in <top (required)>'",
+                  "duration": 31000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "And ",
+            "name": "a step",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@afterstep_fail",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;afterstep-fails",
+        "keyword": "Scenario",
+        "name": "AfterStep fails",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 13,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 47000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "failed",
+                  "error_message": "afterstep boom (RuntimeError)\n./features/support/hooks.rb:5:in 'block in <top (required)>'",
+                  "duration": 33000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "And ",
+            "name": "a step",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "skipped"
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:5"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@afterstep_fail",
+            "line": 11
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;hooks-attach-everything-and-pass",
+        "keyword": "Scenario",
+        "name": "Hooks attach everything and pass",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 18,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59000
+            },
+            "after": [
+              {
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "YWZ0ZXJzdGVwIHRleHQ="
+                  }
+                ],
+                "match": {
+                  "location": "features/support/hooks.rb:10"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 40000
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@output",
+            "line": 16
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook log"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YmVmb3JlIHBsYWlu"
+              },
+              {
+                "mime_type": "application/json",
+                "data": "eyJhIjoxfQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 171000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+              },
+              {
+                "mime_type": "text/html",
+                "data": "PGI+aHRtbCBmcm9tIGFmdGVyPC9iPg=="
+              }
+            ],
+            "output": [
+              "after hook log"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;hooks-attach-then-after-fails",
+        "keyword": "Scenario",
+        "name": "Hooks attach then After fails",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 22,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 75000
+            },
+            "after": [
+              {
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "YWZ0ZXJzdGVwIHRleHQ="
+                  }
+                ],
+                "match": {
+                  "location": "features/support/hooks.rb:10"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 35000
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@output",
+            "line": 20
+          },
+          {
+            "name": "@after_fail",
+            "line": 20
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook log"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YmVmb3JlIHBsYWlu"
+              },
+              {
+                "mime_type": "application/json",
+                "data": "eyJhIjoxfQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 109000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+              },
+              {
+                "mime_type": "text/html",
+                "data": "PGI+aHRtbCBmcm9tIGFmdGVyPC9iPg=="
+              }
+            ],
+            "output": [
+              "after hook log"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 136000
+            }
+          },
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 73000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;hooks-attach-then-after-fails",
+        "keyword": "Scenario",
+        "name": "Hooks attach then After fails",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 22,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            },
+            "after": [
+              {
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "YWZ0ZXJzdGVwIHRleHQ="
+                  }
+                ],
+                "match": {
+                  "location": "features/support/hooks.rb:10"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 34000
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@output",
+            "line": 20
+          },
+          {
+            "name": "@after_fail",
+            "line": 20
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook log"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YmVmb3JlIHBsYWlu"
+              },
+              {
+                "mime_type": "application/json",
+                "data": "eyJhIjoxfQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1729000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+              },
+              {
+                "mime_type": "text/html",
+                "data": "PGI+aHRtbCBmcm9tIGFmdGVyPC9iPg=="
+              }
+            ],
+            "output": [
+              "after hook log"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 339000
+            }
+          },
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 82000
+            }
+          }
+        ]
+      },
+      {
+        "id": "hook-failures-and-output;hooks-attach-then-after-fails",
+        "keyword": "Scenario",
+        "name": "Hooks attach then After fails",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a step",
+            "line": 22,
+            "output": [
+              "step log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48000
+            },
+            "after": [
+              {
+                "embeddings": [
+                  {
+                    "mime_type": "text/plain",
+                    "data": "YWZ0ZXJzdGVwIHRleHQ="
+                  }
+                ],
+                "match": {
+                  "location": "features/support/hooks.rb:10"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 31000
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@output",
+            "line": 20
+          },
+          {
+            "name": "@after_fail",
+            "line": 20
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook log"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YmVmb3JlIHBsYWlu"
+              },
+              {
+                "mime_type": "application/json",
+                "data": "eyJhIjoxfQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 155000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+              },
+              {
+                "mime_type": "text/html",
+                "data": "PGI+aHRtbCBmcm9tIGFmdGVyPC9iPg=="
+              }
+            ],
+            "output": [
+              "after hook log"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 172000
+            }
+          },
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dCBldmlkZW5jZQ=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "after boom (RuntimeError)\n./features/support/hooks.rb:4:in 'block in <top (required)>'",
+              "duration": 74000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

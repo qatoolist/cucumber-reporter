@@ -1,0 +1,336 @@
+[
+  {
+    "uri": "features/checkout.feature",
+    "id": "checkout",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 – Ünïcode",
+    "description": "",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "checkout;successful-checkout",
+        "keyword": "Scenario",
+        "name": "Successful checkout ✅",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@smoke",
+            "line": 6
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "a cart with 3 items",
+            "line": 8,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I pay with a valid card",
+            "line": 9,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1500000000
+            },
+            "embeddings": [
+              {
+                "name": "http.log",
+                "mime_type": "text/plain",
+                "data": "R0VUIC9hcGkvY2FydCAyMDAgMTJtcwpQT1NUIC9hcGkvY2hlY2tvdXQgMjAxIDM0MG1zCsO8w7HDrSDwn5uSIGRvbmUK"
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "I see the receipt",
+            "line": 10,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000000
+            },
+            "embeddings": [
+              {
+                "name": "screenshot",
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "checkout;payment-declined",
+        "keyword": "Scenario",
+        "name": "Payment declined 💳",
+        "description": "",
+        "line": 13,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "a cart with 1 items",
+            "line": 14,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I pay with a declined card",
+            "line": 15,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected status 200 but was 402\njava.lang.AssertionError: expected status <200> but was <402>\n\tat com.example.checkout.PaymentSteps.frame0(PaymentSteps.java:100)\n\tat com.example.checkout.PaymentSteps.frame1(PaymentSteps.java:101)\n\tat com.example.checkout.PaymentSteps.frame2(PaymentSteps.java:102)\n\tat com.example.checkout.PaymentSteps.frame3(PaymentSteps.java:103)\n\tat com.example.checkout.PaymentSteps.frame4(PaymentSteps.java:104)\n\tat com.example.checkout.PaymentSteps.frame5(PaymentSteps.java:105)\n\tat com.example.checkout.PaymentSteps.frame6(PaymentSteps.java:106)\n\tat com.example.checkout.PaymentSteps.frame7(PaymentSteps.java:107)\n\tat com.example.checkout.PaymentSteps.frame8(PaymentSteps.java:108)\n\tat com.example.checkout.PaymentSteps.frame9(PaymentSteps.java:109)\n\tat com.example.checkout.PaymentSteps.frame10(PaymentSteps.java:110)\n\tat com.example.checkout.PaymentSteps.frame11(PaymentSteps.java:111)\n\tat com.example.checkout.PaymentSteps.frame12(PaymentSteps.java:112)\n\tat com.example.checkout.PaymentSteps.frame13(PaymentSteps.java:113)\n\tat com.example.checkout.PaymentSteps.frame14(PaymentSteps.java:114)\n\tat com.example.checkout.PaymentSteps.frame15(PaymentSteps.java:115)\n\tat com.example.checkout.PaymentSteps.frame16(PaymentSteps.java:116)\n\tat com.example.checkout.PaymentSteps.frame17(PaymentSteps.java:117)\n\tat com.example.checkout.PaymentSteps.frame18(PaymentSteps.java:118)\n\tat com.example.checkout.PaymentSteps.frame19(PaymentSteps.java:119)\n\tat com.example.checkout.PaymentSteps.frame20(PaymentSteps.java:120)\n\tat com.example.checkout.PaymentSteps.frame21(PaymentSteps.java:121)\n\tat com.example.checkout.PaymentSteps.frame22(PaymentSteps.java:122)\n\tat com.example.checkout.PaymentSteps.frame23(PaymentSteps.java:123)\n\tat com.example.checkout.PaymentSteps.frame24(PaymentSteps.java:124)\n\tat com.example.checkout.PaymentSteps.frame25(PaymentSteps.java:125)\n\tat com.example.checkout.PaymentSteps.frame26(PaymentSteps.java:126)\n\tat com.example.checkout.PaymentSteps.frame27(PaymentSteps.java:127)\n\tat com.example.checkout.PaymentSteps.frame28(PaymentSteps.java:128)\n\tat com.example.checkout.PaymentSteps.frame29(PaymentSteps.java:129)\n\tat com.example.checkout.PaymentSteps.frame30(PaymentSteps.java:130)\n\tat com.example.checkout.PaymentSteps.frame31(PaymentSteps.java:131)\n\tat com.example.checkout.PaymentSteps.frame32(PaymentSteps.java:132)\n\tat com.example.checkout.PaymentSteps.frame33(PaymentSteps.java:133)\n\tat com.example.checkout.PaymentSteps.frame34(PaymentSteps.java:134)\n\tat com.example.checkout.PaymentSteps.frame35(PaymentSteps.java:135)\n\tat com.example.checkout.PaymentSteps.frame36(PaymentSteps.java:136)\n\tat com.example.checkout.PaymentSteps.frame37(PaymentSteps.java:137)\n\tat com.example.checkout.PaymentSteps.frame38(PaymentSteps.java:138)\n\tat com.example.checkout.PaymentSteps.frame39(PaymentSteps.java:139)\n\tat com.example.checkout.PaymentSteps.frame40(PaymentSteps.java:140)\n\tat com.example.checkout.PaymentSteps.frame41(PaymentSteps.java:141)\n\tat com.example.checkout.PaymentSteps.frame42(PaymentSteps.java:142)\n\tat com.example.checkout.PaymentSteps.frame43(PaymentSteps.java:143)\n\tat com.example.checkout.PaymentSteps.frame44(PaymentSteps.java:144)\n\tat com.example.checkout.PaymentSteps.frame45(PaymentSteps.java:145)\n\tat com.example.checkout.PaymentSteps.frame46(PaymentSteps.java:146)\n\tat com.example.checkout.PaymentSteps.frame47(PaymentSteps.java:147)\n\tat com.example.checkout.PaymentSteps.frame48(PaymentSteps.java:148)\n\tat com.example.checkout.PaymentSteps.frame49(PaymentSteps.java:149)\n\tat com.example.checkout.PaymentSteps.frame50(PaymentSteps.java:150)\n\tat com.example.checkout.PaymentSteps.frame51(PaymentSteps.java:151)\n\tat com.example.checkout.PaymentSteps.frame52(PaymentSteps.java:152)\n\tat com.example.checkout.PaymentSteps.frame53(PaymentSteps.java:153)\n\tat com.example.checkout.PaymentSteps.frame54(PaymentSteps.java:154)\n\tat com.example.checkout.PaymentSteps.frame55(PaymentSteps.java:155)\n\tat com.example.checkout.PaymentSteps.frame56(PaymentSteps.java:156)\n\tat com.example.checkout.PaymentSteps.frame57(PaymentSteps.java:157)\n\tat com.example.checkout.PaymentSteps.frame58(PaymentSteps.java:158)\n\tat com.example.checkout.PaymentSteps.frame59(PaymentSteps.java:159)\n\tat com.example.checkout.PaymentSteps.frame60(PaymentSteps.java:160)\n\tat com.example.checkout.PaymentSteps.frame61(PaymentSteps.java:161)\n\tat com.example.checkout.PaymentSteps.frame62(PaymentSteps.java:162)\n\tat com.example.checkout.PaymentSteps.frame63(PaymentSteps.java:163)\n\tat com.example.checkout.PaymentSteps.frame64(PaymentSteps.java:164)\n\tat com.example.checkout.PaymentSteps.frame65(PaymentSteps.java:165)\n\tat com.example.checkout.PaymentSteps.frame66(PaymentSteps.java:166)\n\tat com.example.checkout.PaymentSteps.frame67(PaymentSteps.java:167)\n\tat com.example.checkout.PaymentSteps.frame68(PaymentSteps.java:168)\n\tat com.example.checkout.PaymentSteps.frame69(PaymentSteps.java:169)\n\tat com.example.checkout.PaymentSteps.frame70(PaymentSteps.java:170)\n\tat com.example.checkout.PaymentSteps.frame71(PaymentSteps.java:171)\n\tat com.example.checkout.PaymentSteps.frame72(PaymentSteps.java:172)\n\tat com.example.checkout.PaymentSteps.frame73(PaymentSteps.java:173)\n\tat com.example.checkout.PaymentSteps.frame74(PaymentSteps.java:174)\n\tat com.example.checkout.PaymentSteps.frame75(PaymentSteps.java:175)\n\tat com.example.checkout.PaymentSteps.frame76(PaymentSteps.java:176)\n\tat com.example.checkout.PaymentSteps.frame77(PaymentSteps.java:177)\n\tat com.example.checkout.PaymentSteps.frame78(PaymentSteps.java:178)\n\tat com.example.checkout.PaymentSteps.frame79(PaymentSteps.java:179)\n\tat com.example.checkout.PaymentSteps.frame80(PaymentSteps.java:180)\n\tat com.example.checkout.PaymentSteps.frame81(PaymentSteps.java:181)\n\tat com.example.checkout.PaymentSteps.frame82(PaymentSteps.java:182)\n\tat com.example.checkout.PaymentSteps.frame83(PaymentSteps.java:183)\n\tat com.example.checkout.PaymentSteps.frame84(PaymentSteps.java:184)\n\tat com.example.checkout.PaymentSteps.frame85(PaymentSteps.java:185)\n\tat com.example.checkout.PaymentSteps.frame86(PaymentSteps.java:186)\n\tat com.example.checkout.PaymentSteps.frame87(PaymentSteps.java:187)\n\tat com.example.checkout.PaymentSteps.frame88(PaymentSteps.java:188)\n\tat com.example.checkout.PaymentSteps.frame89(PaymentSteps.java:189)\n\tat com.example.checkout.PaymentSteps.frame90(PaymentSteps.java:190)\n\tat com.example.checkout.PaymentSteps.frame91(PaymentSteps.java:191)\n\tat com.example.checkout.PaymentSteps.frame92(PaymentSteps.java:192)\n\tat com.example.checkout.PaymentSteps.frame93(PaymentSteps.java:193)\n\tat com.example.checkout.PaymentSteps.frame94(PaymentSteps.java:194)\n\tat com.example.checkout.PaymentSteps.frame95(PaymentSteps.java:195)\n\tat com.example.checkout.PaymentSteps.frame96(PaymentSteps.java:196)\n\tat com.example.checkout.PaymentSteps.frame97(PaymentSteps.java:197)\n\tat com.example.checkout.PaymentSteps.frame98(PaymentSteps.java:198)\n\tat com.example.checkout.PaymentSteps.frame99(PaymentSteps.java:199)\n\tat com.example.checkout.PaymentSteps.frame100(PaymentSteps.java:200)\n\tat com.example.checkout.PaymentSteps.frame101(PaymentSteps.java:201)\n\tat com.example.checkout.PaymentSteps.frame102(PaymentSteps.java:202)\n\tat com.example.checkout.PaymentSteps.frame103(PaymentSteps.java:203)\n\tat com.example.checkout.PaymentSteps.frame104(PaymentSteps.java:204)\n\tat com.example.checkout.PaymentSteps.frame105(PaymentSteps.java:205)\n\tat com.example.checkout.PaymentSteps.frame106(PaymentSteps.java:206)\n\tat com.example.checkout.PaymentSteps.frame107(PaymentSteps.java:207)\n\tat com.example.checkout.PaymentSteps.frame108(PaymentSteps.java:208)\n\tat com.example.checkout.PaymentSteps.frame109(PaymentSteps.java:209)\n\tat com.example.checkout.PaymentSteps.frame110(PaymentSteps.java:210)\n\tat com.example.checkout.PaymentSteps.frame111(PaymentSteps.java:211)\n\tat com.example.checkout.PaymentSteps.frame112(PaymentSteps.java:212)\n\tat com.example.checkout.PaymentSteps.frame113(PaymentSteps.java:213)\n\tat com.example.checkout.PaymentSteps.frame114(PaymentSteps.java:214)\n\tat com.example.checkout.PaymentSteps.frame115(PaymentSteps.java:215)\n\tat com.example.checkout.PaymentSteps.frame116(PaymentSteps.java:216)\n\tat com.example.checkout.PaymentSteps.frame117(PaymentSteps.java:217)\n\tat com.example.checkout.PaymentSteps.frame118(PaymentSteps.java:218)\n\tat com.example.checkout.PaymentSteps.frame119(PaymentSteps.java:219)\n\tat com.example.checkout.PaymentSteps.frame120(PaymentSteps.java:220)\n\tat com.example.checkout.PaymentSteps.frame121(PaymentSteps.java:221)\n\tat com.example.checkout.PaymentSteps.frame122(PaymentSteps.java:222)\n\tat com.example.checkout.PaymentSteps.frame123(PaymentSteps.java:223)\n\tat com.example.checkout.PaymentSteps.frame124(PaymentSteps.java:224)\n\tat com.example.checkout.PaymentSteps.frame125(PaymentSteps.java:225)\n\tat com.example.checkout.PaymentSteps.frame126(PaymentSteps.java:226)\n\tat com.example.checkout.PaymentSteps.frame127(PaymentSteps.java:227)\n\tat com.example.checkout.PaymentSteps.frame128(PaymentSteps.java:228)\n\tat com.example.checkout.PaymentSteps.frame129(PaymentSteps.java:229)\n\tat com.example.checkout.PaymentSteps.frame130(PaymentSteps.java:230)\n\tat com.example.checkout.PaymentSteps.frame131(PaymentSteps.java:231)\n\tat com.example.checkout.PaymentSteps.frame132(PaymentSteps.java:232)\n\tat com.example.checkout.PaymentSteps.frame133(PaymentSteps.java:233)\n\tat com.example.checkout.PaymentSteps.frame134(PaymentSteps.java:234)\n\tat com.example.checkout.PaymentSteps.frame135(PaymentSteps.java:235)\n\tat com.example.checkout.PaymentSteps.frame136(PaymentSteps.java:236)\n\tat com.example.checkout.PaymentSteps.frame137(PaymentSteps.java:237)\n\tat com.example.checkout.PaymentSteps.frame138(PaymentSteps.java:238)\n\tat com.example.checkout.PaymentSteps.frame139(PaymentSteps.java:239)\n\tat com.example.checkout.PaymentSteps.frame140(PaymentSteps.java:240)\n\tat com.example.checkout.PaymentSteps.frame141(PaymentSteps.java:241)\n\tat com.example.checkout.PaymentSteps.frame142(PaymentSteps.java:242)\n\tat com.example.checkout.PaymentSteps.frame143(PaymentSteps.java:243)\n\tat com.example.checkout.PaymentSteps.frame144(PaymentSteps.java:244)\n\tat com.example.checkout.PaymentSteps.frame145(PaymentSteps.java:245)\n\tat com.example.checkout.PaymentSteps.frame146(PaymentSteps.java:246)\n\tat com.example.checkout.PaymentSteps.frame147(PaymentSteps.java:247)\n\tat com.example.checkout.PaymentSteps.frame148(PaymentSteps.java:248)\n\tat com.example.checkout.PaymentSteps.frame149(PaymentSteps.java:249)\n\tat com.example.checkout.PaymentSteps.frame150(PaymentSteps.java:250)\n\tat com.example.checkout.PaymentSteps.frame151(PaymentSteps.java:251)\n\tat com.example.checkout.PaymentSteps.frame152(PaymentSteps.java:252)\n\tat com.example.checkout.PaymentSteps.frame153(PaymentSteps.java:253)\n\tat com.example.checkout.PaymentSteps.frame154(PaymentSteps.java:254)\n\tat com.example.checkout.PaymentSteps.frame155(PaymentSteps.java:255)\n\tat com.example.checkout.PaymentSteps.frame156(PaymentSteps.java:256)\n\tat com.example.checkout.PaymentSteps.frame157(PaymentSteps.java:257)\n\tat com.example.checkout.PaymentSteps.frame158(PaymentSteps.java:258)\n\tat com.example.checkout.PaymentSteps.frame159(PaymentSteps.java:259)\n\tat com.example.checkout.PaymentSteps.frame160(PaymentSteps.java:260)\n\tat com.example.checkout.PaymentSteps.frame161(PaymentSteps.java:261)\n\tat com.example.checkout.PaymentSteps.frame162(PaymentSteps.java:262)\n\tat com.example.checkout.PaymentSteps.frame163(PaymentSteps.java:263)\n\tat com.example.checkout.PaymentSteps.frame164(PaymentSteps.java:264)\n\tat com.example.checkout.PaymentSteps.frame165(PaymentSteps.java:265)\n\tat com.example.checkout.PaymentSteps.frame166(PaymentSteps.java:266)\n\tat com.example.checkout.PaymentSteps.frame167(PaymentSteps.java:267)\n\tat com.example.checkout.PaymentSteps.frame168(PaymentSteps.java:268)\n\tat com.example.checkout.PaymentSteps.frame169(PaymentSteps.java:269)\n\tat com.example.checkout.PaymentSteps.frame170(PaymentSteps.java:270)\n\tat com.example.checkout.PaymentSteps.frame171(PaymentSteps.java:271)\n\tat com.example.checkout.PaymentSteps.frame172(PaymentSteps.java:272)\n\tat com.example.checkout.PaymentSteps.frame173(PaymentSteps.java:273)\n\tat com.example.checkout.PaymentSteps.frame174(PaymentSteps.java:274)\n\tat com.example.checkout.PaymentSteps.frame175(PaymentSteps.java:275)\n\tat com.example.checkout.PaymentSteps.frame176(PaymentSteps.java:276)\n\tat com.example.checkout.PaymentSteps.frame177(PaymentSteps.java:277)\n\tat com.example.checkout.PaymentSteps.frame178(PaymentSteps.java:278)\n\tat com.example.checkout.PaymentSteps.frame179(PaymentSteps.java:279)\n\tat com.example.checkout.PaymentSteps.frame180(PaymentSteps.java:280)\n\tat com.example.checkout.PaymentSteps.frame181(PaymentSteps.java:281)\n\tat com.example.checkout.PaymentSteps.frame182(PaymentSteps.java:282)\n\tat com.example.checkout.PaymentSteps.frame183(PaymentSteps.java:283)\n\tat com.example.checkout.PaymentSteps.frame184(PaymentSteps.java:284)\n\tat com.example.checkout.PaymentSteps.frame185(PaymentSteps.java:285)\n\tat com.example.checkout.PaymentSteps.frame186(PaymentSteps.java:286)\n\tat com.example.checkout.PaymentSteps.frame187(PaymentSteps.java:287)\n\tat com.example.checkout.PaymentSteps.frame188(PaymentSteps.java:288)\n\tat com.example.checkout.PaymentSteps.frame189(PaymentSteps.java:289)\n\tat com.example.checkout.PaymentSteps.frame190(PaymentSteps.java:290)\n\tat com.example.checkout.PaymentSteps.frame191(PaymentSteps.java:291)\n\tat com.example.checkout.PaymentSteps.frame192(PaymentSteps.java:292)\n\tat com.example.checkout.PaymentSteps.frame193(PaymentSteps.java:293)\n\tat com.example.checkout.PaymentSteps.frame194(PaymentSteps.java:294)\n\tat com.example.checkout.PaymentSteps.frame195(PaymentSteps.java:295)\n\tat com.example.checkout.PaymentSteps.frame196(PaymentSteps.java:296)\n\tat com.example.checkout.PaymentSteps.frame197(PaymentSteps.java:297)\n\tat com.example.checkout.PaymentSteps.frame198(PaymentSteps.java:298)\n\tat com.example.checkout.PaymentSteps.frame199(PaymentSteps.java:299)\n\tat com.example.checkout.PaymentSteps.frame200(PaymentSteps.java:300)\n\tat com.example.checkout.PaymentSteps.frame201(PaymentSteps.java:301)\n\tat com.example.checkout.PaymentSteps.frame202(PaymentSteps.java:302)\n\tat com.example.checkout.PaymentSteps.frame203(PaymentSteps.java:303)\n\tat com.example.checkout.PaymentSteps.frame204(PaymentSteps.java:304)\n\tat com.example.checkout.PaymentSteps.frame205(PaymentSteps.java:305)\n\tat com.example.checkout.PaymentSteps.frame206(PaymentSteps.java:306)\n\tat com.example.checkout.PaymentSteps.frame207(PaymentSteps.java:307)\n\tat com.example.checkout.PaymentSteps.frame208(PaymentSteps.java:308)\n\tat com.example.checkout.PaymentSteps.frame209(PaymentSteps.java:309)\n\tat com.example.checkout.PaymentSteps.frame210(PaymentSteps.java:310)\n\tat com.example.checkout.PaymentSteps.frame211(PaymentSteps.java:311)\n\tat com.example.checkout.PaymentSteps.frame212(PaymentSteps.java:312)\n\tat com.example.checkout.PaymentSteps.frame213(PaymentSteps.java:313)\n\tat com.example.checkout.PaymentSteps.frame214(PaymentSteps.java:314)\n\tat com.example.checkout.PaymentSteps.frame215(PaymentSteps.java:315)\n\tat com.example.checkout.PaymentSteps.frame216(PaymentSteps.java:316)\n\tat com.example.checkout.PaymentSteps.frame217(PaymentSteps.java:317)\n\tat com.example.checkout.PaymentSteps.frame218(PaymentSteps.java:318)\n\tat com.example.checkout.PaymentSteps.frame219(PaymentSteps.java:319)\n",
+              "duration": 87000000
+            },
+            "embeddings": [
+              {
+                "name": "screenshot",
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC"
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "I see an error",
+            "line": 16,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;discount;discounts;2",
+        "keyword": "Scenario Outline",
+        "name": "Discount",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@discount",
+            "line": 49
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "a coupon SAVE10",
+            "line": 51,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the discount is 10%",
+            "line": 52,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;discount;discounts;3",
+        "keyword": "Scenario Outline",
+        "name": "Discount",
+        "description": "",
+        "line": 57,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@discount",
+            "line": 49
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "a coupon BOGUS",
+            "line": 51,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the discount is 0%",
+            "line": 52,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected status 200 but was 402\njava.lang.AssertionError: expected status <200> but was <402>\n\tat com.example.checkout.PaymentSteps.frame0(PaymentSteps.java:100)\n\tat com.example.checkout.PaymentSteps.frame1(PaymentSteps.java:101)\n\tat com.example.checkout.PaymentSteps.frame2(PaymentSteps.java:102)\n\tat com.example.checkout.PaymentSteps.frame3(PaymentSteps.java:103)\n\tat com.example.checkout.PaymentSteps.frame4(PaymentSteps.java:104)\n\tat com.example.checkout.PaymentSteps.frame5(PaymentSteps.java:105)\n\tat com.example.checkout.PaymentSteps.frame6(PaymentSteps.java:106)\n\tat com.example.checkout.PaymentSteps.frame7(PaymentSteps.java:107)\n\tat com.example.checkout.PaymentSteps.frame8(PaymentSteps.java:108)\n\tat com.example.checkout.PaymentSteps.frame9(PaymentSteps.java:109)\n\tat com.example.checkout.PaymentSteps.frame10(PaymentSteps.java:110)\n\tat com.example.checkout.PaymentSteps.frame11(PaymentSteps.java:111)\n\tat com.example.checkout.PaymentSteps.frame12(PaymentSteps.java:112)\n\tat com.example.checkout.PaymentSteps.frame13(PaymentSteps.java:113)\n\tat com.example.checkout.PaymentSteps.frame14(PaymentSteps.java:114)\n\tat com.example.checkout.PaymentSteps.frame15(PaymentSteps.java:115)\n\tat com.example.checkout.PaymentSteps.frame16(PaymentSteps.java:116)\n\tat com.example.checkout.PaymentSteps.frame17(PaymentSteps.java:117)\n\tat com.example.checkout.PaymentSteps.frame18(PaymentSteps.java:118)\n\tat com.example.checkout.PaymentSteps.frame19(PaymentSteps.java:119)\n\tat com.example.checkout.PaymentSteps.frame20(PaymentSteps.java:120)\n\tat com.example.checkout.PaymentSteps.frame21(PaymentSteps.java:121)\n\tat com.example.checkout.PaymentSteps.frame22(PaymentSteps.java:122)\n\tat com.example.checkout.PaymentSteps.frame23(PaymentSteps.java:123)\n\tat com.example.checkout.PaymentSteps.frame24(PaymentSteps.java:124)\n\tat com.example.checkout.PaymentSteps.frame25(PaymentSteps.java:125)\n\tat com.example.checkout.PaymentSteps.frame26(PaymentSteps.java:126)\n\tat com.example.checkout.PaymentSteps.frame27(PaymentSteps.java:127)\n\tat com.example.checkout.PaymentSteps.frame28(PaymentSteps.java:128)\n\tat com.example.checkout.PaymentSteps.frame29(PaymentSteps.java:129)\n\tat com.example.checkout.PaymentSteps.frame30(PaymentSteps.java:130)\n\tat com.example.checkout.PaymentSteps.frame31(PaymentSteps.java:131)\n\tat com.example.checkout.PaymentSteps.frame32(PaymentSteps.java:132)\n\tat com.example.checkout.PaymentSteps.frame33(PaymentSteps.java:133)\n\tat com.example.checkout.PaymentSteps.frame34(PaymentSteps.java:134)\n\tat com.example.checkout.PaymentSteps.frame35(PaymentSteps.java:135)\n\tat com.example.checkout.PaymentSteps.frame36(PaymentSteps.java:136)\n\tat com.example.checkout.PaymentSteps.frame37(PaymentSteps.java:137)\n\tat com.example.checkout.PaymentSteps.frame38(PaymentSteps.java:138)\n\tat com.example.checkout.PaymentSteps.frame39(PaymentSteps.java:139)\n\tat com.example.checkout.PaymentSteps.frame40(PaymentSteps.java:140)\n\tat com.example.checkout.PaymentSteps.frame41(PaymentSteps.java:141)\n\tat com.example.checkout.PaymentSteps.frame42(PaymentSteps.java:142)\n\tat com.example.checkout.PaymentSteps.frame43(PaymentSteps.java:143)\n\tat com.example.checkout.PaymentSteps.frame44(PaymentSteps.java:144)\n\tat com.example.checkout.PaymentSteps.frame45(PaymentSteps.java:145)\n\tat com.example.checkout.PaymentSteps.frame46(PaymentSteps.java:146)\n\tat com.example.checkout.PaymentSteps.frame47(PaymentSteps.java:147)\n\tat com.example.checkout.PaymentSteps.frame48(PaymentSteps.java:148)\n\tat com.example.checkout.PaymentSteps.frame49(PaymentSteps.java:149)\n\tat com.example.checkout.PaymentSteps.frame50(PaymentSteps.java:150)\n\tat com.example.checkout.PaymentSteps.frame51(PaymentSteps.java:151)\n\tat com.example.checkout.PaymentSteps.frame52(PaymentSteps.java:152)\n\tat com.example.checkout.PaymentSteps.frame53(PaymentSteps.java:153)\n\tat com.example.checkout.PaymentSteps.frame54(PaymentSteps.java:154)\n\tat com.example.checkout.PaymentSteps.frame55(PaymentSteps.java:155)\n\tat com.example.checkout.PaymentSteps.frame56(PaymentSteps.java:156)\n\tat com.example.checkout.PaymentSteps.frame57(PaymentSteps.java:157)\n\tat com.example.checkout.PaymentSteps.frame58(PaymentSteps.java:158)\n\tat com.example.checkout.PaymentSteps.frame59(PaymentSteps.java:159)\n\tat com.example.checkout.PaymentSteps.frame60(PaymentSteps.java:160)\n\tat com.example.checkout.PaymentSteps.frame61(PaymentSteps.java:161)\n\tat com.example.checkout.PaymentSteps.frame62(PaymentSteps.java:162)\n\tat com.example.checkout.PaymentSteps.frame63(PaymentSteps.java:163)\n\tat com.example.checkout.PaymentSteps.frame64(PaymentSteps.java:164)\n\tat com.example.checkout.PaymentSteps.frame65(PaymentSteps.java:165)\n\tat com.example.checkout.PaymentSteps.frame66(PaymentSteps.java:166)\n\tat com.example.checkout.PaymentSteps.frame67(PaymentSteps.java:167)\n\tat com.example.checkout.PaymentSteps.frame68(PaymentSteps.java:168)\n\tat com.example.checkout.PaymentSteps.frame69(PaymentSteps.java:169)\n\tat com.example.checkout.PaymentSteps.frame70(PaymentSteps.java:170)\n\tat com.example.checkout.PaymentSteps.frame71(PaymentSteps.java:171)\n\tat com.example.checkout.PaymentSteps.frame72(PaymentSteps.java:172)\n\tat com.example.checkout.PaymentSteps.frame73(PaymentSteps.java:173)\n\tat com.example.checkout.PaymentSteps.frame74(PaymentSteps.java:174)\n\tat com.example.checkout.PaymentSteps.frame75(PaymentSteps.java:175)\n\tat com.example.checkout.PaymentSteps.frame76(PaymentSteps.java:176)\n\tat com.example.checkout.PaymentSteps.frame77(PaymentSteps.java:177)\n\tat com.example.checkout.PaymentSteps.frame78(PaymentSteps.java:178)\n\tat com.example.checkout.PaymentSteps.frame79(PaymentSteps.java:179)\n\tat com.example.checkout.PaymentSteps.frame80(PaymentSteps.java:180)\n\tat com.example.checkout.PaymentSteps.frame81(PaymentSteps.java:181)\n\tat com.example.checkout.PaymentSteps.frame82(PaymentSteps.java:182)\n\tat com.example.checkout.PaymentSteps.frame83(PaymentSteps.java:183)\n\tat com.example.checkout.PaymentSteps.frame84(PaymentSteps.java:184)\n\tat com.example.checkout.PaymentSteps.frame85(PaymentSteps.java:185)\n\tat com.example.checkout.PaymentSteps.frame86(PaymentSteps.java:186)\n\tat com.example.checkout.PaymentSteps.frame87(PaymentSteps.java:187)\n\tat com.example.checkout.PaymentSteps.frame88(PaymentSteps.java:188)\n\tat com.example.checkout.PaymentSteps.frame89(PaymentSteps.java:189)\n\tat com.example.checkout.PaymentSteps.frame90(PaymentSteps.java:190)\n\tat com.example.checkout.PaymentSteps.frame91(PaymentSteps.java:191)\n\tat com.example.checkout.PaymentSteps.frame92(PaymentSteps.java:192)\n\tat com.example.checkout.PaymentSteps.frame93(PaymentSteps.java:193)\n\tat com.example.checkout.PaymentSteps.frame94(PaymentSteps.java:194)\n\tat com.example.checkout.PaymentSteps.frame95(PaymentSteps.java:195)\n\tat com.example.checkout.PaymentSteps.frame96(PaymentSteps.java:196)\n\tat com.example.checkout.PaymentSteps.frame97(PaymentSteps.java:197)\n\tat com.example.checkout.PaymentSteps.frame98(PaymentSteps.java:198)\n\tat com.example.checkout.PaymentSteps.frame99(PaymentSteps.java:199)\n\tat com.example.checkout.PaymentSteps.frame100(PaymentSteps.java:200)\n\tat com.example.checkout.PaymentSteps.frame101(PaymentSteps.java:201)\n\tat com.example.checkout.PaymentSteps.frame102(PaymentSteps.java:202)\n\tat com.example.checkout.PaymentSteps.frame103(PaymentSteps.java:203)\n\tat com.example.checkout.PaymentSteps.frame104(PaymentSteps.java:204)\n\tat com.example.checkout.PaymentSteps.frame105(PaymentSteps.java:205)\n\tat com.example.checkout.PaymentSteps.frame106(PaymentSteps.java:206)\n\tat com.example.checkout.PaymentSteps.frame107(PaymentSteps.java:207)\n\tat com.example.checkout.PaymentSteps.frame108(PaymentSteps.java:208)\n\tat com.example.checkout.PaymentSteps.frame109(PaymentSteps.java:209)\n\tat com.example.checkout.PaymentSteps.frame110(PaymentSteps.java:210)\n\tat com.example.checkout.PaymentSteps.frame111(PaymentSteps.java:211)\n\tat com.example.checkout.PaymentSteps.frame112(PaymentSteps.java:212)\n\tat com.example.checkout.PaymentSteps.frame113(PaymentSteps.java:213)\n\tat com.example.checkout.PaymentSteps.frame114(PaymentSteps.java:214)\n\tat com.example.checkout.PaymentSteps.frame115(PaymentSteps.java:215)\n\tat com.example.checkout.PaymentSteps.frame116(PaymentSteps.java:216)\n\tat com.example.checkout.PaymentSteps.frame117(PaymentSteps.java:217)\n\tat com.example.checkout.PaymentSteps.frame118(PaymentSteps.java:218)\n\tat com.example.checkout.PaymentSteps.frame119(PaymentSteps.java:219)\n\tat com.example.checkout.PaymentSteps.frame120(PaymentSteps.java:220)\n\tat com.example.checkout.PaymentSteps.frame121(PaymentSteps.java:221)\n\tat com.example.checkout.PaymentSteps.frame122(PaymentSteps.java:222)\n\tat com.example.checkout.PaymentSteps.frame123(PaymentSteps.java:223)\n\tat com.example.checkout.PaymentSteps.frame124(PaymentSteps.java:224)\n\tat com.example.checkout.PaymentSteps.frame125(PaymentSteps.java:225)\n\tat com.example.checkout.PaymentSteps.frame126(PaymentSteps.java:226)\n\tat com.example.checkout.PaymentSteps.frame127(PaymentSteps.java:227)\n\tat com.example.checkout.PaymentSteps.frame128(PaymentSteps.java:228)\n\tat com.example.checkout.PaymentSteps.frame129(PaymentSteps.java:229)\n\tat com.example.checkout.PaymentSteps.frame130(PaymentSteps.java:230)\n\tat com.example.checkout.PaymentSteps.frame131(PaymentSteps.java:231)\n\tat com.example.checkout.PaymentSteps.frame132(PaymentSteps.java:232)\n\tat com.example.checkout.PaymentSteps.frame133(PaymentSteps.java:233)\n\tat com.example.checkout.PaymentSteps.frame134(PaymentSteps.java:234)\n\tat com.example.checkout.PaymentSteps.frame135(PaymentSteps.java:235)\n\tat com.example.checkout.PaymentSteps.frame136(PaymentSteps.java:236)\n\tat com.example.checkout.PaymentSteps.frame137(PaymentSteps.java:237)\n\tat com.example.checkout.PaymentSteps.frame138(PaymentSteps.java:238)\n\tat com.example.checkout.PaymentSteps.frame139(PaymentSteps.java:239)\n\tat com.example.checkout.PaymentSteps.frame140(PaymentSteps.java:240)\n\tat com.example.checkout.PaymentSteps.frame141(PaymentSteps.java:241)\n\tat com.example.checkout.PaymentSteps.frame142(PaymentSteps.java:242)\n\tat com.example.checkout.PaymentSteps.frame143(PaymentSteps.java:243)\n\tat com.example.checkout.PaymentSteps.frame144(PaymentSteps.java:244)\n\tat com.example.checkout.PaymentSteps.frame145(PaymentSteps.java:245)\n\tat com.example.checkout.PaymentSteps.frame146(PaymentSteps.java:246)\n\tat com.example.checkout.PaymentSteps.frame147(PaymentSteps.java:247)\n\tat com.example.checkout.PaymentSteps.frame148(PaymentSteps.java:248)\n\tat com.example.checkout.PaymentSteps.frame149(PaymentSteps.java:249)\n\tat com.example.checkout.PaymentSteps.frame150(PaymentSteps.java:250)\n\tat com.example.checkout.PaymentSteps.frame151(PaymentSteps.java:251)\n\tat com.example.checkout.PaymentSteps.frame152(PaymentSteps.java:252)\n\tat com.example.checkout.PaymentSteps.frame153(PaymentSteps.java:253)\n\tat com.example.checkout.PaymentSteps.frame154(PaymentSteps.java:254)\n\tat com.example.checkout.PaymentSteps.frame155(PaymentSteps.java:255)\n\tat com.example.checkout.PaymentSteps.frame156(PaymentSteps.java:256)\n\tat com.example.checkout.PaymentSteps.frame157(PaymentSteps.java:257)\n\tat com.example.checkout.PaymentSteps.frame158(PaymentSteps.java:258)\n\tat com.example.checkout.PaymentSteps.frame159(PaymentSteps.java:259)\n\tat com.example.checkout.PaymentSteps.frame160(PaymentSteps.java:260)\n\tat com.example.checkout.PaymentSteps.frame161(PaymentSteps.java:261)\n\tat com.example.checkout.PaymentSteps.frame162(PaymentSteps.java:262)\n\tat com.example.checkout.PaymentSteps.frame163(PaymentSteps.java:263)\n\tat com.example.checkout.PaymentSteps.frame164(PaymentSteps.java:264)\n\tat com.example.checkout.PaymentSteps.frame165(PaymentSteps.java:265)\n\tat com.example.checkout.PaymentSteps.frame166(PaymentSteps.java:266)\n\tat com.example.checkout.PaymentSteps.frame167(PaymentSteps.java:267)\n\tat com.example.checkout.PaymentSteps.frame168(PaymentSteps.java:268)\n\tat com.example.checkout.PaymentSteps.frame169(PaymentSteps.java:269)\n\tat com.example.checkout.PaymentSteps.frame170(PaymentSteps.java:270)\n\tat com.example.checkout.PaymentSteps.frame171(PaymentSteps.java:271)\n\tat com.example.checkout.PaymentSteps.frame172(PaymentSteps.java:272)\n\tat com.example.checkout.PaymentSteps.frame173(PaymentSteps.java:273)\n\tat com.example.checkout.PaymentSteps.frame174(PaymentSteps.java:274)\n\tat com.example.checkout.PaymentSteps.frame175(PaymentSteps.java:275)\n\tat com.example.checkout.PaymentSteps.frame176(PaymentSteps.java:276)\n\tat com.example.checkout.PaymentSteps.frame177(PaymentSteps.java:277)\n\tat com.example.checkout.PaymentSteps.frame178(PaymentSteps.java:278)\n\tat com.example.checkout.PaymentSteps.frame179(PaymentSteps.java:279)\n\tat com.example.checkout.PaymentSteps.frame180(PaymentSteps.java:280)\n\tat com.example.checkout.PaymentSteps.frame181(PaymentSteps.java:281)\n\tat com.example.checkout.PaymentSteps.frame182(PaymentSteps.java:282)\n\tat com.example.checkout.PaymentSteps.frame183(PaymentSteps.java:283)\n\tat com.example.checkout.PaymentSteps.frame184(PaymentSteps.java:284)\n\tat com.example.checkout.PaymentSteps.frame185(PaymentSteps.java:285)\n\tat com.example.checkout.PaymentSteps.frame186(PaymentSteps.java:286)\n\tat com.example.checkout.PaymentSteps.frame187(PaymentSteps.java:287)\n\tat com.example.checkout.PaymentSteps.frame188(PaymentSteps.java:288)\n\tat com.example.checkout.PaymentSteps.frame189(PaymentSteps.java:289)\n\tat com.example.checkout.PaymentSteps.frame190(PaymentSteps.java:290)\n\tat com.example.checkout.PaymentSteps.frame191(PaymentSteps.java:291)\n\tat com.example.checkout.PaymentSteps.frame192(PaymentSteps.java:292)\n\tat com.example.checkout.PaymentSteps.frame193(PaymentSteps.java:293)\n\tat com.example.checkout.PaymentSteps.frame194(PaymentSteps.java:294)\n\tat com.example.checkout.PaymentSteps.frame195(PaymentSteps.java:295)\n\tat com.example.checkout.PaymentSteps.frame196(PaymentSteps.java:296)\n\tat com.example.checkout.PaymentSteps.frame197(PaymentSteps.java:297)\n\tat com.example.checkout.PaymentSteps.frame198(PaymentSteps.java:298)\n\tat com.example.checkout.PaymentSteps.frame199(PaymentSteps.java:299)\n\tat com.example.checkout.PaymentSteps.frame200(PaymentSteps.java:300)\n\tat com.example.checkout.PaymentSteps.frame201(PaymentSteps.java:301)\n\tat com.example.checkout.PaymentSteps.frame202(PaymentSteps.java:302)\n\tat com.example.checkout.PaymentSteps.frame203(PaymentSteps.java:303)\n\tat com.example.checkout.PaymentSteps.frame204(PaymentSteps.java:304)\n\tat com.example.checkout.PaymentSteps.frame205(PaymentSteps.java:305)\n\tat com.example.checkout.PaymentSteps.frame206(PaymentSteps.java:306)\n\tat com.example.checkout.PaymentSteps.frame207(PaymentSteps.java:307)\n\tat com.example.checkout.PaymentSteps.frame208(PaymentSteps.java:308)\n\tat com.example.checkout.PaymentSteps.frame209(PaymentSteps.java:309)\n\tat com.example.checkout.PaymentSteps.frame210(PaymentSteps.java:310)\n\tat com.example.checkout.PaymentSteps.frame211(PaymentSteps.java:311)\n\tat com.example.checkout.PaymentSteps.frame212(PaymentSteps.java:312)\n\tat com.example.checkout.PaymentSteps.frame213(PaymentSteps.java:313)\n\tat com.example.checkout.PaymentSteps.frame214(PaymentSteps.java:314)\n\tat com.example.checkout.PaymentSteps.frame215(PaymentSteps.java:315)\n\tat com.example.checkout.PaymentSteps.frame216(PaymentSteps.java:316)\n\tat com.example.checkout.PaymentSteps.frame217(PaymentSteps.java:317)\n\tat com.example.checkout.PaymentSteps.frame218(PaymentSteps.java:318)\n\tat com.example.checkout.PaymentSteps.frame219(PaymentSteps.java:319)\n",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;flaky-search",
+        "keyword": "Scenario",
+        "name": "Flaky search 🔁",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I search for \"тест\"",
+            "line": 61,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 300000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "I see 3 results",
+            "line": 62,
+            "match": {
+              "location": "checkout_test.go:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+.F-.F.F-
+
+Failing Scenarios:
+cucumber features/hooks.feature:7 # Scenario: Before hook fails
+cucumber features/hooks.feature:11 # Scenario: After hook fails
+cucumber features/hooks.feature:15 # Scenario: AfterStep hook fails
+
+4 scenarios (3 failed, 1 passed)
+5 steps (2 skipped, 3 passed)
+0m0.118s
+exit=1

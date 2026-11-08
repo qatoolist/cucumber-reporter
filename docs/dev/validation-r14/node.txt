@@ -1,0 +1,23 @@
+20,000 scenario model: 19.2 ms; 20000 analysis element reads
+Search-match text contrast: 13.28:1
+✔ 20,000 scenarios associate analysis with linear data access (26.79575ms)
+✔ scroll persistence is delayed and does not serialize scenario IDs (1.493916ms)
+✔ shared table ordering respects direction and numeric durations (6.525625ms)
+✔ search-match foreground and background meet WCAG AAA for normal text (2.665875ms)
+✔ final attempts reference scenario steps without duplicating evidence (0.459583ms)
+✔ annotation banner labels declared step and links execution position (0.593167ms)
+✔ large timelines and selected print scopes stay bounded (221.50825ms)
+✔ print preview retains scope after printing and rows retain native link semantics (1.152375ms)
+✔ print builder creates only selected scenario nodes, including limitation records (22.05825ms)
+✔ Unicode expansion highlights original characters without shifting later matches (0.549083ms)
+✔ run hooks affect failures while scenario totals stay separate (0.52325ms)
+✔ folded Background and retry bookmarks resolve to the final scenario (0.367542ms)
+✔ repeated in-page links reveal and focus targets without removing buttons from tab order (0.565833ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 442.541833

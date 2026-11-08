@@ -1,0 +1,93 @@
+{
+ "statuses": [
+  [
+   "features/checkout.feature",
+   7,
+   "Successful checkout ✅",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   13,
+   "Payment declined 💳",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   19,
+   "Gift wrap later",
+   "pending"
+  ],
+  [
+   "features/checkout.feature",
+   24,
+   "Loyalty points",
+   "undefined"
+  ],
+  [
+   "features/checkout.feature",
+   28,
+   "Ambiguous coupon",
+   "ambiguous"
+  ],
+  [
+   "features/checkout.feature",
+   33,
+   "Not on this platform",
+   "skipped"
+  ],
+  [
+   "features/checkout.feature",
+   37,
+   "Before hook fails",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   41,
+   "After hook fails",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   45,
+   "AfterStep hook fails",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   56,
+   "Discount SAVE10",
+   "passed"
+  ],
+  [
+   "features/checkout.feature",
+   57,
+   "Discount BOGUS",
+   "failed"
+  ],
+  [
+   "features/checkout.feature",
+   60,
+   "Flaky search 🔁",
+   "passed"
+  ],
+  [
+   "features/profile.feature",
+   6,
+   "Background fails",
+   "failed"
+  ]
+ ],
+ "counts": {
+  "passed": 3,
+  "failed": 6,
+  "pending": 1,
+  "undefined": 1,
+  "ambiguous": 1,
+  "skipped": 1
+ },
+ "verdict": "failed",
+ "n": 13,
+ "note": "stream truncated: last scenario unfinished, no testRunFinished; must not look complete/passed"
+}

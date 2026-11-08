@@ -6,6 +6,8 @@ import "time"
 
 // Feature is one feature file's results.
 type Feature struct {
+	// Provenance retains parser-derived execution context across value copies.
+	Provenance                          *FeatureProvenance `json:",omitempty"`
 	URI, ID, Keyword, Name, Description string
 	Line                                int
 	Tags                                []Tag
@@ -14,6 +16,10 @@ type Feature struct {
 
 // Scenario is one executed scenario (one row of an outline is one scenario).
 type Scenario struct {
+	// Provenance retains parser-derived execution context across value copies.
+	Provenance *ScenarioProvenance `json:",omitempty"`
+	// Before and After retain scenario hook evidence from legacy runners.
+	Before, After                        []Step `json:",omitempty"`
 	ID, Keyword, Name, Description, Type string
 	Line                                 int
 	Tags                                 []Tag
@@ -22,6 +28,12 @@ type Scenario struct {
 
 // Step is one executed step with its result, arguments and attachments.
 type Step struct {
+	// Provenance retains parser-derived execution context across value copies.
+	Provenance *StepProvenance `json:",omitempty"`
+	// Hidden marks an inline runner hook rather than a declared Gherkin step.
+	Hidden bool `json:",omitempty"`
+	// Before and After retain step-local hook evidence.
+	Before, After []Step `json:",omitempty"`
 	Keyword, Name string
 	Line          int
 	DocString     *DocString
@@ -70,13 +82,13 @@ type Result struct {
 // Limits bounds the work Parse and the renderer accept. A zero or negative field selects its default.
 type Limits struct {
 	// Input is the largest accepted cucumber.json, in bytes. Default 512 MiB.
-	Input int64
+	Input int64 `json:"input,omitempty"`
 	// Embedding is the largest accepted base64 text of one attachment, in characters. Default 64 MiB.
-	Embedding int64
+	Embedding int64 `json:"embedding,omitempty"`
 	// InlineAttachment is the largest decoded attachment shown inside the page, in bytes. Larger text
 	// attachments are written beside the page by report.RenderDir, or left out by report.Render.
 	// Default 4 MiB.
-	InlineAttachment int64
+	InlineAttachment int64 `json:"inlineAttachment,omitempty"`
 }
 
 // Default limits.

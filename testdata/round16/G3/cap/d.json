@@ -1,0 +1,104 @@
+[
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 1 items (row-1)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;2",
+        "keyword": "Scenario Outline",
+        "name": "Add 1 items (row-1)",
+        "description": "",
+        "line": 25,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

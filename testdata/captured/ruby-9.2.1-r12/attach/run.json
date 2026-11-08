@@ -1,0 +1,140 @@
+[
+  {
+    "id": "attachments",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "Attachments",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "attachments;attaches-things",
+        "keyword": "Scenario",
+        "name": "Attaches things",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "I attach text, png, json and log",
+            "line": 4,
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "aGVsbG8gPGI+dGV4dDwvYj4="
+              },
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC"
+              },
+              {
+                "mime_type": "application/json",
+                "data": "eyJhIjoxfQ=="
+              }
+            ],
+            "output": [
+              "a log line"
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1996000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before log"
+            ],
+            "match": {
+              "location": "features/support/h.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dA=="
+              }
+            ],
+            "match": {
+              "location": "features/support/h.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41000
+            }
+          }
+        ]
+      },
+      {
+        "id": "attachments;fails-with-screenshot",
+        "keyword": "Scenario",
+        "name": "Fails with screenshot",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "it fails",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:8"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "boom (RuntimeError)\n./features/step_definitions/s.rb:8:in 'block in <top (required)>'\nfeatures/a.feature:7:in `it fails'",
+              "duration": 53000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before log"
+            ],
+            "match": {
+              "location": "features/support/h.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC"
+              },
+              {
+                "mime_type": "text/plain",
+                "data": "YWZ0ZXIgdGV4dA=="
+              }
+            ],
+            "match": {
+              "location": "features/support/h.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

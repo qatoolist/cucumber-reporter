@@ -1,0 +1,67 @@
+$ cucumber --no-color --retry 2 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+FF.FPFFF.FFFFFF
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:3:in `"step fpend"'
+
+(::) failed steps (::)
+
+ffp 1 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+ffp 2 (RuntimeError)
+./features/step_definitions/s.rb:2:in 'block in <top (required)>'
+features/r.feature:4:in `step ffp'
+
+fpend 1 (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/r.feature:7:in `step fpend'
+
+fundef 1 (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `step fundef'
+
+Undefined dynamic step: "this is not defined anywhere" (Cucumber::UndefinedDynamicStep)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `step fundef'
+
+Undefined dynamic step: "this is not defined anywhere" (Cucumber::UndefinedDynamicStep)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/r.feature:10:in `step fundef'
+
+always fails (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/r.feature:16:in `step always'
+
+always fails (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/r.feature:16:in `step always'
+
+always fails (RuntimeError)
+./features/step_definitions/s.rb:6:in 'block in <top (required)>'
+features/r.feature:16:in `step always'
+
+fff 1 (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/r.feature:19:in `step fff_p'
+
+fff 2 (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/r.feature:19:in `step fff_p'
+
+fff 3 (RuntimeError)
+./features/step_definitions/s.rb:7:in 'block in <top (required)>'
+features/r.feature:19:in `step fff_p'
+
+Failing Scenarios:
+cucumber features/r.feature:6 # Scenario: Fail then pending
+cucumber features/r.feature:9 # Scenario: Fail then undefined
+cucumber features/r.feature:15 # Scenario: Always fails
+cucumber features/r.feature:18 # Scenario: Fail x3 then pass
+
+6 scenarios (4 failed, 1 flaky, 1 passed)
+15 steps (12 failed, 1 pending, 2 passed)
+0m0.034s
+exit=1

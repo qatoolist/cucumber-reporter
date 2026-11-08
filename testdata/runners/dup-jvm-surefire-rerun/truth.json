@@ -1,0 +1,36 @@
+{
+  "statuses": [
+    [
+      "features/checkout.feature",
+      7,
+      "Successful checkout \u2705",
+      "passed"
+    ],
+    [
+      "features/checkout.feature",
+      13,
+      "Payment declined \ud83d\udcb3",
+      "failed"
+    ],
+    [
+      "features/checkout.feature",
+      13,
+      "Payment declined \ud83d\udcb3",
+      "passed"
+    ],
+    [
+      "features/checkout.feature",
+      60,
+      "Flaky search \ud83d\udd01",
+      "passed"
+    ]
+  ],
+  "counts": {
+    "passed": 3,
+    "failed": 1
+  },
+  "verdict": "failed",
+  "n": 4,
+  "note": "Unconfirmed JVM retry shape: plain mode retains both executions; enhanced mode refuses ambiguous duplicates rather than rescuing the failure.",
+  "enhancedError": true
+}

@@ -17,8 +17,10 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 const (
@@ -99,6 +101,9 @@ func handshake(ctx context.Context, conn net.Conn, u *url.URL) (*wsConn, error) 
 	if resp.StatusCode != http.StatusSwitchingProtocols {
 		return nil, fmt.Errorf("cdp: handshake status %s", resp.Status)
 	}
+	if !strings.EqualFold(resp.Header.Get("Upgrade"), "websocket") || !headerToken(resp.Header.Get("Connection"), "upgrade") {
+		return nil, errors.New("cdp: invalid websocket upgrade headers")
+	}
 	sum := sha1.Sum([]byte(key + wsGUID)) //nolint:gosec // see import.
 	if got, want := resp.Header.Get("Sec-WebSocket-Accept"), base64.StdEncoding.EncodeToString(sum[:]); got != want {
 		return nil, fmt.Errorf("cdp: bad Sec-WebSocket-Accept %q", got)
@@ -108,10 +113,18 @@ func handshake(ctx context.Context, conn net.Conn, u *url.URL) (*wsConn, error) 
 
 // writeText sends one masked, unfragmented text frame.
 func (c *wsConn) writeText(payload []byte) error {
-	return c.writeFrame(opText, payload)
+	return c.writeFrameContext(context.Background(), opText, payload)
 }
 
 func (c *wsConn) writeFrame(opcode byte, payload []byte) error {
+	return c.writeFrameContext(context.Background(), opcode, payload)
+}
+
+func (c *wsConn) writeTextContext(ctx context.Context, payload []byte) error {
+	return c.writeFrameContext(ctx, opText, payload)
+}
+
+func (c *wsConn) writeFrameContext(ctx context.Context, opcode byte, payload []byte) error {
 	hdr := make([]byte, 0, 14)
 	hdr = append(hdr, 0x80|opcode)
 	switch n := len(payload); {
@@ -135,7 +148,26 @@ func (c *wsConn) writeFrame(opcode byte, payload []byte) error {
 	}
 	c.wmu.Lock()
 	defer c.wmu.Unlock()
-	if _, err := c.conn.Write(append(hdr, masked...)); err != nil {
+	deadline := time.Now().Add(10 * time.Second)
+	if d, ok := ctx.Deadline(); ok {
+		deadline = d
+	}
+	if e := c.conn.SetWriteDeadline(deadline); e != nil {
+		return e
+	}
+	done := make(chan struct{})
+	stop := context.AfterFunc(ctx, func() { _ = c.conn.SetWriteDeadline(time.Now()); close(done) })
+	defer func() {
+		if !stop() {
+			<-done
+		}
+	}()
+	frame := append(hdr, masked...)
+	n, err := c.conn.Write(frame)
+	if err == nil && n != len(frame) {
+		err = io.ErrShortWrite
+	}
+	if err != nil {
 		return fmt.Errorf("cdp: websocket write: %w", err)
 	}
 	return nil
@@ -145,6 +177,8 @@ func (c *wsConn) writeFrame(opcode byte, payload []byte) error {
 // and answering pings. It returns errClosed after a close frame.
 func (c *wsConn) readMessage() ([]byte, error) {
 	var msg []byte
+	fragmented := false
+	textFrame := false
 	for {
 		fin, opcode, payload, err := c.readFrame(len(msg))
 		if err != nil {
@@ -157,11 +191,30 @@ func (c *wsConn) readMessage() ([]byte, error) {
 			}
 		case opPong:
 		case opClose:
+			if len(payload) == 1 {
+				return nil, errors.New("cdp: malformed close frame")
+			}
+			if len(payload) >= 2 {
+				code := binary.BigEndian.Uint16(payload[:2])
+				if code < 1000 || code >= 5000 || code == 1004 || code == 1005 || code == 1006 || code == 1015 || (code > 1014 && code < 3000) || !utf8.Valid(payload[2:]) {
+					return nil, errors.New("cdp: invalid close status or reason")
+				}
+			}
 			_ = c.writeFrame(opClose, nil)
 			return nil, errClosed
 		case opText, opBin, opCont:
+			if opcode == opCont && !fragmented || opcode != opCont && fragmented {
+				return nil, errors.New("cdp: invalid websocket continuation")
+			}
+			if opcode != opCont {
+				textFrame = opcode == opText
+			}
+			fragmented = !fin
 			msg = append(msg, payload...)
 			if fin {
+				if textFrame && !utf8.Valid(msg) {
+					return nil, errors.New("cdp: invalid websocket UTF-8")
+				}
 				return msg, nil
 			}
 		default:
@@ -176,6 +229,15 @@ func (c *wsConn) readFrame(have int) (fin bool, opcode byte, payload []byte, err
 		return false, 0, nil, fmt.Errorf("cdp: websocket read: %w", err)
 	}
 	fin, opcode = h[0]&0x80 != 0, h[0]&0x0f
+	if h[0]&0x70 != 0 || h[1]&0x80 != 0 {
+		return false, 0, nil, errors.New("cdp: invalid server frame flags")
+	}
+	if opcode >= 8 && (!fin || h[1]&0x7f > 125) {
+		return false, 0, nil, errors.New("cdp: invalid control frame")
+	}
+	if opcode != opCont && opcode != opText && opcode != opBin && opcode != opClose && opcode != opPing && opcode != opPong {
+		return false, 0, nil, errors.New("cdp: invalid opcode")
+	}
 	n := uint64(h[1] & 0x7f)
 	switch n {
 	case 126:
@@ -184,34 +246,38 @@ func (c *wsConn) readFrame(have int) (fin bool, opcode byte, payload []byte, err
 			return false, 0, nil, fmt.Errorf("cdp: websocket read: %w", err)
 		}
 		n = uint64(binary.BigEndian.Uint16(b[:]))
+		if n < 126 {
+			return false, 0, nil, errors.New("cdp: noncanonical frame length")
+		}
 	case 127:
 		var b [8]byte
 		if _, err = io.ReadFull(c.br, b[:]); err != nil {
 			return false, 0, nil, fmt.Errorf("cdp: websocket read: %w", err)
 		}
 		n = binary.BigEndian.Uint64(b[:])
+		if n <= 65535 || n>>63 != 0 {
+			return false, 0, nil, errors.New("cdp: noncanonical frame length")
+		}
 	}
 	if n > maxMessage || n > uint64(maxMessage-have) { //nolint:gosec // have <= maxMessage by construction, so the subtraction is non-negative.
 		return false, 0, nil, fmt.Errorf("cdp: websocket message exceeds %d bytes", maxMessage)
-	}
-	var mask [4]byte
-	masked := h[1]&0x80 != 0
-	if masked {
-		if _, err = io.ReadFull(c.br, mask[:]); err != nil {
-			return false, 0, nil, fmt.Errorf("cdp: websocket read: %w", err)
-		}
 	}
 	payload = make([]byte, n)
 	if _, err = io.ReadFull(c.br, payload); err != nil {
 		return false, 0, nil, fmt.Errorf("cdp: websocket read: %w", err)
 	}
-	if masked {
-		for i := range payload {
-			payload[i] ^= mask[i%4]
-		}
-	}
+
 	return fin, opcode, payload, nil
 }
 
 // Close closes the underlying connection.
 func (c *wsConn) Close() error { return c.conn.Close() }
+
+func headerToken(value, token string) bool {
+	for _, part := range strings.Split(value, ",") {
+		if strings.EqualFold(strings.TrimSpace(part), token) {
+			return true
+		}
+	}
+	return false
+}

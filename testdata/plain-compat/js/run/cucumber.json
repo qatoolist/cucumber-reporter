@@ -1,0 +1,5 @@
+[{"uri":"f.feature","id":"f","keyword":"Feature","name":"F","line":1,"elements":[
+{"id":"f;one","keyword":"Scenario","name":"one","line":5,"type":"scenario","steps":[
+{"keyword":"Before","hidden":true,"result":{"status":"passed","duration":1}},
+{"keyword":"Given ","name":"x","line":6,"result":{"status":"failed","error_message":"X BOOM","duration":5}},
+{"keyword":"After","hidden":true,"result":{"status":"failed","error_message":"AFTER BOOM","duration":1}}]}]}]

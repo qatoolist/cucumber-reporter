@@ -5,7 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/qatoolist/cucumber-reporter/cucumber"
+	modelmeta "github.com/qatoolist/cucumber-reporter/internal/cucumbermodel"
+
+	cucumber "github.com/qatoolist/cucumber-reporter/internal/cucumberinput"
 )
 
 var (
@@ -31,38 +33,74 @@ func featureSlug(uri string) string {
 }
 
 // unique returns base, or base-2, base-3 … , the first that is not in seen, and records it.
-func unique(base string, seen map[string]bool) string {
+func unique(base string, seen map[string]bool, next map[string]int) string {
 	id := base
-	for n := 2; seen[id]; n++ {
+	n := max(2, next[base])
+	for seen[id] {
 		id = base + "-" + strconv.Itoa(n)
+		n++
 	}
+	next[base] = n
 	seen[id] = true
 	return id
 }
 
-// FeatureIDs returns the stable identifier of each feature, as used in the page's links
+// featureIDs returns the stable identifier of each feature, as used in the page's links
 // (#/features/<id>): the slug of the URI's base name, with -2, -3 … appended on collisions. The same
-// run always yields the same identifiers.
-func FeatureIDs(features []cucumber.Feature) []string {
+// run always yields the same identifiers. Synthetic run-hook features use "run-hooks",
+// after ordinary feature slugs have been reserved.
+func featureIDs(features []cucumber.Feature) []string {
 	seen := map[string]bool{}
+	next := map[string]int{}
 	out := make([]string, len(features))
+	// Reserve ordinary feature slugs first so synthetic hook records cannot rename
+	// a real feature. Hook names must not depend on shard directory names.
+	isHook := func(f cucumber.Feature) bool {
+		if len(f.Elements) == 0 {
+			return false
+		}
+		for _, sc := range f.Elements {
+			if sc.Type != "run_hook" {
+				return false
+			}
+		}
+		return true
+	}
 	for i, f := range features {
-		out[i] = unique(featureSlug(f.URI), seen)
+		if modelmeta.FeatureMetadata(&f).ReportID != "" {
+			out[i] = unique(modelmeta.FeatureMetadata(&f).ReportID, seen, next)
+		} else if !isHook(f) {
+			out[i] = unique(featureSlug(f.URI), seen, next)
+		}
+	}
+	for i, f := range features {
+		if modelmeta.FeatureMetadata(&f).ReportID == "" && isHook(f) {
+			out[i] = unique("run-hooks", seen, next)
+		}
 	}
 	return out
 }
 
-// ScenarioIDs returns the stable identifier of each scenario, indexed like features[i].Elements[j]:
+// scenarioIDs returns the stable identifier of each scenario, indexed like features[i].Elements[j]:
 // "<feature id>-L<line>", with -2, -3 … appended when a feature has several scenarios on one line
 // (outline rows). Annotation.Scenario takes these values; the page links to #/scenarios/<id>.
-func ScenarioIDs(features []cucumber.Feature) [][]string {
-	fids := FeatureIDs(features)
+func scenarioIDs(features []cucumber.Feature) [][]string {
+	fids := featureIDs(features)
 	out := make([][]string, len(features))
 	for i, f := range features {
 		seen := map[string]bool{}
+		next := map[string]int{}
 		out[i] = make([]string, len(f.Elements))
 		for j, sc := range f.Elements {
-			out[i][j] = unique(fids[i]+"-L"+strconv.Itoa(sc.Line), seen)
+			base := fids[i] + "-L" + strconv.Itoa(sc.Line)
+			if suffix := modelmeta.ScenarioMetadata(&sc).NavigationSuffix; suffix != "" && modelmeta.FeatureMetadata(&f).ReportID == "" {
+				out[i][j] = fids[i] + suffix
+				continue
+			}
+			if modelmeta.FeatureMetadata(&f).ReportID != "" && sc.Line == 0 {
+				base += "-" + strings.TrimPrefix(Identity(f.URI, sc.Name), "test-")[:12]
+			}
+			out[i][j] = unique(base, seen, next)
 		}
 	}
 	return out

@@ -1,0 +1,7 @@
+{"meta":{"protocolVersion":"22.0.0","implementation":{"name":"cucumber-ruby","version":"9.2.1"},"runtime":{"name":"ruby","version":"3.4.7"},"os":{"name":"darwin25","version":"Darwin Kernel Version 27.2.0: Wed Oct 14 23:47:32 PDT 2026; root:xnu-13432.41.4~25/RELEASE_ARM64_T6031"},"cpu":{"name":"arm64"}}}
+{"stepDefinition":{"id":"d82b6bb0-cf64-49f0-9351-3e8a57c6743b","pattern":{"source":"ok","type":"CUCUMBER_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":1}}}}
+{"stepDefinition":{"id":"c7e4ceb1-8d3b-496e-8df6-e70f5efe6ce1","pattern":{"source":"broken","type":"CUCUMBER_EXPRESSION"},"sourceReference":{"uri":"features/step_definitions/s.rb","location":{"line":2}}}}
+{"source":{"uri":"features/bgonly.feature","data":"Feature: Only background\n\n  Background:\n    Given broken\n","mediaType":"text/x.cucumber.gherkin+plain"}}
+{"gherkinDocument":{"uri":"features/bgonly.feature","feature":{"location":{"line":1,"column":1},"tags":[],"language":"en","keyword":"Feature","name":"Only background","description":"","children":[{"background":{"location":{"line":3,"column":3},"keyword":"Background","name":"","description":"","steps":[{"location":{"line":4,"column":5},"keyword":"Given ","keywordType":"Context","text":"broken","id":"d1c891a7-a91a-4cf2-ace1-4cf2a5b52d71"}],"id":"b2074d0d-ec22-4523-b34e-7a60967b473f"}}]},"comments":[]}}
+{"testRunStarted":{"timestamp":{"seconds":1794012870,"nanos":885176000}}}
+{"testRunFinished":{"success":true,"timestamp":{"seconds":1794012870,"nanos":885294000}}}

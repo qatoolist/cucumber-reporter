@@ -7,7 +7,26 @@ readable with JavaScript turned off.
 
 It is a Go module with no dependencies outside the standard library.
 
+The screenshots illustrate the original report layout; v0.3.0 adds the controls described below.
+
 ![Dashboard of a synthetic run](docs/dashboard.jpg)
+
+## Planned version 0.3.0 (unreleased)
+
+Enhanced summaries use schema 4.
+Plain options schema 2 and plain navigation IDs remain unchanged; see the [identity guide](docs/0.3.0.md#identity-merge-and-comparison-rules).
+
+The existing single-run command remains supported. Optional enhanced reporting adds
+merging, comparison, scoped history, retry evidence, CI gates, redaction and exports.
+No historical reports are required. The UI adds investigation controls, structured
+known-issue banners, advanced filters, a scenario table and selectable print scope.
+
+See [the 0.3.0 guide](docs/0.3.0.md) for configuration, examples and compatibility.
+
+For an oversized saved PDF, use `cucumber-report compress-pdf -quality balanced -o report-shared.pdf report.pdf`.
+This optional local command requires Ghostscript, retains every page and reports the actual size reduction.
+Use `-quality small` for 96 dpi images or `-quality high` to keep original image resolution.
+The default timeout is five minutes; set `-timeout 10m` for a larger PDF.
 
 ## Install
 
@@ -76,6 +95,10 @@ default, and a switch for each dashboard widget and navigation section. Changes 
 are saved in `localStorage` under `cucumber-reporter:v2:prefs`, per browser, over the report's
 generation-time defaults. "Reset to report defaults" removes them. Saved values the page does not
 recognise are ignored; when storage is blocked the page says so and keeps working.
+Saved views use `cucumber-reporter:saved-views:v1` and compact overview uses
+`cucumber-reporter:compact` in local storage. Same-tab list context uses
+`cucumber-reporter:context:v2:<path>` in session storage. These extra keys are separate
+from the preferences reset; clearing browser site data removes them.
 
 ### Print
 
@@ -103,7 +126,31 @@ success it prints one line, `HTML report: <path>`.
 | `-options` | JSON file holding `report.Options` (below), `"version": 2`. Unknown keys and trailing data are refused. |
 | `-o` | Directory in which to create `html-<digits>`. Default: the run directory. |
 
-Exit status is 0 on success, 1 when the input or options are refused and 2 for a usage error.
+Exit status is 0 on success, 1 when input/options/output are refused, 2 for usage errors,
+and 3 when a requested enhanced quality gate fails. Reports are written before exit 3,
+except `-validate`, which checks gates without writing.
+
+Enhanced forms (see [configuration and migration](docs/0.3.0.md)):
+
+```sh
+mkdir -p reports
+cucumber-report -enhanced -options options-enhanced.json -o reports shard-a shard-b
+cucumber-report -enhanced -bundle -fail-on-unexpected run
+cucumber-report -validate -strict run
+cucumber-report -version
+```
+
+`-run-config`, `-baseline`, `-history`, `-format messages`, `-bundle` and
+`-fail-on-unexpected` also enable enhanced processing for one input. `-strict`
+requires `-validate` and turns parsing and run-analysis diagnostics into errors, except the informational `runner.outcome` note.
+
+`-validate` alone checks plain-mode parsing and annotation rules without writing.
+Add `-enhanced` to validate enhanced rules. `-fail-on-unexpected` enables enhanced
+processing and its gate for one input. Plain generation exits 0 after successfully
+writing a report even when that report shows failures.
+Multiple inputs require explicit `-enhanced`. Validation ignores output-only settings
+`-o`, `-bundle`, `-title` and `-name`. CLI `-options` refuses computed `analysis` and
+Go-only `bundleAttachments`; use enhanced `-bundle` instead.
 
 An options file uses the JSON names of the `report` types:
 
@@ -161,7 +208,7 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `report.RenderDir(runDir, opt)` | Reads `cucumber.json`, writes a new `html-<digits>/index.html` in `runDir`. |
 | `report.RenderDirTo(runDir, parent, opt)` | The same, creating `html-<digits>` in `parent`. |
 | `report.RenderFeaturesDirTo(features, parent, opt)` | Writes already-parsed features the same way. |
-| `report.ScenarioOutcomes(features, annotations)` | Each scenario's effective outcome after the known-issue rules (`OutcomeKnown` or its cucumber status), indexed like `ScenarioIDs`: the classification the report shows, for callers that need the numbers. |
+| `report.ScenarioOutcomes(features, annotations)` | Each scenario's effective outcome after folding and known-issue rules (`OutcomeKnown` or its cucumber status; `OutcomeFolded` for folded Background/retry source slots, which should not be counted again), indexed like `ScenarioIDs`: the classification the report shows, for callers that need the numbers. |
 | `report.FeatureIDs`, `report.ScenarioIDs` | The stable identifiers the page uses in its links and that annotations name: the slug of the feature file's base name, and `<feature id>-L<line>`, with `-2`, `-3` on collisions. |
 
 ### Options
@@ -174,7 +221,7 @@ html, err := report.Render(features, report.Options{Version: report.OptionsVersi
 | `TopFacts` | Up to three `RunFacts` labels shown in the top bar. Default: the first three facts. |
 | `WallClock` | Measured elapsed duration, shown as the primary dashboard and print time. Summed step time remains separate. Surrounding whitespace is trimmed; an empty value shows only summed step time. Cucumber JSON has no start times, so the renderer cannot compute elapsed time. |
 | `TimingSection` | Optional ID of an existing `Sections` entry. Links the dashboard time card to that section under Run details. Without it the card opens the slowest-scenarios list. A missing section ID is rejected. |
-| `Verdict` | The headline: `Label` (required) and `Tone` (`ok`, `warn`, `fail`, `info`; empty uses the computed tone). Without it the headline is computed: "Failed: N unexpected failures" (N counts scenarios whose outcome is failed after the known-issue rules), Ambiguous or Undefined (fail), Passed with known failures (warn), Pending or Skipped (info), Passed (ok). |
+| `Verdict` | The headline: `Label` (required) and `Tone` (`ok`, `warn`, `fail`, `info`; empty uses the computed tone). Without it the headline is computed (an empty execution says "No scenarios executed"; retries append "(N flaky)"; failed gates can say "Failed: quality gate (…)" ): "Failed: N unexpected failures" (N counts scenarios whose outcome is failed after the known-issue rules), Ambiguous or Undefined (fail), Passed with known failures (warn), Pending or Skipped (info), Passed (ok). |
 | `Sections` | Your own panels: a card on the dashboard and a full panel under Run details. `ID` is a-z, 0-9 and `-`, starting with a letter, at most 48 characters; `Tone` is `info` (default), `ok`, `warn` or `fail`; `Summary`, `Rows` and `Note` hold the content. `Role` tells the page what the section summarises: `known` (its summary and note appear on Known issues instead of a dashboard card; at most one), `skip` or `limit`. Sections with a role are left out of the printed scope sections, because their entries print from the annotations. |
 | `Annotations` | Caller knowledge per scenario, named by `ScenarioIDs`: `Kind` `known` (with `Ref`, the issue key), `skip` (why a scenario was skipped) or `limit` (not fully verified in this environment), plus `Title` and `Note`. See Known issues below. |
 | `Defaults` | Generation-time view settings: `Theme` (`auto`, `light`, `dark`), `Density` (`comfortable`, `compact`), `Expand` (attachments open at load: `failed`, `all`, `none`), `View` (start page: `dashboard`, `features`, `scenarios`, `failures`), `Widgets` and `Nav` (an entry `false` hides a dashboard widget or navigation section; `report.Widgets` and `report.NavSections` list the keys; the dashboard cannot be hidden). |
@@ -203,7 +250,8 @@ The renderer applies these rules, so a caller passes its records without post-pr
 issue covers only its declared step; any other unexpected result still fails.
 
 - One `known` annotation per scenario and issue key; a repeat is refused.
-- `Step` is the declared step, numbered from 1 over the scenario's steps, and `StepText` is that
+- `Step` is numbered from 1 over the original scenario `steps[]` in plain mode (including
+  cucumber-js inline hooks). Enhanced mode numbers only scenario-owned steps. `StepText` is that
   step's text (without the keyword); the two go together. When the scenario's step at `Step` has a
   different text, the record is shown with a warning ("not applied") and covers nothing, so a
   numbering slip cannot hide a failure.
@@ -281,23 +329,23 @@ never act as markup, style or script:
   command applies the same checks to the `-options` file.
 - Error messages never include input content.
 
-The report adds no redaction. Anything in `cucumber.json`, including attachments, appears in the
-report. Remove secrets before they are attached.
+Redaction is off by default. The enhanced pipeline supports explicit redaction and attachment
+exclusion policies; see the 0.3.0 guide. Existing rendering APIs preserve supplied content.
 
 ## Browser support
 
 The page needs Chrome or Edge 123, Firefox 120 or Safari 17.5 or newer, because each colour is
 defined once with CSS `light-dark()`. Page headers and footers in print use CSS page-margin boxes,
 which Chrome and Edge 131 or newer support; other browsers print without them. Without JavaScript any
-browser shows the static fallback. The automated checks run in headless Chrome; Firefox and Safari
-were not tested automatically.
+browser shows the static fallback. The automated checks run in headless Chrome; the development-only CI matrix also checks Firefox and WebKit. WebKit checks do not
+replace testing in the Safari application.
 
 ## Sizes
 
-There is no size budget; the build keeps the page as small as it reasonably can. The readable
+Attachment-free output budgets are enforced by `TestReportSizeBudget` (see the 0.3.0 guide). The readable
 `report/assets/app.js` and `app.css` are minified by `go generate ./report` (a dependency-free,
 conservative minifier in `internal/minify` that removes comments and whitespace and never renames
-identifiers) into the committed `.min` files that are embedded. Measured for this release:
+identifiers) into the committed `.min` files that are embedded. Historical measurements from 0.2.0 (0.3.0 has additional investigation controls):
 
 | Item | Readable | Embedded (minified) | Minified, gzip |
 | --- | --- | --- | --- |
@@ -310,24 +358,60 @@ Attachments dominate larger reports: an attachment costs about 1.03 times its ba
 
 ## Limits
 
-- Input: Godog's legacy Cucumber JSON. Every feature needs a scenario, and every step one of
+- Input: supported Cucumber JSON or Messages (see the runner matrix below). Every step needs one of
   `passed`, `failed`, `skipped`, `pending`, `undefined`, `ambiguous`. Duplicate keys and data after the
-  array are refused. Unknown fields (such as hooks from other runners) are ignored.
+  array are refused. Non-passing scenario/step hooks and their evidence are retained;
+  passing-only hooks preserve the historical plain output. Standalone Background
+  results fold into the following scenario. Orphan Backgrounds produce a diagnostic and count
+  as no scenarios. Unknown non-execution fields are ignored.
 - Godog's JSON does not carry Scenario Outline example values separately; outline rows appear as
   scenarios with their substituted names.
-- One run per report; there is no merging of runs and no trend over time.
-- The print document lists the first 400 scenarios of a feature.
-- `Parse` holds the whole input in memory and walks it twice; peak memory is a few times the input
-  size. Lower `Limits.Input` where memory is tight.
+- The legacy command renders one run. Optional enhanced processing merges shards and embeds supplied history.
+- Full print includes all scenarios. The Print dialog can select a smaller scope.
+- Parsing, model conversion, redaction and the embedded data can require substantially more
+  memory than the input (large generated suites have exceeded 10×). Lower `Limits.Input` where
+  memory is tight. Directory output streams HTML to disk; the CLI warns above 200 MiB.
+  Beyond 1,000 scenarios, the static no-JavaScript fallback retains all problem details
+  but limits passed details. JavaScript, exports and explicitly selected full print retain all results.
 - The symbolic-link checks apply to `cucumber.json`, the `-options` file and the final element of the
   run and output directory paths, after the path is cleaned; links in parent directories are followed.
+
+## Runner formats
+
+| Runner | Input | Coverage and limits |
+| --- | --- | --- |
+| Godog | Cucumber JSON | Captured Godog fixture plus synthetic regressions |
+| cucumber-jvm | Cucumber JSON | Runner-shaped fixtures cover Backgrounds, hooks, logs, timestamps and retries |
+| cucumber-ruby | JSON / Messages | Captured 9.2.1 `--retry` JSON and Messages; logs, step hooks and retry outcomes verified |
+| cucumber-js | JSON / Messages | Runner-shaped fixtures cover inline hooks, arguments and attachments; captured legacy base64 text still needs confirmation |
+| Reqnroll | Cucumber JSON | Runner-shaped fixtures cover hooks and durations |
+| pytest-bdd | Cucumber JSON | Runner-shaped fixture coverage |
+| behave | — | Its different JSON structure and floating-point seconds are refused with a specific diagnostic; convert upstream |
+
+Fixture coverage is not a certification of every runner version. Unknown execution metadata
+is reported by `-validate`; `-strict` makes those diagnostics fatal. Missing history and
+baseline files are optional unless a requested comparison gate needs a baseline.
+
+For a Godog project, a minimal local run is:
+
+```sh
+mkdir -p run
+godog --format cucumber:run/cucumber.json
+cucumber-report run
+```
+
+On Windows, use the same commands in a shell with Go on PATH. PDF compression looks for
+`gswin64c.exe` / `gswin32c.exe`; set `GS` to the executable if it is outside PATH. Go's
+portable writer syncs files before publication; Windows does not provide the Unix directory
+fsync guarantee. `CHROME` selects a browser for developer checks, and `CHROME_FLAGS`
+adds trusted local launch flags (never report content).
 
 ## Development
 
 ```sh
 make verify          # gofmt check, go vet, golangci-lint, go test -race
 make generate        # re-minify report/assets after editing app.js or app.css (a test fails otherwise)
-make fuzz-smoke      # each fuzz target for FUZZTIME (default 30s)
+make fuzz-smoke      # each target for FUZZTIME (default 30s); minimization capped at 1s
 make browser-check   # interaction, print and stress checks in local headless Chrome; the PDF checks
                      # need Ghostscript (gs). Not part of verify, because it needs both.
 make golden-update   # rewrite expected HTML after an intended change; review the diff
@@ -351,3 +435,43 @@ in a failed and a passed-with-known-failures variant, used by the golden, CLI an
 
 MIT; see [LICENSE](LICENSE). The status semantics follow multiple-cucumber-html-reporter; see
 [NOTICE](NOTICE).
+
+### Cucumber Ruby
+
+For captured cucumber-ruby 9.2.1 output, prefer Messages:
+
+```sh
+cucumber --format message --out run.ndjson
+cucumber-report -enhanced -format messages -fail-on-unexpected run.ndjson
+```
+
+The reporter supports both captured Ruby retry shapes, with and without Backgrounds.
+A failed attempt is rescued only by a strictly passing final attempt; pending or skipped
+final attempts do not erase a failure. Passing retried scenarios are marked flaky.
+The original attempts and their evidence remain available. Unconfirmed duplicate
+executions from other runners are not assumed to be retries.
+
+Pending beside passed follows Cucumber's default and can produce a passing report;
+undefined or ambiguous outcomes remain non-green. JSON has no runner exit-status signal.
+To enforce strict pending behavior with JSON, use `-run-config` with
+`{"gates":{"pending":true,"undefined":true}}`. Messages preserves
+`testRunFinished.success:false`, including `--strict` and `--strict-flaky`, as a
+non-green “Runner reported failure” even when final scenarios passed.
+
+Runner git branch/revision values are displayed as facts. Only explicitly configured
+scope values separate baseline comparisons and history environments.
+
+
+For v0.3.0 outcome rules, optional pending/flaky/empty gates, disjoint shard inputs,
+empty-run handling and attachment sharing limits, see [the outcome and evidence
+rules](docs/0.3.0.md#outcome-retry-and-evidence-rules-in-v030). Gate failures appear
+in both the report verdict and the CLI exit status.
+
+
+Repeated scenario locations across inputs are refused in v0.3.0. The diagnostic
+lists the first 20 collisions (bounded to 4 KB), followed by the remaining count and its input names. Disjoint shards remain supported with
+`-enhanced`; retries inside a single JSON or Messages input remain supported.
+For reruns or browser/OS matrix cells, generate one report per run or cell, or use
+the runner's `--retry` within a single run. This rule also applies to `-validate`
+and the `PrepareRun` library API. See the [v0.3.0 guide](docs/0.3.0.md) and
+[0.3.1 roadmap](docs/0.3.1-roadmap.md).

@@ -1,0 +1,37 @@
+$ PLAN=BG:fail cucumber 
+F-F-
+
+(::) failed steps (::)
+
+planned failure BG (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/b.feature:3:in `outcome "BG"'
+
+planned failure BG (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/b.feature:3:in `outcome "BG"'
+
+Failing Scenarios:
+cucumber features/b.feature:5 # Scenario: One
+cucumber features/b.feature:8 # Scenario: Two
+
+2 scenarios (2 failed)
+4 steps (2 failed, 2 skipped)
+0m0.031s
+exit=1
+$ PLAN=BG:fail1 cucumber @run1.rerun.txt
+F-..
+
+(::) failed steps (::)
+
+planned flaky failure BG call 1 (run 2) (RuntimeError)
+./features/step_definitions/s.rb:8:in 'block in <top (required)>'
+features/b.feature:3:in `outcome "BG"'
+
+Failing Scenarios:
+cucumber features/b.feature:5 # Scenario: One
+
+2 scenarios (1 failed, 1 passed)
+4 steps (1 failed, 1 skipped, 2 passed)
+0m0.018s
+exit=1

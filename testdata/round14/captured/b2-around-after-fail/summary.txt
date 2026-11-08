@@ -1,0 +1,10 @@
+$ PLAN= cucumber 
+...
+
+Failing Scenarios:
+cucumber features/a.feature:7 # Scenario: Wrapped two
+
+3 scenarios (1 failed, 2 passed)
+3 steps (3 passed)
+0m0.035s
+exit=1

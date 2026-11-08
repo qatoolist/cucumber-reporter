@@ -1,0 +1,16 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+...F.
+
+(::) failed steps (::)
+
+bad value (RuntimeError)
+./features/step_definitions/s.rb:1:in 'block in <top (required)>'
+features/n.feature:17:12:in `value bad'
+
+Failing Scenarios:
+cucumber features/n.feature:17 # Scenario Outline: Same outline
+
+5 scenarios (1 failed, 4 passed)
+5 steps (1 failed, 4 passed)
+0m0.020s
+exit=1

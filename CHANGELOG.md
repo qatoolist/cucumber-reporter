@@ -5,6 +5,160 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+Planned v0.3.0; browser/print/cross-browser CI remains a release gate.
+
+### Added
+
+- Optional enhanced run processing: separate historical identities, shard merging,
+  baseline comparison, scoped bounded history, retries, completeness expectations,
+  explicit quality gates, versioned JSON/CSV/Markdown exports and rerun selectors.
+- Optional redaction, issue lifecycle policies, configurable failure fingerprints,
+  measured execution intervals, deduplicated binary sidecars and ZIP bundles.
+- Cucumber Messages input and feature-at-a-time legacy parsing; safe validation
+  diagnostics and a writer-based rendering API.
+- Investigation UI: attention actions, split failure view, problem summaries,
+  searchable error/evidence viewers, scenario table, advanced filters and reusable
+  views, persistent navigation context and optional analysis/attempt panels.
+- Structured annotation details and compact banners with expandable notes/evidence.
+- Selectable print scope without the former 400-scenario feature cap.
+- Local saved-PDF compression with high/balanced/small quality presets, page-count
+  verification, before/after size reporting and a never-enlarge fallback. Ghostscript
+  is optional and required only for this command; saved-PDF layout stays unchanged.
+  The HTML layout, typography, filtering and navigation do change in 0.3.0.
+- Cross-browser CI checks, runner-format fixtures, a v0.2.0 compatibility harness,
+  allocation benchmarks and report-size budgets.
+- Context-aware rendering, streamed directory/ZIP output and durable file publication.
+- Enhanced processing of runner timestamps/git facts and final-attempt retry outcomes.
+
+### Fixed
+
+- Redaction no longer changes known-issue decisions. Step-text matching and issue
+  policies (environment, error signature) are decided on the unmasked evidence and
+  carried through masking in both directions, and the evidence floor checks them
+  against its own pre-redaction snapshot. A mismatched `stepText` that masking makes
+  identical is published with "(differs before redaction)" and covers nothing.
+- Redaction no longer makes an earlier retry attempt's different step look like the
+  covered final step. A step that differed before masking is published as
+  "… (differs before redaction)", so a masked run gives the same failed report as an
+  unmasked one instead of being refused.
+- A baseline or history comparison on scenario identities that masking changed
+  (generated from masked names or paths, or metadata identities a pattern matches) adds
+  an `identity` diagnostic: a scenario whose secret changes between runs is the same
+  scenario to the new-failures gate. Use opaque metadata identities that no pattern
+  matches to tell such scenarios apart.
+- A secret split by ANSI color codes or zero-width characters is masked. Display
+  output removes or hides them and previously rejoined the secret in the HTML, CSV,
+  Markdown and `report.zip`. Matches on the visible text are added to the raw-text
+  matches; text with nothing more to mask is unchanged.
+- Step, scenario and feature keywords are redacted like other display text.
+- A baseline or history entry whose environment or branch matches the current run,
+  or another history scope, only after masking is refused, as an unmasked scope
+  mismatch is. Comparing a stored, already-redacted scope adds a diagnostic.
+- `jsonKeys` match keys as they display, so a zero-width character cannot split a key.
+- Caller `report.Input.Diagnostics` pass through redaction before publication in
+  `summary.json`, the HTML and `report.zip`.
+- Duration-regression gate and evidence floor share one exact decimal predicate, so a
+  run exactly on the threshold (for example 16.7%) is no longer refused.
+- CLI input diagnostics (for example ignored malformed hook metadata) are published in
+  `summary.json` and the HTML again, through `report.Input.Diagnostics`, and are covered
+  by the prepared digest.
+- The evidence floor re-derives known-issue coverage from annotations and raw step text,
+  so a mismatched `stepText` cannot turn a failure into a known failure.
+- `ErrEvidence` is attached by error type when floor errors are created, never by
+  matching message text. Caller edits and shard metadata conflicts are reported as such,
+  naming the URI.
+- A Messages input without `testRunFinished.success` names that field.
+- Shard labels fall back to the cleaned relative path, so `x/run.json ci/x/run.json
+  run.json` is accepted with unique, non-absolute names. The library's missing-results
+  error is neutral; the CLI suggests `-enhanced` with each shard listed.
+- Collision refusals sort by numeric line, truncate only the URI, and name inputs with
+  identical content. Every `-validate -strict` diagnostic refusal uses the same wording.
+- Settings no longer rebuild an open scenario or re-run its step reveal, so focus stays
+  in the dialog and Collapse all, Problems only and the attempt choice are kept. "Open
+  attachments" and Reset apply in place. A `?attempt=` hashchange selects that attempt,
+  and a missing attempt row falls back to the step.
+- Removed two dead runner-failure guards.
+- The evidence floor re-derives issue-policy exclusions (environment, expiry, error
+  signature) from the run configuration. `Input.Diagnostics` are cleaned and bounded, and
+  may not use the reserved `runner.outcome` path or absolute paths. Repeated identical
+  inputs never print an absolute path. A Messages envelope value of the wrong type names
+  its field.
+- Refuse all repeated scenario locations across inputs, listing the colliding
+  locations and inputs. Disjoint shards and retries within one input remain supported.
+  Generate one report per rerun or matrix cell; cross-input merging is not shipped.
+- Fix enhanced retry bookmarks and annotations, Messages retry evidence safeguards,
+  runner-failure attribution, Around-hook evidence/flakiness, and bundled sidecars.
+- Add Background-step annotation migration and retain known issues across retries
+  only when every failure is covered. Restore strict diagnostic checks.
+- Batch durable publication with bounded file flushes and a final directory/device-cache
+  barrier; avoid per-sidecar full-drive flushes on macOS.
+- Fix repeated step/evidence navigation, expand/collapse scope and hidden evidence
+  keyboard focus. Browser regression tests cover the affected interactions.
+
+- Centralize effective outcomes across rendering and library APIs; verify each
+  scenario against independent execution evidence before publishing.
+- Known issues no longer hide unrelated failed steps or hooks. Failed quality gates
+  produce a failed artifact verdict, including optional pending/flaky/empty policies.
+- Accept Ruby Around hooks, completed failed cases missing Messages results,
+  retries within a single input, and valid zero-execution reports.
+- Retain hook attachment placement/origin, cap total inline evidence at 32 MiB,
+  and use public step types in exported attempt metadata.
+- Old folded Background/retry bookmarks now resolve to their final scenario.
+  **Compatibility note:** annotations on those old IDs are refused with the final
+  target ID; use that scenario ID plus `backgroundStep:N` and `stepText` to target
+  a folded Background step. Retry annotations target the final scenario and declared
+  step number. This is an error,
+  not an automatic annotation redirect.
+- Malformed-input byte offsets may differ from v0.2.0; numeric paths and sentinel
+  error categories remain the supported diagnostic interface.
+
+- Plain reports include non-passing scenario and step hooks and their evidence;
+  standalone Background results fold into the following scenario. Plain validation
+  uses the same rendering rules. Plain reports have no implicit quality gate.
+- Generate colliding navigation IDs in linear time while retaining their values.
+- Accept UTF-8 BOM input and explain unsupported encodings and duration units.
+- Retain JVM/Ruby log output, cucumber-js arguments and supported evidence aliases.
+- Preserve native scenario-link semantics, dark skip-link contrast and keyboard focus.
+- Report missing output directories and unsupported input shapes clearly.
+
+### Changed
+
+- `-h` writes help to stdout and exits 0. `-strict` requires `-validate`.
+- Confirmed Ruby retries fold in plain mode as well as enhanced mode. This can change
+  a v0.2.0 failed verdict to Passed (flaky) when the final attempt strictly passed.
+  A final pending/skipped attempt cannot rescue a failure; earlier evidence is retained.
+- Messages runner-reported failures remain non-green even when final scenarios passed.
+- Passing hooks with logs or attachments retain that evidence without adding hook rows.
+- Fail closed when raw failure evidence is missing from the final report.
+
+- Print builds only selected details. Above 1,000 scenarios, Ctrl+P without an explicit
+  confirmed selection prints a cover; choose Full report in the Print dialog for all pages.
+  Preview selections survive printing/cancelling until leaving the preview.
+- Large static no-JavaScript reports cap passed details after 1,000 scenarios, retaining
+  all problem details and complete interactive data/exports. The CLI warns above 200 MiB.
+- Development/pseudo-version builds identify as `0.3.0-dev (<revision>)` when available.
+
+### Compatibility
+
+- Existing CLI invocation, options version 2, plain scenario navigation IDs and known-issue
+  rules remain supported. History, gates, redaction and enriched input are optional.
+- Gate exit code 3 is used only when explicitly requested and only after output is
+  written, except validation, which writes nothing. Existing report-generation success still exits 0.
+- Valid empty legacy arrays and features without scenarios now parse successfully.
+  `cucumber.Validate(nil)` and `report.Validate(nil, validOptions)` succeed;
+  `report.Render(nil, validOptions)` renders an informational empty report.
+  `cucumber.RunStatus(nil)` is now `StatusUndefined` rather than `StatusPassed`.
+- `ScenarioOutcomes` returns `OutcomeFolded` for source Background and retry slots
+  folded into a surviving scenario. Exclude these slots when counting outcomes.
+- Parse diagnostics use the public `*cucumber.ParseError`, including `Path`, `Offset`
+  and `Unwrap`; concrete `%T` values are not a compatibility contract. Use
+  `errors.As` and `errors.Is` rather than matching implementation type names.
+- Prepared runs contain explicit public provenance and analysis values. Equal copies
+  render identically; mismatching prepared options/features return `ErrInvalidOptions`.
+  Prepare changed features again before rendering or publication.
+- HTML layout/bytes change. Use named fields in exported Go struct literals.
+- See [0.3.0 configuration and behavior](docs/0.3.0.md) for contracts and limitations.
+
 ## [0.2.0] - 2026-11-05
 
 ### Added
@@ -86,3 +240,14 @@ Fixes from the independent review of v0.1.0. No API change.
 - `Outcome.NotApplicable`: a passed scenario whose record has only not-applicable outcomes reads
   "not applicable in this run" instead of "the issue may be fixed".
 - Dashboard rows are fitted so no card ends in a large empty area.
+
+
+Round-16 release hardening (unreleased): raw input status audits independently
+check runner signals and scenario rescue outcomes; cross-input rerun merging
+remains removed. Prepared snapshots validate feature, summary and execution
+metadata together and reject missing digests. Empty enhanced runs render normally;
+mobile same-page navigation closes the drawer; Settings navigation toggles work;
+query-only step/evidence navigation preserves the mounted view. Release verification
+now requires a clean commit and a detached worktree, with two-way corpus checks
+and pinned refusal inventories. Parser provenance gains status-only audit fields,
+and `report.ErrEvidence` categorizes runtime evidence contradictions.

@@ -1,0 +1,197 @@
+[
+  {
+    "id": "a",
+    "uri": "features/a.feature",
+    "keyword": "Feature",
+    "name": "A",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "a;x",
+        "keyword": "Scenario",
+        "name": "X",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step x",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "boom x attempt 1 (RuntimeError)\n./features/step_definitions/s.rb:9:in 'block in <top (required)>'\nfeatures/a.feature:3:in `step x'",
+              "duration": 76000
+            }
+          }
+        ]
+      },
+      {
+        "id": "a;x",
+        "keyword": "Scenario",
+        "name": "X",
+        "description": "",
+        "line": 2,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step x",
+            "line": 3,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ]
+      },
+      {
+        "id": "a;y",
+        "keyword": "Scenario",
+        "name": "Y",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step y",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "id": "a;z",
+        "keyword": "Scenario",
+        "name": "Z",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step z",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "boom z attempt 1 (RuntimeError)\n./features/step_definitions/s.rb:9:in 'block in <top (required)>'\nfeatures/a.feature:10:in `step z'",
+              "duration": 43000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ah",
+            "line": 8
+          },
+          {
+            "name": "@as",
+            "line": 8
+          },
+          {
+            "name": "@bp",
+            "line": 8
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ]
+      },
+      {
+        "id": "a;z",
+        "keyword": "Scenario",
+        "name": "Z",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step z",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "boom z attempt 2 (RuntimeError)\n./features/step_definitions/s.rb:9:in 'block in <top (required)>'\nfeatures/a.feature:10:in `step z'",
+              "duration": 231000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@ah",
+            "line": 8
+          },
+          {
+            "name": "@as",
+            "line": 8
+          },
+          {
+            "name": "@bp",
+            "line": 8
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ]
+      },
+      {
+        "id": "a;u",
+        "keyword": "Scenario",
+        "name": "U",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "only u",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/u.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

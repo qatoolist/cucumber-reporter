@@ -1,0 +1,6 @@
+$ [shard1] CI= BROWSER= FLAKY= FAIL= cucumber features/account.feature
+20 scenarios (20 passed)
+exit=0
+$ [shard2] CI= BROWSER= FLAKY=gw-retry:1 FAIL= cucumber --tags @flaky and not @x --retry 1 features/checkout.feature
+2 scenarios (1 flaky, 1 passed)
+exit=0

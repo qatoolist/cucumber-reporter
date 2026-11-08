@@ -1,0 +1,10 @@
+$ [run1] CI= BROWSER= FLAKY=gw-retry:1 FAIL= cucumber --tags @account or @flaky
+Failing Scenarios:
+cucumber features/checkout.feature:79 # Scenario: Payment gateway retried
+22 scenarios (1 failed, 21 passed)
+26 steps (1 failed, 25 passed)
+0m0.039s
+exit=1
+$ [run2] CI= BROWSER= FLAKY= FAIL= cucumber @run1.rerun.txt
+1 scenario (1 passed)
+exit=0

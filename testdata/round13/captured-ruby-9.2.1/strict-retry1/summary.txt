@@ -1,0 +1,31 @@
+$ cucumber --no-color --strict --retry 1 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+.PUF.
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:3:in `"pend"'
+
+(::) failed steps (::)
+
+flaky (RuntimeError)
+./features/step_definitions/s.rb:4:in 'block in <top (required)>'
+features/s.feature:13:in `flaky once'
+
+Flaky Scenarios:
+cucumber features/s.feature:12 # Scenario: Is flaky
+Undefined Scenarios:
+cucumber features/s.feature:9 # Scenario: Is undefined
+Pending Scenarios:
+cucumber features/s.feature:6 # Scenario: Is pending
+
+4 scenarios (1 flaky, 1 undefined, 1 pending, 1 passed)
+5 steps (1 failed, 1 undefined, 1 pending, 2 passed)
+0m0.025s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('nobody defined this') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+exit=1

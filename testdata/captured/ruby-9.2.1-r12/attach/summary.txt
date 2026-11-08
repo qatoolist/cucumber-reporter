@@ -1,0 +1,21 @@
+
+before log
+
+a log line
+.
+before log
+F
+
+(::) failed steps (::)
+
+boom (RuntimeError)
+./features/step_definitions/s.rb:8:in 'block in <top (required)>'
+features/a.feature:7:in `it fails'
+
+Failing Scenarios:
+cucumber features/a.feature:6 # Scenario: Fails with screenshot
+
+2 scenarios (1 failed, 1 passed)
+2 steps (1 failed, 1 passed)
+0m0.020s
+exit=1

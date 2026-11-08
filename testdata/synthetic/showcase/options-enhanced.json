@@ -1,0 +1,251 @@
+{
+  "annotations": [
+    {
+      "kind": "known",
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12.",
+      "ref": "EX-101",
+      "scenario": "order-processing-79427c1442a2-L30",
+      "step": 3,
+      "stepText": "the order is rejected with code \"INVALID_QUANTITY\"",
+      "title": "Zero and negative quantities are accepted on confirm"
+    },
+    {
+      "kind": "known",
+      "note": "API accepts non-positive quantities; fix scheduled for release 2026.12.",
+      "ref": "EX-101",
+      "scenario": "order-processing-79427c1442a2-L31",
+      "step": 3,
+      "stepText": "the order is rejected with code \"INVALID_QUANTITY\"",
+      "title": "Zero and negative quantities are accepted on confirm"
+    },
+    {
+      "kind": "skip",
+      "note": "Scenario skipped by the environment guard.",
+      "scenario": "settlement-f40db0671967-L24",
+      "title": "ACS simulator is not deployed in staging-eu-1"
+    },
+    {
+      "kind": "skip",
+      "note": "Scenario skipped by Godog.",
+      "scenario": "accounts-4a52eb837aaa-L10",
+      "title": "SSO identity provider is not configured for this environment"
+    },
+    {
+      "kind": "known",
+      "note": "Configuration drift in staging; product owner accepted until 2026-11-15.",
+      "ref": "EX-214",
+      "scenario": "accounts-4a52eb837aaa-L16",
+      "step": 3,
+      "stepText": "the link is rejected as expired",
+      "title": "Reset tokens live 60 minutes instead of 30"
+    },
+    {
+      "kind": "limit",
+      "note": "Step \"the email is delivered\" checks the queue only.",
+      "scenario": "notifications-7be54d911163-L4",
+      "title": "Delivery receipts are not observable in this environment"
+    },
+    {
+      "kind": "limit",
+      "note": "The gateway double acknowledges every message.",
+      "scenario": "notifications-7be54d911163-L11",
+      "title": "SMS gateway delivery reports are stubbed"
+    },
+    {
+      "kind": "known",
+      "note": "Opted-out customers still receive campaign pushes; tracked as EX-330.",
+      "observed": true,
+      "outcomes": [
+        {
+          "outcome": "not applicable",
+          "step": 2,
+          "text": "a campaign is sent"
+        },
+        {
+          "outcome": "expected failure",
+          "step": 3,
+          "text": "no push is sent to that customer"
+        }
+      ],
+      "ref": "EX-330",
+      "scenario": "notifications-7be54d911163-L17",
+      "step": 3,
+      "stepText": "no push is sent to that customer",
+      "title": "Expected failure: no push is sent to that customer"
+    },
+    {
+      "kind": "known",
+      "note": "Declared at the tax-line step; the run failed earlier, at the invoice total.",
+      "ref": "EX-412",
+      "scenario": "invoicing-7fd993376962-L14",
+      "step": 5,
+      "stepText": "the tax line shows 20 % VAT",
+      "title": "Tax line rounds VAT to whole percent"
+    },
+    {
+      "kind": "known",
+      "note": "Only applies to regions with the captcha enabled; none ran in this suite.",
+      "outcomes": [
+        {
+          "notApplicable": true,
+          "outcome": "not applicable",
+          "step": 3,
+          "text": "a verification email is queued"
+        }
+      ],
+      "ref": "EX-501",
+      "scenario": "accounts-4a52eb837aaa-L4",
+      "step": 3,
+      "stepText": "a verification email is queued",
+      "title": "Captcha blocks registration from new regions"
+    }
+  ],
+  "name": "Nightly regression · staging-eu-1",
+  "runFacts": [
+    {
+      "label": "Environment",
+      "value": "staging-eu-1"
+    },
+    {
+      "label": "Revision",
+      "value": "7f3c2a91d0e4"
+    },
+    {
+      "label": "Branch",
+      "value": "release/2026.11"
+    },
+    {
+      "label": "Started",
+      "value": "2026-10-30 21:04:12 UTC"
+    },
+    {
+      "label": "Finished",
+      "value": "2026-10-30 21:13:47 UTC"
+    },
+    {
+      "label": "Wall clock",
+      "value": "9m 35s"
+    },
+    {
+      "label": "Selection",
+      "value": "not @wip-blocked and not @manual"
+    },
+    {
+      "label": "Godog",
+      "value": "v0.15.0"
+    },
+    {
+      "label": "Go version",
+      "value": "go1.27.2"
+    },
+    {
+      "label": "Runner",
+      "value": "ci-runner-07"
+    }
+  ],
+  "sections": [
+    {
+      "id": "known-issues",
+      "note": "Known failures are listed apart from raw step status.",
+      "role": "known",
+      "rows": [
+        {
+          "label": "EX-101 Order processing / Reject an order with quantity 0",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-101 Order processing / Reject an order with quantity -1",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-214 Customer accounts / Password reset link expires after 30 minutes",
+          "value": "known failure"
+        },
+        {
+          "label": "EX-330 Notifications / Push notification preferences are respected",
+          "value": "expected failure"
+        }
+      ],
+      "summary": [
+        {
+          "label": "Run status",
+          "value": "completed"
+        },
+        {
+          "label": "Known failures",
+          "value": "4"
+        },
+        {
+          "label": "Unexpected failures",
+          "value": "3"
+        }
+      ],
+      "title": "Known issues",
+      "tone": "warn"
+    },
+    {
+      "id": "skips",
+      "role": "skip",
+      "rows": [
+        {
+          "label": "Payment settlement / 3-D Secure challenge is honoured",
+          "value": "ACS simulator is not deployed in staging-eu-1"
+        },
+        {
+          "label": "Customer accounts / Sign in with single sign-on",
+          "value": "SSO identity provider is not configured for this environment"
+        }
+      ],
+      "title": "Skipped scenarios",
+      "tone": "info"
+    },
+    {
+      "id": "observation-limits",
+      "role": "limit",
+      "rows": [
+        {
+          "label": "Notifications / Order confirmation email is sent",
+          "value": "Delivery receipts are not observable in this environment."
+        },
+        {
+          "label": "Notifications / SMS fallback when email bounces",
+          "value": "SMS gateway delivery reports are stubbed."
+        }
+      ],
+      "title": "Observation limits (not verified)",
+      "tone": "info"
+    },
+    {
+      "id": "scope",
+      "note": "Load and soak scenarios run in a separate suite.",
+      "summary": [
+        {
+          "label": "Suite",
+          "value": "regression"
+        },
+        {
+          "label": "Data",
+          "value": "shared, read-only"
+        },
+        {
+          "label": "Areas",
+          "value": "orders, billing, payments"
+        }
+      ],
+      "title": "Scope",
+      "tone": "ok"
+    }
+  ],
+  "title": "Example shop suite",
+  "topFacts": [
+    "Environment",
+    "Revision",
+    "Started"
+  ],
+  "verdict": {
+    "label": "Failed: 3 unexpected failures",
+    "tone": "fail"
+  },
+  "version": 2,
+  "wallClock": "9m 35s"
+}

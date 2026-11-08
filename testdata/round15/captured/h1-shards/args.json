@@ -1,0 +1,36 @@
+{
+ "shard1": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "features/checkout.feature"
+  ]
+ },
+ "shard2": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "features/search.feature",
+   "features/francais.feature"
+  ]
+ },
+ "shard3": {
+  "env": {
+   "CI": "",
+   "BROWSER": "",
+   "FLAKY": "",
+   "FAIL": ""
+  },
+  "args": [
+   "features/account.feature"
+  ]
+ }
+}

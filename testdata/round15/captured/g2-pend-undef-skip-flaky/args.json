@@ -1,0 +1,17 @@
+{
+ "run": {
+  "env": {
+   "CI": "true",
+   "BROWSER": "",
+   "FLAKY": "gw-retry:1",
+   "FAIL": ""
+  },
+  "args": [
+   "--retry",
+   "1",
+   "features/account.feature",
+   "features/checkout.feature:79",
+   "features/search.feature:19:24:33:38"
+  ]
+ }
+}

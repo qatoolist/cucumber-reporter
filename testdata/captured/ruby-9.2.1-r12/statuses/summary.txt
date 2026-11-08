@@ -1,0 +1,36 @@
+..P-.U-.F-F-
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `"this is pending"'
+
+(::) failed steps (::)
+
+Ambiguous match of "this matches twice":
+
+features/step_definitions/s.rb:3:in `/^this matches twice$/'
+features/step_definitions/s.rb:4:in `/^this matches (twice|thrice)$/'
+
+You can run again with --guess to make Cucumber be more smart about it
+ (Cucumber::Ambiguous)
+features/st.feature:18:in `this matches twice'
+
+boom (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/st.feature:22:in `it fails'
+
+Failing Scenarios:
+cucumber features/st.feature:16 # Scenario: Ambiguous
+cucumber features/st.feature:21 # Scenario: Failing then skipped
+
+5 scenarios (2 failed, 1 undefined, 1 pending, 1 passed)
+12 steps (2 failed, 4 skipped, 1 undefined, 1 pending, 4 passed)
+0m0.023s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('nobody defined this step') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+exit=1

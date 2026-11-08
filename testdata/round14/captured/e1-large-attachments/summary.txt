@@ -1,0 +1,16 @@
+$ PLAN=L:fail cucumber 
+...F
+
+(::) failed steps (::)
+
+planned failure L (run ) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/l.feature:8:in `outcome "L"'
+
+Failing Scenarios:
+cucumber features/l.feature:5 # Scenario: Failing with images and text
+
+2 scenarios (1 failed, 1 passed)
+4 steps (1 failed, 3 passed)
+0m0.631s
+exit=1

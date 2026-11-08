@@ -1,0 +1,10 @@
+..-.
+
+Pending Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+
+4 scenarios (1 pending, 3 passed)
+4 steps (1 skipped, 3 passed)
+0m0.059s
+$ HOOKS=beforepending cucumber --strict
+exit=1

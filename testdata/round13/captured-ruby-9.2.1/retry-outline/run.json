@@ -1,0 +1,239 @@
+[
+  {
+    "id": "retry-outline",
+    "uri": "features/o.feature",
+    "keyword": "Feature",
+    "name": "Retry outline",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "retry-outline;row-<row>;first;2",
+        "keyword": "Scenario Outline",
+        "name": "Row 1",
+        "description": "",
+        "line": 8,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 1 behaves pass",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 20000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;first;3",
+        "keyword": "Scenario Outline",
+        "name": "Row 2",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 2 behaves flaky",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 2 flaky (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/o.feature:9:4:in `row 2 behaves flaky'",
+              "duration": 64000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;first;3",
+        "keyword": "Scenario Outline",
+        "name": "Row 2",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 2 behaves flaky",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;first;4",
+        "keyword": "Scenario Outline",
+        "name": "Row 3",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 3 behaves broken",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 3 broken (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/o.feature:10:4:in `row 3 behaves broken'",
+              "duration": 33000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;first;4",
+        "keyword": "Scenario Outline",
+        "name": "Row 3",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 3 behaves broken",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 3 broken (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/o.feature:10:4:in `row 3 behaves broken'",
+              "duration": 44000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;first;4",
+        "keyword": "Scenario Outline",
+        "name": "Row 3",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 3 behaves broken",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 3 broken (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/o.feature:10:4:in `row 3 behaves broken'",
+              "duration": 50000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;second;2",
+        "keyword": "Scenario Outline",
+        "name": "Row 4",
+        "description": "",
+        "line": 14,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 4 behaves flaky",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 4 flaky (RuntimeError)\n./features/step_definitions/s.rb:5:in 'block in <top (required)>'\nfeatures/o.feature:14:4:in `row 4 behaves flaky'",
+              "duration": 31000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;second;2",
+        "keyword": "Scenario Outline",
+        "name": "Row 4",
+        "description": "",
+        "line": 14,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 4 behaves flaky",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;second;3",
+        "keyword": "Scenario Outline",
+        "name": "Row 5",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 5 behaves pending_after",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "row 5 first (RuntimeError)\n./features/step_definitions/s.rb:7:in 'block in <top (required)>'\nfeatures/o.feature:15:4:in `row 5 behaves pending_after'",
+              "duration": 30000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-outline;row-<row>;second;3",
+        "keyword": "Scenario Outline",
+        "name": "Row 5",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "row 5 behaves pending_after",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "row pending (Cucumber::Pending)\n./features/step_definitions/s.rb:7:in 'block in <top (required)>'\nfeatures/o.feature:15:4:in `row 5 behaves pending_after'",
+              "duration": 40000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

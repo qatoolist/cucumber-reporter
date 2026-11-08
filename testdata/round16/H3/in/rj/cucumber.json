@@ -1,0 +1,917 @@
+[
+  {
+    "id": "checkout",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 44000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 3000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;flaky-payment",
+        "keyword": "Scenario",
+        "name": "Flaky payment",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I pay",
+            "line": 7,
+            "output": [
+              "paying attempt"
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the payment succeeds",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "transient gateway error (RuntimeError)\n./features/step_definitions/steps.rb:6:in 'block in <top (required)>'\nfeatures/checkout.feature:8:in `the payment succeeds'",
+              "duration": 53000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "c2NyZWVuc2hvdC1ieXRlcw=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;flaky-payment",
+        "keyword": "Scenario",
+        "name": "Flaky payment",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I pay",
+            "line": 7,
+            "output": [
+              "paying attempt"
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the payment succeeds",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 1000
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I pay",
+            "line": 11,
+            "output": [
+              "paying attempt"
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 1000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the payment is declined",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:8"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "card declined (RuntimeError)\n./features/step_definitions/steps.rb:8:in 'block in <top (required)>'\nfeatures/checkout.feature:12:in `the payment is declined'",
+              "duration": 31000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "c2NyZWVuc2hvdC1ieXRlcw=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I pay",
+            "line": 11,
+            "output": [
+              "paying attempt"
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the payment is declined",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:8"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "card declined (RuntimeError)\n./features/step_definitions/steps.rb:8:in 'block in <top (required)>'\nfeatures/checkout.feature:12:in `the payment is declined'",
+              "duration": 48000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "c2NyZWVuc2hvdC1ieXRlcw=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I pay",
+            "line": 11,
+            "output": [
+              "paying attempt"
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 1000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the payment is declined",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:8"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "card declined (RuntimeError)\n./features/step_definitions/steps.rb:8:in 'block in <top (required)>'\nfeatures/checkout.feature:12:in `the payment is declined'",
+              "duration": 47000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "skipped"
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "c2NyZWVuc2hvdC1ieXRlcw=="
+              }
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 3000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1917000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;discounts;;2",
+        "keyword": "Scenario Outline",
+        "name": "Discounts",
+        "description": "",
+        "line": 20,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply code A10",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 1000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 90",
+            "line": 16,
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "dG90YWw9OTA="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 1000
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "output": [
+              "shop opened"
+            ],
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJrIjoidiJ9"
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "before hook"
+            ],
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;discounts;;3",
+        "keyword": "Scenario Outline",
+        "name": "Discounts",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply code B20",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:9"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 80",
+            "line": 16,
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "dG90YWw9ODA="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:10"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            },
+            "after": [
+              {
+                "match": {
+                  "location": "features/support/hooks.rb:3"
+                },
+                "result": {
+                  "status": "passed",
+                  "duration": 2000
+                }
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

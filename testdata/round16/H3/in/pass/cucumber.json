@@ -1,0 +1,1 @@
+[{"uri": "p.feature", "id": "p", "name": "P", "keyword": "Feature", "line": 1, "elements": [{"id": "p;a", "type": "scenario", "keyword": "Scenario", "name": "A", "line": 3, "steps": [{"keyword": "Given ", "name": "x", "line": 4, "result": {"status": "passed", "duration": 5}}]}]}]

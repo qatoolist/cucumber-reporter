@@ -1,0 +1,28 @@
+{"gherkinDocument": {"uri": "pay.feature", "feature": {"name": "pay", "children": [{"background": {"steps": [{"id": "bg-ast", "location": {"line": 2}}]}}, {"rule": {"id": "rule1", "name": "Rule 1", "children": [{"scenario": {"id": "row1", "name": "pay", "location": {"line": 10}, "steps": [{"id": "own-ast", "location": {"line": 20}}]}}]}}, {"rule": {"id": "rule2", "name": "Rule 2", "children": [{"scenario": {"id": "row2", "name": "pay", "location": {"line": 11}, "steps": [{"id": "own-ast", "location": {"line": 20}}]}}]}}]}}}
+{"hook": {"id": "before", "name": "before"}}
+{"hook": {"id": "step-before", "name": "step-before"}}
+{"hook": {"id": "step-after", "name": "step-after"}}
+{"hook": {"id": "after", "name": "after"}}
+{"pickle": {"id": "p1", "uri": "pay.feature", "name": "pay", "astNodeIds": ["row1"], "steps": [{"id": "bg", "text": "background", "astNodeIds": ["bg-ast"]}, {"id": "own", "text": "pay", "astNodeIds": ["own-ast"]}]}}
+{"testCase": {"id": "tc1", "pickleId": "p1", "testSteps": [{"id": "before", "hookId": "before"}, {"id": "bg", "pickleStepId": "bg"}, {"id": "step-before", "hookId": "step-before"}, {"id": "own", "pickleStepId": "own"}, {"id": "step-after", "hookId": "step-after"}, {"id": "after", "hookId": "after"}]}}
+{"testCaseStarted": {"id": "start1", "testCaseId": "tc1", "attempt": 0, "timestamp": {"seconds": "1", "nanos": 0}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "before", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "bg", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "step-before", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "own", "testStepResult": {"status": "FAILED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "step-after", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start1", "testStepId": "after", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"attachment": {"testCaseStartedId": "start1", "testStepId": "step-after", "body": "evidence", "mediaType": "text/plain", "contentEncoding": "IDENTITY"}}
+{"testCaseFinished": {"testCaseStartedId": "start1", "timestamp": {"seconds": "2", "nanos": 0}}}
+{"pickle": {"id": "p2", "uri": "pay.feature", "name": "pay", "astNodeIds": ["row2"], "steps": [{"id": "bg", "text": "background", "astNodeIds": ["bg-ast"]}, {"id": "own", "text": "pay", "astNodeIds": ["own-ast"]}]}}
+{"testCase": {"id": "tc2", "pickleId": "p2", "testSteps": [{"id": "before", "hookId": "before"}, {"id": "bg", "pickleStepId": "bg"}, {"id": "step-before", "hookId": "step-before"}, {"id": "own", "pickleStepId": "own"}, {"id": "step-after", "hookId": "step-after"}, {"id": "after", "hookId": "after"}]}}
+{"testCaseStarted": {"id": "start2", "testCaseId": "tc2", "attempt": 0, "timestamp": {"seconds": "1", "nanos": 0}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "before", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "bg", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "step-before", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "own", "testStepResult": {"status": "FAILED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "step-after", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"testStepFinished": {"testCaseStartedId": "start2", "testStepId": "after", "testStepResult": {"status": "PASSED", "duration": {"seconds": "0", "nanos": 0}}}}
+{"attachment": {"testCaseStartedId": "start2", "testStepId": "step-after", "body": "evidence", "mediaType": "text/plain", "contentEncoding": "IDENTITY"}}
+{"testCaseFinished": {"testCaseStartedId": "start2", "timestamp": {"seconds": "2", "nanos": 0}}}
+{"testRunFinished": {"success": false}}

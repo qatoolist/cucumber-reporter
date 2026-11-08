@@ -1,0 +1,10 @@
+...F.
+
+Failing Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+
+4 scenarios (1 failed, 3 passed)
+4 steps (4 passed)
+0m0.029s
+$ HOOKS=afterstep cucumber 
+exit=1

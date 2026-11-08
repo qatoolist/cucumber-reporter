@@ -1,0 +1,243 @@
+[
+ {
+  "id": "retry-with-failing-background",
+  "uri": "features/bg.feature",
+  "keyword": "Feature",
+  "name": "Retry with failing background",
+  "description": "",
+  "line": 1,
+  "elements": [
+   {
+    "keyword": "Background",
+    "name": "",
+    "description": "",
+    "line": 3,
+    "type": "background",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "setup secret-a",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 39000
+      }
+     },
+     {
+      "keyword": "Given ",
+      "name": "setup secret-b",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "failed",
+       "error_message": "bg down Bg always fails 1 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/bg.feature:4:in `the env is flaky per scenario'",
+       "duration": 39000
+      }
+     }
+    ],
+    "before": [
+     {
+      "match": {
+       "location": "features/step_definitions/s.rb:2"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 4000
+      }
+     }
+    ]
+   },
+   {
+    "id": "retry-with-failing-background;bg-always-fails",
+    "keyword": "Scenario",
+    "name": "Bg always fails",
+    "description": "",
+    "line": 10,
+    "type": "scenario",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "bg target B",
+      "line": 11,
+      "match": {
+       "location": "features/step_definitions/s.rb:4"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     },
+     {
+      "keyword": "Then ",
+      "name": "it works",
+      "line": 12,
+      "match": {
+       "location": "features/step_definitions/s.rb:5"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     }
+    ]
+   },
+   {
+    "keyword": "Background",
+    "name": "",
+    "description": "",
+    "line": 3,
+    "type": "background",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "setup secret-a",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 55000
+      }
+     },
+     {
+      "keyword": "Given ",
+      "name": "setup secret-b",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "failed",
+       "error_message": "bg down Bg always fails 2 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/bg.feature:4:in `the env is flaky per scenario'",
+       "duration": 55000
+      }
+     }
+    ],
+    "before": [
+     {
+      "match": {
+       "location": "features/step_definitions/s.rb:2"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 6000
+      }
+     }
+    ]
+   },
+   {
+    "id": "retry-with-failing-background;bg-always-fails",
+    "keyword": "Scenario",
+    "name": "Bg always fails",
+    "description": "",
+    "line": 10,
+    "type": "scenario",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "bg target B",
+      "line": 11,
+      "match": {
+       "location": "features/step_definitions/s.rb:4"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     },
+     {
+      "keyword": "Then ",
+      "name": "it works",
+      "line": 12,
+      "match": {
+       "location": "features/step_definitions/s.rb:5"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     }
+    ]
+   },
+   {
+    "keyword": "Background",
+    "name": "",
+    "description": "",
+    "line": 3,
+    "type": "background",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "setup secret-a",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 48000
+      }
+     },
+     {
+      "keyword": "Given ",
+      "name": "setup secret-b",
+      "line": 4,
+      "match": {
+       "location": "features/step_definitions/s.rb:3"
+      },
+      "result": {
+       "status": "failed",
+       "error_message": "bg down Bg always fails 3 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/bg.feature:4:in `the env is flaky per scenario'",
+       "duration": 48000
+      }
+     }
+    ],
+    "before": [
+     {
+      "match": {
+       "location": "features/step_definitions/s.rb:2"
+      },
+      "result": {
+       "status": "passed",
+       "duration": 6000
+      }
+     }
+    ]
+   },
+   {
+    "id": "retry-with-failing-background;bg-always-fails",
+    "keyword": "Scenario",
+    "name": "Bg always fails",
+    "description": "",
+    "line": 10,
+    "type": "scenario",
+    "steps": [
+     {
+      "keyword": "Given ",
+      "name": "bg target B",
+      "line": 11,
+      "match": {
+       "location": "features/step_definitions/s.rb:4"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     },
+     {
+      "keyword": "Then ",
+      "name": "it works",
+      "line": 12,
+      "match": {
+       "location": "features/step_definitions/s.rb:5"
+      },
+      "result": {
+       "status": "skipped"
+      }
+     }
+    ]
+   }
+  ]
+ }
+]

@@ -1,0 +1,423 @@
+[
+  {
+    "id": "retry-mixed",
+    "uri": "features/r.feature",
+    "keyword": "Feature",
+    "name": "Retry mixed",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "retry-mixed;fail-fail-pass",
+        "keyword": "Scenario",
+        "name": "Fail fail pass",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step ffp",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "ffp 1 (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/r.feature:4:in `step ffp'",
+              "duration": 80000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-fail-pass",
+        "keyword": "Scenario",
+        "name": "Fail fail pass",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step ffp",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "ffp 2 (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/r.feature:4:in `step ffp'",
+              "duration": 49000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-fail-pass",
+        "keyword": "Scenario",
+        "name": "Fail fail pass",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step ffp",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-pending",
+        "keyword": "Scenario",
+        "name": "Fail then pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fpend",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "fpend 1 (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/r.feature:7:in `step fpend'",
+              "duration": 39000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-pending",
+        "keyword": "Scenario",
+        "name": "Fail then pending",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fpend",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "now pending (Cucumber::Pending)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/r.feature:7:in `step fpend'",
+              "duration": 56000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-undefined",
+        "keyword": "Scenario",
+        "name": "Fail then undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fundef",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "fundef 1 (RuntimeError)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/r.feature:10:in `step fundef'",
+              "duration": 34000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-undefined",
+        "keyword": "Scenario",
+        "name": "Fail then undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fundef",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Undefined dynamic step: \"this is not defined anywhere\" (Cucumber::UndefinedDynamicStep)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/r.feature:10:in `step fundef'",
+              "duration": 640000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-undefined",
+        "keyword": "Scenario",
+        "name": "Fail then undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fundef",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Undefined dynamic step: \"this is not defined anywhere\" (Cucumber::UndefinedDynamicStep)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/r.feature:10:in `step fundef'",
+              "duration": 194000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-then-undefined",
+        "keyword": "Scenario",
+        "name": "Fail then undefined",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fundef",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Undefined dynamic step: \"this is not defined anywhere\" (Cucumber::UndefinedDynamicStep)\n./features/step_definitions/s.rb:4:in 'block in <top (required)>'\nfeatures/r.feature:10:in `step fundef'",
+              "duration": 145000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;pass-first-try",
+        "keyword": "Scenario",
+        "name": "Pass first try",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step ok",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step always",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/s.rb:6"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "always fails (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/r.feature:16:in `step always'",
+              "duration": 31000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step always",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/s.rb:6"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "always fails (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/r.feature:16:in `step always'",
+              "duration": 44000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step always",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/s.rb:6"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "always fails (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/r.feature:16:in `step always'",
+              "duration": 63000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;always-fails",
+        "keyword": "Scenario",
+        "name": "Always fails",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step always",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/s.rb:6"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "always fails (RuntimeError)\n./features/step_definitions/s.rb:6:in 'block in <top (required)>'\nfeatures/r.feature:16:in `step always'",
+              "duration": 46000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-x3-then-pass",
+        "keyword": "Scenario",
+        "name": "Fail x3 then pass",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fff_p",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/s.rb:7"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "fff 1 (RuntimeError)\n./features/step_definitions/s.rb:7:in 'block in <top (required)>'\nfeatures/r.feature:19:in `step fff_p'",
+              "duration": 35000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-x3-then-pass",
+        "keyword": "Scenario",
+        "name": "Fail x3 then pass",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fff_p",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/s.rb:7"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "fff 2 (RuntimeError)\n./features/step_definitions/s.rb:7:in 'block in <top (required)>'\nfeatures/r.feature:19:in `step fff_p'",
+              "duration": 46000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-x3-then-pass",
+        "keyword": "Scenario",
+        "name": "Fail x3 then pass",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fff_p",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/s.rb:7"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "fff 3 (RuntimeError)\n./features/step_definitions/s.rb:7:in 'block in <top (required)>'\nfeatures/r.feature:19:in `step fff_p'",
+              "duration": 45000
+            }
+          }
+        ]
+      },
+      {
+        "id": "retry-mixed;fail-x3-then-pass",
+        "keyword": "Scenario",
+        "name": "Fail x3 then pass",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "step fff_p",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/s.rb:7"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

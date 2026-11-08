@@ -1,0 +1,17 @@
+.PU
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `"this is pending"'
+
+3 scenarios (1 undefined, 1 pending, 1 passed)
+3 steps (1 undefined, 1 pending, 1 passed)
+0m0.019s
+
+You can implement step definitions for undefined steps with these snippets:
+
+Given('nobody wrote this') do
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+exit=0

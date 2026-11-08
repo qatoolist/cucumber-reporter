@@ -1,0 +1,1 @@
+[{"uri":"a.feature","name":"A","elements":[{"name":"s","line":4,"keyword":"Scenario","type":"scenario","steps":[{"keyword":"Given ","name":"x","line":5,"result":{"status":"passed"}}],"after":[{"result":{"status":"failed","error_message":"AFTER BOOM"}}]}]}]

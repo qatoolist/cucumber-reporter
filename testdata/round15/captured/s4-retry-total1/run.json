@@ -1,0 +1,5498 @@
+[
+  {
+    "id": "account",
+    "uri": "features/account.feature",
+    "keyword": "Feature",
+    "name": "Account",
+    "description": "",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@account",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "account;account-check-01",
+        "keyword": "Scenario",
+        "name": "Account check 01",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-1\" passes",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 01"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 131000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-02",
+        "keyword": "Scenario",
+        "name": "Account check 02",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-2\" passes",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 02"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 69000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-03-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 03 🔒",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-3\" passes",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 03 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-04",
+        "keyword": "Scenario",
+        "name": "Account check 04",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-4\" passes",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 04"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 81000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-05",
+        "keyword": "Scenario",
+        "name": "Account check 05",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-5\" passes",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 05"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-06-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 06 🔒",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-6\" passes",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 06 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 69000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-07",
+        "keyword": "Scenario",
+        "name": "Account check 07",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-7\" passes",
+            "line": 22,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 07"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 97000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-08",
+        "keyword": "Scenario",
+        "name": "Account check 08",
+        "description": "",
+        "line": 24,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-8\" passes",
+            "line": 25,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 08"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-09-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 09 🔒",
+        "description": "",
+        "line": 27,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-9\" passes",
+            "line": 28,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 09 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 124000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-10",
+        "keyword": "Scenario",
+        "name": "Account check 10",
+        "description": "",
+        "line": 30,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-10\" passes",
+            "line": 31,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 10"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-11",
+        "keyword": "Scenario",
+        "name": "Account check 11",
+        "description": "",
+        "line": 33,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-11\" passes",
+            "line": 34,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 11"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-12-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 12 🔒",
+        "description": "",
+        "line": 36,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-12\" passes",
+            "line": 37,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 12 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 47000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-13",
+        "keyword": "Scenario",
+        "name": "Account check 13",
+        "description": "",
+        "line": 39,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-13\" passes",
+            "line": 40,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 13"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 77000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-14",
+        "keyword": "Scenario",
+        "name": "Account check 14",
+        "description": "",
+        "line": 42,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-14\" passes",
+            "line": 43,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 14"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 66000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-15-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 15 🔒",
+        "description": "",
+        "line": 45,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-15\" passes",
+            "line": 46,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 15 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-16",
+        "keyword": "Scenario",
+        "name": "Account check 16",
+        "description": "",
+        "line": 48,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-16\" passes",
+            "line": 49,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 16"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-17",
+        "keyword": "Scenario",
+        "name": "Account check 17",
+        "description": "",
+        "line": 51,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-17\" passes",
+            "line": 52,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 17"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 50000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-18-🔒",
+        "keyword": "Scenario",
+        "name": "Account check 18 🔒",
+        "description": "",
+        "line": 54,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-18\" passes",
+            "line": 55,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 18 🔒"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-19",
+        "keyword": "Scenario",
+        "name": "Account check 19",
+        "description": "",
+        "line": 57,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-19\" passes",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 19"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "account;account-check-20",
+        "keyword": "Scenario",
+        "name": "Account check 20",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"acct-20\" passes",
+            "line": 61,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@account",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Account check 20"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add one item"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-one-item",
+        "keyword": "Scenario",
+        "name": "Add one item",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 17,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@smoke",
+            "line": 14
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 1 items (row-1)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;2",
+        "keyword": "Scenario Outline",
+        "name": "Add 1 items (row-1)",
+        "description": "",
+        "line": 25,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 2 items (row-2)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;3",
+        "keyword": "Scenario Outline",
+        "name": "Add 2 items (row-2)",
+        "description": "",
+        "line": 26,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 2 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 2 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 3 items (row-3)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 474000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;4",
+        "keyword": "Scenario Outline",
+        "name": "Add 3 items (row-3)",
+        "description": "",
+        "line": 27,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 3 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 3 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 4 items (row-4)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 58000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;5",
+        "keyword": "Scenario Outline",
+        "name": "Add 4 items (row-4)",
+        "description": "",
+        "line": 28,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 4 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 4 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 5 items (row-5)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;6",
+        "keyword": "Scenario Outline",
+        "name": "Add 5 items (row-5)",
+        "description": "",
+        "line": 29,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 5 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 5 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 6 items (row-6)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;7",
+        "keyword": "Scenario Outline",
+        "name": "Add 6 items (row-6)",
+        "description": "",
+        "line": 30,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 6 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 6 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 7 items (row-7 wrong)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 57000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;8",
+        "keyword": "Scenario Outline",
+        "name": "Add 7 items (row-7 wrong)",
+        "description": "",
+        "line": 31,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 7 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 8 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 8 items but had 7 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\nfeatures/checkout.feature:31:21:in `the cart has 8 items'",
+              "duration": 82000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Add 7 items (row-7 wrong): \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1030000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 7 items (row-7 wrong)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;8",
+        "keyword": "Scenario Outline",
+        "name": "Add 7 items (row-7 wrong)",
+        "description": "",
+        "line": 31,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 7 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 8 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 8 items but had 7 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\nfeatures/checkout.feature:31:21:in `the cart has 8 items'",
+              "duration": 61000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Add 7 items (row-7 wrong): \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 146000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 7 items (row-7 wrong)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;8",
+        "keyword": "Scenario Outline",
+        "name": "Add 7 items (row-7 wrong)",
+        "description": "",
+        "line": 31,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 7 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 8 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 8 items but had 7 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\nfeatures/checkout.feature:31:21:in `the cart has 8 items'",
+              "duration": 54000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Add 7 items (row-7 wrong): \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 152000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 8 items (row-8)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 56000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;9",
+        "keyword": "Scenario Outline",
+        "name": "Add 8 items (row-8)",
+        "description": "",
+        "line": 32,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 8 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 8 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 9 items (row-9)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;10",
+        "keyword": "Scenario Outline",
+        "name": "Add 9 items (row-9)",
+        "description": "",
+        "line": 33,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 9 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 9 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 10 items (row-10)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;11",
+        "keyword": "Scenario Outline",
+        "name": "Add 10 items (row-10)",
+        "description": "",
+        "line": 34,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 10 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 10 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 10 items (big-1 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;2",
+        "keyword": "Scenario Outline",
+        "name": "Add 10 items (big-1 ✓)",
+        "description": "",
+        "line": 39,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 10 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 10 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 20 items (big-2 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;3",
+        "keyword": "Scenario Outline",
+        "name": "Add 20 items (big-2 ✓)",
+        "description": "",
+        "line": 40,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 20 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 20 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 30 items (big-3 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 59000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;4",
+        "keyword": "Scenario Outline",
+        "name": "Add 30 items (big-3 ✓)",
+        "description": "",
+        "line": 41,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 30 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 30 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 40 items (big-4 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 55000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;5",
+        "keyword": "Scenario Outline",
+        "name": "Add 40 items (big-4 ✓)",
+        "description": "",
+        "line": 42,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 40 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 40 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 50 items (big-5 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;6",
+        "keyword": "Scenario Outline",
+        "name": "Add 50 items (big-5 ✓)",
+        "description": "",
+        "line": 43,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 50 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 50 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Apply coupons from a data table"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;apply-coupons-from-a-data-table",
+        "keyword": "Scenario",
+        "name": "Apply coupons from a data table",
+        "description": "",
+        "line": 49,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply coupons:",
+            "line": 50,
+            "rows": [
+              {
+                "cells": [
+                  "code",
+                  "pct"
+                ]
+              },
+              {
+                "cells": [
+                  "SAVE5",
+                  "5"
+                ]
+              },
+              {
+                "cells": [
+                  "SAVE10",
+                  "5"
+                ]
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:8"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 93000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 90",
+            "line": 54,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Invalid coupon has ANSI colour in the error"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;invalid-coupon-has-ansi-colour-in-the-error",
+        "keyword": "Scenario",
+        "name": "Invalid coupon has ANSI colour in the error",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply an invalid coupon \"BAD<1>\"",
+            "line": 57,
+            "match": {
+              "location": "features/step_definitions/steps.rb:15"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "\u001b[31mCoupon BAD<1> rejected\u001b[0m\n  \u001b[1mexpected\u001b[0m: a valid coupon\n  \u001b[1mgot\u001b[0m:      \u001b[33mBAD<1>\u001b[0m <script>alert(1)</script> & 'single' \"double\"\nlong-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff- (ArgumentError)\n./features/step_definitions/steps.rb:16:in 'block in <top (required)>'\nfeatures/checkout.feature:57:in `I apply an invalid coupon \"BAD<1>\"'",
+              "duration": 60000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 100",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Invalid coupon has ANSI colour in the error: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 156000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Receipt doc string"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;receipt-doc-string",
+        "keyword": "Scenario",
+        "name": "Receipt doc string",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the receipt is:",
+            "line": 61,
+            "doc_string": {
+              "value": "{\"total\": 90, \"emoji\": \"🎉\", \"note\": \"x < y & z\"}",
+              "content_type": "json",
+              "line": 62
+            },
+            "match": {
+              "location": "features/step_definitions/steps.rb:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 18000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Same name in two features"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;same-name-in-two-features",
+        "keyword": "Scenario",
+        "name": "Same name in two features",
+        "description": "",
+        "line": 66,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 3 items",
+            "line": 67,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 3 items",
+            "line": 68,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Very long scenario name segment0 segment1 segment2 segment3 segment4 segment5 segment6 segment7 segment8 segment9 segment10 segment11 segment12 segment13 segment14 segment15 segment16 segment17 segment18 segment19 segment20 segment21 segment22 segment23 segment24 segment25 segment26 segment27 segment28 segment29 segment30 segment31 segment32 segment33 segment34 segment35 segment36 segment37 segment38 segment39 segment40 segment41 segment42 segment43 segment44 segment45 segment46 segment47 segment48 segment49 segment50 segment51 segment52 segment53 segment54 segment55 segment56 segment57 segment58 segment59 — end"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 90000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;very-long-scenario-name-segment0-segment1-segment2-segment3-segment4-segment5-segment6-segment7-segment8-segment9-segment10-segment11-segment12-segment13-segment14-segment15-segment16-segment17-segment18-segment19-segment20-segment21-segment22-segment23-segment24-segment25-segment26-segment27-segment28-segment29-segment30-segment31-segment32-segment33-segment34-segment35-segment36-segment37-segment38-segment39-segment40-segment41-segment42-segment43-segment44-segment45-segment46-segment47-segment48-segment49-segment50-segment51-segment52-segment53-segment54-segment55-segment56-segment57-segment58-segment59-—-end",
+        "keyword": "Scenario",
+        "name": "Very long scenario name segment0 segment1 segment2 segment3 segment4 segment5 segment6 segment7 segment8 segment9 segment10 segment11 segment12 segment13 segment14 segment15 segment16 segment17 segment18 segment19 segment20 segment21 segment22 segment23 segment24 segment25 segment26 segment27 segment28 segment29 segment30 segment31 segment32 segment33 segment34 segment35 segment36 segment37 segment38 segment39 segment40 segment41 segment42 segment43 segment44 segment45 segment46 segment47 segment48 segment49 segment50 segment51 segment52 segment53 segment54 segment55 segment56 segment57 segment58 segment59 — end",
+        "description": "",
+        "line": 70,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 71,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 72,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway (chrome-ok, firefox-broken)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-(chrome-ok,-firefox-broken)",
+        "keyword": "Scenario",
+        "name": "Payment gateway (chrome-ok, firefox-broken)",
+        "description": "",
+        "line": 75,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-firefox\"",
+            "line": 76,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 74
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 80000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Net::ReadTimeout: gateway gw-retry timed out after 30s (browser=) (IOError)\n./features/step_definitions/steps.rb:23:in 'block in <top (required)>'\nfeatures/checkout.feature:80:in `the payment gateway responds for \"gw-retry\"'",
+              "duration": 303000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Payment gateway retried: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 230000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "panier-en-français-—-àéîõü",
+    "uri": "features/francais.feature",
+    "keyword": "Fonctionnalité",
+    "name": "Panier en français — àéîõü",
+    "description": "  Description avec **gras**.",
+    "line": 3,
+    "tags": [
+      {
+        "name": "@fr",
+        "line": 2
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ajouter deux articles"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;ajouter-deux-articles",
+        "keyword": "Scénario",
+        "name": "Ajouter deux articles",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 2 articles",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 2 articles",
+            "line": 11,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ajouter 1 articles"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 76000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;ajouter-<n>-articles;;2",
+        "keyword": "Plan du scénario",
+        "name": "Ajouter 1 articles",
+        "description": "",
+        "line": 19,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 1 articles",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 1 articles",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ajouter 2 articles"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 58000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;ajouter-<n>-articles;;3",
+        "keyword": "Plan du scénario",
+        "name": "Ajouter 2 articles",
+        "description": "",
+        "line": 20,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 2 articles",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 3 articles",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "panier attendu 3, obtenu 2 — élève à l'école (RuntimeError)\n./features/step_definitions/steps.rb:49:in 'block in <top (required)>'\nfeatures/francais.feature:20:15:in `le panier contient 3 articles'",
+              "duration": 55000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Ajouter 2 articles: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 179000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ajouter 4 articles"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 143000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;ajouter-<n>-articles;;4",
+        "keyword": "Plan du scénario",
+        "name": "Ajouter 4 articles",
+        "description": "",
+        "line": 21,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 4 articles",
+            "line": 14,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 4 articles",
+            "line": 15,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Contexte",
+        "name": "",
+        "description": "",
+        "line": 6,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Soit ",
+            "name": "le magasin \"Boulangerie Élise\" est ouvert",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:47"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Échec accentué"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54000
+            }
+          }
+        ]
+      },
+      {
+        "id": "panier-en-français-—-àéîõü;échec-accentué",
+        "keyword": "Scénario",
+        "name": "Échec accentué",
+        "description": "",
+        "line": 24,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Quand ",
+            "name": "j'ajoute 1 articles",
+            "line": 25,
+            "match": {
+              "location": "features/step_definitions/steps.rb:48"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Alors ",
+            "name": "le panier contient 9 articles",
+            "line": 26,
+            "match": {
+              "location": "features/step_definitions/steps.rb:49"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "panier attendu 9, obtenu 1 — élève à l'école (RuntimeError)\n./features/step_definitions/steps.rb:49:in 'block in <top (required)>'\nfeatures/francais.feature:26:in `le panier contient 9 articles'",
+              "duration": 50000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@fr",
+            "line": 2
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Échec accentué: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 159000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "search",
+    "uri": "features/search.feature",
+    "keyword": "Feature",
+    "name": "Search",
+    "description": "  Search **must** be fast.",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@search",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "search;same-name-in-two-features",
+        "keyword": "Scenario",
+        "name": "Same name in two features",
+        "description": "",
+        "line": 5,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Same name in two features"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 482000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;nested-steps-pass",
+        "keyword": "Scenario",
+        "name": "Nested steps pass",
+        "description": "",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I do the composite action",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/steps.rb:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 280000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Nested steps pass"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 63000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;nested-step-fails-inside",
+        "keyword": "Scenario",
+        "name": "Nested step fails inside",
+        "description": "",
+        "line": 12,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I do the failing composite action",
+            "line": 13,
+            "match": {
+              "location": "features/step_definitions/steps.rb:30"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "expected cart to have 5 items but had 2 (RSpec::Expectations::ExpectationNotMetError)\n./features/step_definitions/steps.rb:5:in 'block in <top (required)>'\n./features/step_definitions/steps.rb:32:in 'block in <top (required)>'\nfeatures/search.feature:13:in `I do the failing composite action'",
+              "duration": 241000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Nested step fails inside"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 132000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Nested step fails inside: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 203000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;deep-multiline-exception-with-backtrace",
+        "keyword": "Scenario",
+        "name": "Deep multiline exception with backtrace",
+        "description": "",
+        "line": 15,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the deep call fails with \"search index exploded\"",
+            "line": 16,
+            "match": {
+              "location": "features/step_definitions/steps.rb:34"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "search index exploded\nline two — ünïcödé ✓ 東京\n\tline three (tab)\nline four <b>&amp;</b> (RuntimeError)\n./features/support/env.rb:25:in 'Deep.level_c'\n./features/support/env.rb:23:in 'Deep.level_b'\n./features/support/env.rb:22:in 'Deep.level_a'\n./features/step_definitions/steps.rb:34:in 'block in <top (required)>'\nfeatures/search.feature:16:in `the deep call fails with \"search index exploded\"'",
+              "duration": 58000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Deep multiline exception with backtrace"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 551000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Deep multiline exception with backtrace: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;pending-with-a-message",
+        "keyword": "Scenario",
+        "name": "Pending with a message",
+        "description": "",
+        "line": 18,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"S\" is open",
+            "line": 19,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the feature is pending",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:35"
+            },
+            "result": {
+              "status": "pending",
+              "error_message": "waiting on JIRA-123: \"pending\" with <msg> & ünï (Cucumber::Pending)\n./features/step_definitions/steps.rb:35:in 'block in <top (required)>'\nfeatures/search.feature:20:in `the feature is pending'",
+              "duration": 50000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "the cart has 0 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Pending with a message"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;undefined-step-with-snippet",
+        "keyword": "Scenario",
+        "name": "Undefined step with snippet",
+        "description": "",
+        "line": 23,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"S\" is open",
+            "line": 24,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I search for \"ünï 🎉\" with 3 filters",
+            "line": 25,
+            "match": {
+              "location": "features/search.feature:25"
+            },
+            "result": {
+              "status": "undefined"
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 0 items",
+            "line": 26,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Undefined step with snippet"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;ambiguous-step",
+        "keyword": "Scenario",
+        "name": "Ambiguous step",
+        "description": "",
+        "line": 28,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I am ambiguous",
+            "line": 29,
+            "match": {
+              "location": "~/.rbenv/versions/3.4.7/lib/ruby/gems/3.4.0/gems/cucumber-9.2.1/lib/cucumber/step_match.rb:151"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "Ambiguous match of \"I am ambiguous\":\n\nfeatures/step_definitions/steps.rb:36:in `/^I am ambig(uous)?$/'\nfeatures/step_definitions/steps.rb:37:in `\"I am ambiguous\"'\n\nYou can run again with --guess to make Cucumber be more smart about it\n (Cucumber::Ambiguous)\nfeatures/search.feature:29:in `I am ambiguous'",
+              "duration": 33000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Ambiguous step"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 66000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Ambiguous step: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 205000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;printer-test-skipped-by-before-hook-on-ci",
+        "keyword": "Scenario",
+        "name": "Printer test skipped by Before hook on CI",
+        "description": "",
+        "line": 32,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 1 items",
+            "line": 33,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 1 items",
+            "line": 34,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          },
+          {
+            "name": "@skip_on_ci",
+            "line": 31
+          }
+        ],
+        "before": [
+          {
+            "match": {
+              "location": "features/support/env.rb:28"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "output": [
+              "browser=none scenario=Printer test skipped by Before hook on CI"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;screenshot-attachments-of-every-kind",
+        "keyword": "Scenario",
+        "name": "Screenshot attachments of every kind",
+        "description": "",
+        "line": 36,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I take a screenshot as \"png\"",
+            "line": 37,
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 100000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"jpg\"",
+            "line": 38,
+            "embeddings": [
+              {
+                "mime_type": "image/jpeg",
+                "data": "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1338000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"svg\"",
+            "line": 39,
+            "embeddings": [
+              {
+                "mime_type": "image/svg+xml",
+                "data": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiBmaWxsPSJyZWQiLz48c2NyaXB0PmFsZXJ0KCJzdmciKTwvc2NyaXB0Pjwvc3ZnPg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1357000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"pdf\"",
+            "line": 40,
+            "embeddings": [
+              {
+                "mime_type": "application/pdf",
+                "data": "JVBERi0xLjEKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9NZWRpYUJveFswIDAgMTAwIDEwMF0+PmVuZG9iagp0cmFpbGVyPDwvUm9vdCAxIDAgUj4+CiUlRU9GCg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 945000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"json\"",
+            "line": 41,
+            "embeddings": [
+              {
+                "mime_type": "application/json",
+                "data": "eyJyZXNwb25zZSI6IHsic3RhdHVzIjogNTAyLCAiYm9keSI6ICJCYWQgR2F0ZXdheSDinJcgw7xuw68iLCAiaXRlbXMiOiBbMCwgMSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTAsIDExLCAxMiwgMTMsIDE0LCAxNSwgMTYsIDE3LCAxOCwgMTldfX0="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1767000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"html\"",
+            "line": 42,
+            "embeddings": [
+              {
+                "mime_type": "text/html",
+                "data": "PGh0bWw+PGJvZHk+PGgxPkNoZWNrb3V0IPCfm5I8L2gxPjxzY3JpcHQ+d2luZG93LnB3bmVkPTE8L3NjcmlwdD48aW1nIHNyYz14IG9uZXJyb3I9YWxlcnQoMSk+PC9ib2R5PjwvaHRtbD4="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1234000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I attach a text log",
+            "line": 43,
+            "embeddings": [
+              {
+                "mime_type": "text/plain",
+                "data": "cGxhaW4gbG9nIMO8bsOvIPCfjokKc2Vjb25kIGxpbmU="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:43"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 58000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Screenshot attachments of every kind"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 57000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 15000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;failure-with-screenshots-attached",
+        "keyword": "Scenario",
+        "name": "Failure with screenshots attached",
+        "description": "",
+        "line": 45,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "I take a screenshot as \"png\"",
+            "line": 46,
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 217000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "I take a screenshot as \"html\"",
+            "line": 47,
+            "embeddings": [
+              {
+                "mime_type": "text/html",
+                "data": "PGh0bWw+PGJvZHk+PGgxPkNoZWNrb3V0IPCfm5I8L2gxPjxzY3JpcHQ+d2luZG93LnB3bmVkPTE8L3NjcmlwdD48aW1nIHNyYz14IG9uZXJyb3I9YWxlcnQoMSk+PC9ib2R5PjwvaHRtbD4="
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/steps.rb:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 126000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "the step \"render\" fails",
+            "line": 48,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step render failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:48:in `the step \"render\" fails'",
+              "duration": 67000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Failure with screenshots attached"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 71000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Failure with screenshots attached: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 246000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;2",
+        "keyword": "Scenario Outline",
+        "name": "Search term term1 passes",
+        "description": "",
+        "line": 55,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term1\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term1 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 84000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;3",
+        "keyword": "Scenario Outline",
+        "name": "Search term term2 passes",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term2\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term2 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;4",
+        "keyword": "Scenario Outline",
+        "name": "Search term term3 passes",
+        "description": "",
+        "line": 57,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term3\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term3 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;5",
+        "keyword": "Scenario Outline",
+        "name": "Search term term4 fails",
+        "description": "",
+        "line": 58,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term4\" fails",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step term4 failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:58:51:in `the step \"term4\" fails'",
+              "duration": 63000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term4 fails"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 174000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Search term term4 fails: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 168000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;6",
+        "keyword": "Scenario Outline",
+        "name": "Search term term5 passes",
+        "description": "",
+        "line": 59,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term5\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term5 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 154000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;7",
+        "keyword": "Scenario Outline",
+        "name": "Search term term6 passes",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term6\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term6 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 53000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;8",
+        "keyword": "Scenario Outline",
+        "name": "Search term term7 passes",
+        "description": "",
+        "line": 61,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term7\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term7 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;9",
+        "keyword": "Scenario Outline",
+        "name": "Search term term8 passes",
+        "description": "",
+        "line": 62,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term8\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term8 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 141000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;10",
+        "keyword": "Scenario Outline",
+        "name": "Search term term9 passes",
+        "description": "",
+        "line": 63,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term9\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term9 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;11",
+        "keyword": "Scenario Outline",
+        "name": "Search term term10 passes",
+        "description": "",
+        "line": 64,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term10\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term10 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 60000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;12",
+        "keyword": "Scenario Outline",
+        "name": "Search term term11 fails",
+        "description": "",
+        "line": 65,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term11\" fails",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:45"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "step term11 failed: \u001b[31mboom\u001b[0m (RuntimeError)\n./features/step_definitions/steps.rb:45:in 'block in <top (required)>'\nfeatures/search.feature:65:51:in `the step \"term11\" fails'",
+              "duration": 69000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term11 fails"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 190000
+            }
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP4z8AARwzEcQCukw/x0F8jngAAAABJRU5ErkJggg=="
+              }
+            ],
+            "output": [
+              "failure context for Search term term11 fails: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 176000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;13",
+        "keyword": "Scenario Outline",
+        "name": "Search term term12 passes",
+        "description": "",
+        "line": 66,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term12\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term12 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 68000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;14",
+        "keyword": "Scenario Outline",
+        "name": "Search term term13 passes",
+        "description": "",
+        "line": 67,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term13\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 11000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term13 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;15",
+        "keyword": "Scenario Outline",
+        "name": "Search term term14 passes",
+        "description": "",
+        "line": 68,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term14\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term14 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "id": "search;search-term-<term>-<result>;;16",
+        "keyword": "Scenario Outline",
+        "name": "Search term term15 passes",
+        "description": "",
+        "line": 69,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Then ",
+            "name": "the step \"term15\" passes",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/steps.rb:44"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@search",
+            "line": 1
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Search term term15 passes"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 62000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

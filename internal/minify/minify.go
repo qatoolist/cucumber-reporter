@@ -39,6 +39,9 @@ func regexAfterWord(w string) bool {
 // isWord reports whether r is a JavaScript word character for joining
 // purposes: ASCII letters, digits, "_", "$", "\" and U+0080 to U+FFFF.
 func isWord(r rune) bool {
+	if isJSSpace(r) {
+		return false
+	}
 	switch {
 	case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
 		return true
@@ -50,10 +53,10 @@ func isWord(r rune) bool {
 
 func isJSSpace(r rune) bool {
 	switch r {
-	case ' ', '\t', '\r', '\n', '\f', '\v', '\u00a0', '\uFEFF':
+	case ' ', '\t', '\r', '\n', '\f', '\v', '\u00a0', '\uFEFF', '\u2028', '\u2029':
 		return true
 	}
-	return false
+	return unicode.Is(unicode.Zs, r)
 }
 
 // isSpace matches the characters that trim and the regexp \s class treat as
@@ -87,6 +90,12 @@ func JS(src string) (string, error) {
 	var last string // last significant token, for regex detection
 	pending := rune(0)
 	var braces []bool // true marks a template expression brace
+	var controlParens []bool
+	afterControl := false
+	afterBlock := false
+	lastRegex := false
+	var blocks []bool
+	classPending, classStatement := false, false
 
 	emit := func(tok []rune) {
 		first := tok[0]
@@ -97,17 +106,31 @@ func JS(src string) (string, error) {
 			case (isWord(prev) && isWord(first)) || ((prev == '+' || prev == '-') && first == prev),
 				// A division followed by "*" or "/" would otherwise fuse into a
 				// comment opener. The reference minifier misses this.
-				prev == '/' && (first == '/' || first == '*'):
+				prev == '/' && (first == '/' || first == '*'), lastRegex && isWord(first):
 				out.WriteByte(' ')
 			}
 		}
 		pending = 0
 		out.WriteString(string(tok))
 		prev = tok[len(tok)-1]
+		prior := last
+		lastRegex = false
+		afterBlock = false
+		if string(tok) == "(" {
+			controlParens = append(controlParens, prior == "if" || prior == "while" || prior == "for" || prior == "with" || prior == "switch" || prior == "catch")
+		}
+		afterControl = false
+		if string(tok) == ")" && len(controlParens) > 0 {
+			afterControl = controlParens[len(controlParens)-1]
+			controlParens = controlParens[:len(controlParens)-1]
+		}
 		last = string(tok)
 	}
 	regexAllowed := func() bool {
-		if last == "" {
+		if lastRegex {
+			return false
+		}
+		if last == "" || afterControl || afterBlock {
 			return true
 		}
 		r, _ := utf8.DecodeLastRuneInString(last)
@@ -143,7 +166,7 @@ func JS(src string) (string, error) {
 			j := i
 			nl := false
 			for j < n && isJSSpace(s[j]) {
-				if s[j] == '\n' || s[j] == '\r' {
+				if jsNewline(s[j]) {
 					nl = true
 				}
 				j++
@@ -157,7 +180,7 @@ func JS(src string) (string, error) {
 			i = j
 		case c == '/' && i+1 < n && s[i+1] == '/':
 			j := i
-			for j < n && s[j] != '\n' {
+			for j < n && !jsNewline(s[j]) {
 				j++
 			}
 			i = j
@@ -174,7 +197,7 @@ func JS(src string) (string, error) {
 				j++
 			}
 			for _, r := range s[i:j] {
-				if r == '\n' {
+				if jsNewline(r) {
 					nl = true
 					break
 				}
@@ -215,14 +238,26 @@ func JS(src string) (string, error) {
 			}
 			i = j
 		case c == '{':
+			block := last == "" || last == ")" || last == ">" || last == "else" || last == "try" || last == "finally" || last == "do" || last == ";" || last == "{" || afterBlock || last == "static" || (last == ":" && (len(blocks) == 0 || blocks[len(blocks)-1]))
+			if classPending {
+				block = classStatement
+				classPending = false
+			}
+			blocks = append(blocks, block)
 			braces = append(braces, false)
 			emit(s[i : i+1])
 			i++
 		case c == '}':
+			block := false
+			if len(blocks) > 0 {
+				block = blocks[len(blocks)-1]
+				blocks = blocks[:len(blocks)-1]
+			}
 			if len(braces) > 0 {
 				braces = braces[:len(braces)-1]
 			}
 			emit(s[i : i+1])
+			afterBlock = block
 			i++
 		case c == '/' && regexAllowed():
 			j, inClass := i+1, false
@@ -242,7 +277,7 @@ func JS(src string) (string, error) {
 					inClass = false
 				case d == '/' && !inClass:
 					break scan
-				case d == '\n':
+				case jsNewline(d):
 					return "", fmt.Errorf("minify: unterminated regular expression at offset %d", i)
 				}
 				j++
@@ -252,11 +287,16 @@ func JS(src string) (string, error) {
 				j++
 			}
 			emit(s[i:j])
+			lastRegex = true
 			i = j
 		case isWord(c):
 			j := i
 			for j < n && isWord(s[j]) {
 				j++
+			}
+			if string(s[i:j]) == "class" {
+				classPending = true
+				classStatement = last == "" || last == ";" || last == "{" || afterBlock || last == "export" || last == "default"
 			}
 			emit(s[i:j])
 			i = j
@@ -265,7 +305,7 @@ func JS(src string) (string, error) {
 			i++
 		}
 	}
-	return finish(out.String()), nil
+	return strings.TrimFunc(out.String(), isJSSpace) + "\n", nil
 }
 
 // CSS minifies a stylesheet. It returns an error for an unterminated comment
@@ -280,6 +320,13 @@ func CSS(src string) (string, error) {
 	for i := 0; i < n; {
 		c := s[i]
 		switch {
+		case i+4 <= n && strings.EqualFold(string(s[i:i+4]), "url("):
+			end, err := cssURLEnd(s, i+4)
+			if err != nil {
+				return "", err
+			}
+			out = append(out, s[i:end]...)
+			i = end
 		case c == '/' && i+1 < n && s[i+1] == '*':
 			j := i + 2
 			for j+1 < n && (s[j] != '*' || s[j+1] != '/') {
@@ -317,6 +364,16 @@ func CSS(src string) (string, error) {
 		text = text[:0]
 	}
 	for k := 0; k < len(out); {
+		if k+4 <= len(out) && strings.EqualFold(string(out[k:k+4]), "url(") {
+			end, err := cssURLEnd(out, k+4)
+			if err != nil {
+				return "", err
+			}
+			flush()
+			b.WriteString(string(out[k:end]))
+			k = end
+			continue
+		}
 		if out[k] == '"' || out[k] == '\'' {
 			if end, ok := matchCSSString(out, k); ok {
 				flush()
@@ -332,9 +389,8 @@ func CSS(src string) (string, error) {
 	return finish(b.String()), nil
 }
 
-// matchCSSString reports the end of a quoted string starting at k. A backslash
-// escapes any following character except a line feed, mirroring the pattern
-// "(?:\\.|[^"\\])*" where "." excludes "\n".
+// matchCSSString reports the end of a quoted string. Escaped line breaks are
+// CSS line continuations and must remain inside the preserved string token.
 func matchCSSString(s []rune, k int) (int, bool) {
 	q := s[k]
 	for m := k + 1; m < len(s); {
@@ -342,7 +398,7 @@ func matchCSSString(s []rune, k int) (int, bool) {
 		case q:
 			return m + 1, true
 		case '\\':
-			if m+1 >= len(s) || s[m+1] == '\n' {
+			if m+1 >= len(s) {
 				return 0, false
 			}
 			m += 2
@@ -392,3 +448,29 @@ func cssText(p []rune) string {
 	r := strings.ReplaceAll(string(d), ": ", ":")
 	return strings.ReplaceAll(r, ";}", "}")
 }
+
+func cssURLEnd(s []rune, start int) (int, error) {
+	quote := rune(0)
+	for i := start; i < len(s); i++ {
+		if s[i] == '\\' {
+			i++
+			continue
+		}
+		if quote != 0 {
+			if s[i] == quote {
+				quote = 0
+			}
+			continue
+		}
+		if s[i] == '\'' || s[i] == '"' {
+			quote = s[i]
+			continue
+		}
+		if s[i] == ')' {
+			return i + 1, nil
+		}
+	}
+	return 0, fmt.Errorf("minify: unterminated URL at offset %d", start)
+}
+
+func jsNewline(r rune) bool { return r == '\n' || r == '\r' || r == '\u2028' || r == '\u2029' }

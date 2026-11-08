@@ -1,0 +1,26 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+....F-.F-.F
+
+(::) failed steps (::)
+
+rule bg boom (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/rules.feature:15:in `rule background fails'
+
+rule bg boom (RuntimeError)
+./features/step_definitions/s.rb:3:in 'block in <top (required)>'
+features/rules.feature:15:in `rule background fails'
+
+example boom (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/rules.feature:25:in `fail'
+
+Failing Scenarios:
+cucumber features/rules.feature:17 # Example: In bad rule one
+cucumber features/rules.feature:20 # Example: In bad rule two
+cucumber features/rules.feature:24 # Example: Plain rule example fails
+
+4 scenarios (3 failed, 1 passed)
+11 steps (3 failed, 2 skipped, 6 passed)
+0m0.023s
+exit=1

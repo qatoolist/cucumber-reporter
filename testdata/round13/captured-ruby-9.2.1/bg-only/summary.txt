@@ -1,0 +1,7 @@
+$ cucumber --no-color --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+.
+
+1 scenario (1 passed)
+1 step (1 passed)
+0m0.014s
+exit=0

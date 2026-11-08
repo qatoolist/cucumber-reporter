@@ -1,0 +1,713 @@
+[
+  {
+    "line": 2,
+    "elements": [
+      {
+        "line": 3,
+        "name": "",
+        "description": "",
+        "type": "background",
+        "keyword": "Background",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            },
+            "line": 4,
+            "name": "the shop is open",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "start_timestamp": "2026-11-06T09:00:00.123Z",
+        "before": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            },
+            "match": {
+              "location": "com.example.Hooks.setUp(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "line": 7,
+        "name": "Successful checkout ✅",
+        "description": "",
+        "id": "checkout;successful-checkout",
+        "after": [
+          {
+            "result": {
+              "status": "failed",
+              "error_message": "java.lang.IllegalStateException: cleanup failed",
+              "duration": 15000000
+            },
+            "match": {
+              "location": "com.example.Hooks.tearDown(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Scenario",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 4000000
+            },
+            "line": 8,
+            "name": "a cart with 3 items",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [
+                {
+                  "val": "3",
+                  "offset": 7
+                }
+              ],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1500000000
+            },
+            "line": 9,
+            "name": "I pay with a valid card",
+            "keyword": "When ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "output": [
+              "GET /api/cart 200 12ms\nPOST /api/checkout 201 340ms\nüñí 🛒 done\n"
+            ],
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 25000000
+            },
+            "line": 10,
+            "name": "I see the receipt",
+            "keyword": "Then ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "embeddings": [
+              {
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC",
+                "mime_type": "image/png",
+                "name": "screenshot"
+              }
+            ],
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout"
+          },
+          {
+            "name": "@smoke"
+          }
+        ]
+      },
+      {
+        "line": 3,
+        "name": "",
+        "description": "",
+        "type": "background",
+        "keyword": "Background",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            },
+            "line": 4,
+            "name": "the shop is open",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "start_timestamp": "2026-11-06T09:00:01.123Z",
+        "before": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            },
+            "match": {
+              "location": "com.example.Hooks.setUp(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "line": 56,
+        "name": "Discount SAVE10",
+        "description": "",
+        "id": "checkout;discount-code;discounts;2",
+        "after": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "match": {
+              "location": "com.example.Hooks.tearDown(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Scenario Outline",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "line": 51,
+            "name": "a coupon SAVE10",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            },
+            "line": 52,
+            "name": "the discount is 10%",
+            "keyword": "Then ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout"
+          },
+          {
+            "name": "@discount"
+          }
+        ]
+      },
+      {
+        "line": 3,
+        "name": "",
+        "description": "",
+        "type": "background",
+        "keyword": "Background",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            },
+            "line": 4,
+            "name": "the shop is open",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "start_timestamp": "2026-11-06T09:00:02.123Z",
+        "before": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            },
+            "match": {
+              "location": "com.example.Hooks.setUp(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "line": 60,
+        "name": "Flaky search 🔁",
+        "description": "",
+        "id": "checkout;flaky-search",
+        "after": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "match": {
+              "location": "com.example.Hooks.tearDown(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Scenario",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 300000000
+            },
+            "line": 61,
+            "name": "I search for \"тест\"",
+            "keyword": "When ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 5000000
+            },
+            "line": 62,
+            "name": "I see 3 results",
+            "keyword": "Then ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout"
+          }
+        ]
+      }
+    ],
+    "name": "Checkout 🛒 – Ünïcode",
+    "description": "  As a shopper I want to pay",
+    "id": "checkout",
+    "keyword": "Feature",
+    "uri": "file:src/test/resources/features/checkout.feature",
+    "tags": [
+      {
+        "name": "@checkout",
+        "type": "Tag",
+        "location": {
+          "line": 1,
+          "column": 1
+        }
+      }
+    ]
+  },
+  {
+    "line": 1,
+    "elements": [
+      {
+        "line": 3,
+        "name": "",
+        "description": "",
+        "type": "background",
+        "keyword": "Background",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "line": 4,
+            "name": "a registered user \"zoë@example.com\"",
+            "keyword": "Given ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "start_timestamp": "2026-11-06T09:00:07.123Z",
+        "before": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            },
+            "match": {
+              "location": "com.example.Hooks.setUp(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "line": 10,
+        "name": "Update address",
+        "description": "",
+        "id": "profile;update-address",
+        "after": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "match": {
+              "location": "com.example.Hooks.tearDown(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Scenario",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 9000000
+            },
+            "line": 11,
+            "name": "I submit the address",
+            "keyword": "When ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "doc_string": {
+              "content_type": "json",
+              "line": 12,
+              "value": "{\n  \"street\": \"Hauptstraße 1\",\n  \"city\": \"Zürich\"\n}"
+            },
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            },
+            "line": 16,
+            "name": "my addresses are",
+            "keyword": "Then ",
+            "match": {
+              "arguments": [],
+              "location": "com.example.CheckoutSteps.step(String)"
+            },
+            "rows": [
+              {
+                "cells": [
+                  "street",
+                  "city"
+                ]
+              },
+              {
+                "cells": [
+                  "Hauptstraße 1",
+                  "Zürich"
+                ]
+              }
+            ],
+            "before": [
+              {
+                "result": {
+                  "duration": 120000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.beforeStep()"
+                }
+              }
+            ],
+            "after": [
+              {
+                "result": {
+                  "duration": 90000,
+                  "status": "passed"
+                },
+                "match": {
+                  "location": "com.example.Hooks.afterStep(io.cucumber.java.Scenario)"
+                }
+              }
+            ]
+          }
+        ],
+        "tags": []
+      }
+    ],
+    "name": "Profile",
+    "description": "  As a shopper I want to pay",
+    "id": "profile",
+    "keyword": "Feature",
+    "uri": "file:src/test/resources/features/profile.feature",
+    "tags": []
+  }
+]

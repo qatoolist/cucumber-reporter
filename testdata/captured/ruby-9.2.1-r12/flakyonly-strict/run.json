@@ -1,0 +1,79 @@
+[
+  {
+    "id": "flaky-only",
+    "uri": "features/f.feature",
+    "keyword": "Feature",
+    "name": "Flaky only",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "id": "flaky-only;passes",
+        "keyword": "Scenario",
+        "name": "Passes",
+        "description": "",
+        "line": 3,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "ok",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 19000
+            }
+          }
+        ]
+      },
+      {
+        "id": "flaky-only;fails-then-passes",
+        "keyword": "Scenario",
+        "name": "Fails then passes",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step c",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "first c (RuntimeError)\n./features/step_definitions/s.rb:3:in 'block in <top (required)>'\nfeatures/f.feature:7:in `attempt step c'",
+              "duration": 57000
+            }
+          }
+        ]
+      },
+      {
+        "id": "flaky-only;fails-then-passes",
+        "keyword": "Scenario",
+        "name": "Fails then passes",
+        "description": "",
+        "line": 6,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "attempt step c",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 7000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

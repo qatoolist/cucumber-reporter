@@ -1,0 +1,584 @@
+[
+  {
+    "id": "checkout-🛒-—-ünïcödé-café",
+    "uri": "features/checkout.feature",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 — Ünïcödé café",
+    "description": "  As a **shopper** I want to _pay_ so that:\n  - items ship\n  - `code` blocks render\n\n  | not | a | table |\n\n  [docs](http://example.invalid/checkout)",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 4 items (row-4)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 124000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;5",
+        "keyword": "Scenario Outline",
+        "name": "Add 4 items (row-4)",
+        "description": "",
+        "line": 28,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 4 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 4 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 5 items (row-5)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);small;6",
+        "keyword": "Scenario Outline",
+        "name": "Add 5 items (row-5)",
+        "description": "",
+        "line": 29,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 5 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 5 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Add 10 items (big-1 ✓)"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;add-<n>-items-(<label>);big;2",
+        "keyword": "Scenario Outline",
+        "name": "Add 10 items (big-1 ✓)",
+        "description": "",
+        "line": 39,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I add 10 items",
+            "line": 20,
+            "match": {
+              "location": "features/step_definitions/steps.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the cart has 10 items",
+            "line": 21,
+            "match": {
+              "location": "features/step_definitions/steps.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@slow",
+            "line": 36
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Invalid coupon has ANSI colour in the error"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 82000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;invalid-coupon-has-ansi-colour-in-the-error",
+        "keyword": "Scenario",
+        "name": "Invalid coupon has ANSI colour in the error",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply an invalid coupon \"BAD<1>\"",
+            "line": 57,
+            "match": {
+              "location": "features/step_definitions/steps.rb:15"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "\u001b[31mCoupon BAD<1> rejected\u001b[0m\n  \u001b[1mexpected\u001b[0m: a valid coupon\n  \u001b[1mgot\u001b[0m:      \u001b[33mBAD<1>\u001b[0m <script>alert(1)</script> & 'single' \"double\"\nlong-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff- (ArgumentError)\n./features/step_definitions/steps.rb:16:in 'block in <top (required)>'\nfeatures/checkout.feature:57:in `I apply an invalid coupon \"BAD<1>\"'",
+              "duration": 56000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 100",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "L3ByaXZhdGUvdG1wL2NsYXVkZS01MDIvLVVzZXJzLXFhdG9vbGlzdC1Eb3dubG9hZHMtcmVhZHktdG8tZ2l0LXJhaW5tYWtlci10YWYvZWMyNzJjOWYtZGU3ZC00ODllLWJkZDAtMzI2NGQ2MzNjMDJhL3NjcmF0Y2hwYWQvcmVwL3JldkczLXdvcmsvY2FwL2Jsb2JzL3Nob3QucG5n"
+              }
+            ],
+            "output": [
+              "failure context for Invalid coupon has ANSI colour in the error: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 88000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Invalid coupon has ANSI colour in the error"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;invalid-coupon-has-ansi-colour-in-the-error",
+        "keyword": "Scenario",
+        "name": "Invalid coupon has ANSI colour in the error",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I apply an invalid coupon \"BAD<1>\"",
+            "line": 57,
+            "match": {
+              "location": "features/step_definitions/steps.rb:15"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "\u001b[31mCoupon BAD<1> rejected\u001b[0m\n  \u001b[1mexpected\u001b[0m: a valid coupon\n  \u001b[1mgot\u001b[0m:      \u001b[33mBAD<1>\u001b[0m <script>alert(1)</script> & 'single' \"double\"\nlong-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff-long-diff- (ArgumentError)\n./features/step_definitions/steps.rb:16:in 'block in <top (required)>'\nfeatures/checkout.feature:57:in `I apply an invalid coupon \"BAD<1>\"'",
+              "duration": 52000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the total is 100",
+            "line": 58,
+            "match": {
+              "location": "features/step_definitions/steps.rb:11"
+            },
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "after": [
+          {
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "L3ByaXZhdGUvdG1wL2NsYXVkZS01MDIvLVVzZXJzLXFhdG9vbGlzdC1Eb3dubG9hZHMtcmVhZHktdG8tZ2l0LXJhaW5tYWtlci10YWYvZWMyNzJjOWYtZGU3ZC00ODllLWJkZDAtMzI2NGQ2MzNjMDJhL3NjcmF0Y2hwYWQvcmVwL3JldkczLXdvcmsvY2FwL2Jsb2JzL3Nob3QucG5n"
+              }
+            ],
+            "output": [
+              "failure context for Invalid coupon has ANSI colour in the error: \u001b[31mred\u001b[0m"
+            ],
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 11,
+        "type": "background",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the store \"Café 東京 ☕\" is open",
+            "line": 12,
+            "match": {
+              "location": "features/step_definitions/steps.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "I am logged in as \"zoë\"",
+            "line": 47,
+            "match": {
+              "location": "features/step_definitions/steps.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          }
+        ],
+        "before": [
+          {
+            "output": [
+              "browser=none scenario=Payment gateway retried"
+            ],
+            "match": {
+              "location": "features/support/env.rb:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 37000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout-🛒-—-ünïcödé-café;payment-gateway-retried",
+        "keyword": "Scenario",
+        "name": "Payment gateway retried",
+        "description": "",
+        "line": 79,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "the payment gateway responds for \"gw-retry\"",
+            "line": 80,
+            "match": {
+              "location": "features/step_definitions/steps.rb:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3879000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@flaky",
+            "line": 78
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/env.rb:34"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

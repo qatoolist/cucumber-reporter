@@ -1,0 +1,27 @@
+$ PLAN=W1:fail1,W2:fail cucumber --retry 1
+F.FF.
+
+(::) failed steps (::)
+
+planned flaky failure W1 call 1 (run ) (RuntimeError)
+./features/step_definitions/s.rb:8:in 'block in <top (required)>'
+./features/support/around.rb:2:in 'block in <top (required)>'
+features/a.feature:4:in `outcome "W1"'
+
+planned failure W2 (run ) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+./features/support/around.rb:2:in 'block in <top (required)>'
+features/a.feature:8:in `outcome "W2"'
+
+planned failure W2 (run ) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+./features/support/around.rb:2:in 'block in <top (required)>'
+features/a.feature:8:in `outcome "W2"'
+
+Failing Scenarios:
+cucumber features/a.feature:7 # Scenario: Wrapped two
+
+3 scenarios (1 failed, 1 flaky, 1 passed)
+5 steps (3 failed, 2 passed)
+0m0.033s
+exit=1

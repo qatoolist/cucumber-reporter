@@ -1,0 +1,10 @@
+$ cucumber --no-color --retry 2 --format progress --out progress.txt --format json --out run.json --format message --out run.ndjson
+F-.F-F-F-.
+
+Failing Scenarios:
+cucumber features/a.feature:6 # Scenario: Before raises always
+
+3 scenarios (1 failed, 1 flaky, 1 passed)
+6 steps (4 skipped, 2 passed)
+0m0.021s
+exit=1

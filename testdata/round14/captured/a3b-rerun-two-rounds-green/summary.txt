@@ -1,0 +1,54 @@
+$ PLAN=A:fail,B:fail,C:fail cucumber 
+FFF.
+
+(::) failed steps (::)
+
+planned failure A (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:3:in `outcome "A"'
+
+planned failure B (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:6:in `outcome "B"'
+
+planned failure C (run 1) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:9:in `outcome "C"'
+
+Failing Scenarios:
+cucumber features/r.feature:2 # Scenario: Alpha
+cucumber features/r.feature:5 # Scenario: Bravo
+cucumber features/r.feature:8 # Scenario: Charlie
+
+4 scenarios (3 failed, 1 passed)
+4 steps (3 failed, 1 passed)
+0m0.020s
+exit=1
+$ PLAN=B:fail,C:fail cucumber @run1.rerun.txt
+.FF
+
+(::) failed steps (::)
+
+planned failure B (run 2) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:6:in `outcome "B"'
+
+planned failure C (run 2) (RuntimeError)
+./features/step_definitions/s.rb:5:in 'block in <top (required)>'
+features/r.feature:9:in `outcome "C"'
+
+Failing Scenarios:
+cucumber features/r.feature:5 # Scenario: Bravo
+cucumber features/r.feature:8 # Scenario: Charlie
+
+3 scenarios (2 failed, 1 passed)
+3 steps (2 failed, 1 passed)
+0m0.037s
+exit=1
+$ PLAN= cucumber @run2.rerun.txt
+..
+
+2 scenarios (2 passed)
+2 steps (2 passed)
+0m0.023s
+exit=0

@@ -1,0 +1,299 @@
+[
+  {
+    "id": "gherkin-shapes",
+    "uri": "features/shapes.feature",
+    "keyword": "Feature",
+    "name": "Gherkin shapes",
+    "description": "",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@feature_tag",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "id": "gherkin-shapes;login-as-<role>-with-<count>-items;admins;2",
+        "keyword": "Scenario Outline",
+        "name": "Login as admin with 3 items",
+        "description": "",
+        "line": 11,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a user with role \"admin\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 27000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "they have 3 items",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          },
+          {
+            "name": "@outline_tag",
+            "line": 4
+          }
+        ]
+      },
+      {
+        "id": "gherkin-shapes;login-as-<role>-with-<count>-items;guests;2",
+        "keyword": "Scenario Outline",
+        "name": "Login as guest with 0 items",
+        "description": "",
+        "line": 16,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a user with role \"guest\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "they have 0 items",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          },
+          {
+            "name": "@outline_tag",
+            "line": 4
+          },
+          {
+            "name": "@ex_tag",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "id": "gherkin-shapes;login-as-<role>-with-<count>-items;guests;3",
+        "keyword": "Scenario Outline",
+        "name": "Login as guest with 9 items",
+        "description": "",
+        "line": 17,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a user with role \"guest\"",
+            "line": 6,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "they have 9 items",
+            "line": 7,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "bad count 9 (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/shapes.feature:17:7:in `they have 9 items'",
+              "duration": 229000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          },
+          {
+            "name": "@outline_tag",
+            "line": 4
+          },
+          {
+            "name": "@ex_tag",
+            "line": 13
+          }
+        ]
+      },
+      {
+        "id": "gherkin-shapes;doc-string-and-table",
+        "keyword": "Scenario",
+        "name": "Doc string and table",
+        "description": "",
+        "line": 19,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a doc string:",
+            "line": 20,
+            "doc_string": {
+              "value": "{\"hello\": \"world\"}",
+              "content_type": "json",
+              "line": 21
+            },
+            "match": {
+              "location": "features/step_definitions/s.rb:3"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 13000
+            }
+          },
+          {
+            "keyword": "And ",
+            "name": "a table:",
+            "line": 24,
+            "rows": [
+              {
+                "cells": [
+                  "a",
+                  "b"
+                ]
+              },
+              {
+                "cells": [
+                  "1",
+                  "2"
+                ]
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/s.rb:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 23000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          }
+        ]
+      },
+      {
+        "id": "gherkin-shapes;under-rule-passes",
+        "keyword": "Example",
+        "name": "Under rule passes",
+        "description": "",
+        "line": 33,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "rule setup",
+            "line": 31,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000
+            }
+          },
+          {
+            "keyword": "Given ",
+            "name": "a user with role \"x\"",
+            "line": 34,
+            "match": {
+              "location": "features/step_definitions/s.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          }
+        ]
+      },
+      {
+        "id": "gherkin-shapes;under-rule-fails",
+        "keyword": "Example",
+        "name": "Under rule fails",
+        "description": "",
+        "line": 36,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "rule setup",
+            "line": 31,
+            "match": {
+              "location": "features/step_definitions/s.rb:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "they have 1 items",
+            "line": 37,
+            "match": {
+              "location": "features/step_definitions/s.rb:2"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "bad count 1 (RuntimeError)\n./features/step_definitions/s.rb:2:in 'block in <top (required)>'\nfeatures/shapes.feature:37:in `they have 1 items'",
+              "duration": 40000
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@feature_tag",
+            "line": 1
+          }
+        ]
+      }
+    ]
+  }
+]

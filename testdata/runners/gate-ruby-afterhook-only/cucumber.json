@@ -1,0 +1,403 @@
+[
+  {
+    "uri": "features/checkout.feature",
+    "id": "checkout",
+    "keyword": "Feature",
+    "name": "Checkout 🛒 – Ünïcode",
+    "description": "",
+    "line": 2,
+    "tags": [
+      {
+        "name": "@checkout",
+        "line": 1
+      }
+    ],
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "before": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;successful-checkout",
+        "keyword": "Scenario",
+        "name": "Successful checkout ✅",
+        "description": "",
+        "line": 7,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@smoke",
+            "line": 6
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a cart with 3 items",
+            "line": 8,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4000000
+            }
+          },
+          {
+            "keyword": "When ",
+            "name": "I pay with a valid card",
+            "line": 9,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1500000000
+            },
+            "output": [
+              "GET /api/cart 200 12ms\nPOST /api/checkout 201 340ms\nüñí 🛒 done\n"
+            ]
+          },
+          {
+            "keyword": "Then ",
+            "name": "I see the receipt",
+            "line": 10,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 25000000
+            },
+            "embeddings": [
+              {
+                "mime_type": "image/png",
+                "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAFUok9dAAAAAElFTkSuQmCC"
+              }
+            ]
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:7"
+            },
+            "result": {
+              "status": "failed",
+              "error_message": "java.lang.IllegalStateException: cleanup failed",
+              "duration": 15000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "before": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;discount-code;discounts;2",
+        "keyword": "Scenario Outline",
+        "name": "Discount SAVE10",
+        "description": "",
+        "line": 56,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          },
+          {
+            "name": "@discount",
+            "line": 49
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a coupon SAVE10",
+            "line": 51,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "the discount is 10%",
+            "line": 52,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:7"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ]
+      },
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "before": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "the shop is open",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "checkout;flaky-search",
+        "keyword": "Scenario",
+        "name": "Flaky search 🔁",
+        "description": "",
+        "line": 60,
+        "type": "scenario",
+        "tags": [
+          {
+            "name": "@checkout",
+            "line": 1
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I search for \"тест\"",
+            "line": 61,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 300000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "I see 3 results",
+            "line": 62,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5000000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:7"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "uri": "features/profile.feature",
+    "id": "profile",
+    "keyword": "Feature",
+    "name": "Profile",
+    "description": "",
+    "line": 1,
+    "elements": [
+      {
+        "keyword": "Background",
+        "name": "",
+        "description": "",
+        "line": 3,
+        "type": "background",
+        "before": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:1"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3000000
+            }
+          }
+        ],
+        "steps": [
+          {
+            "keyword": "Given ",
+            "name": "a registered user \"zoë@example.com\"",
+            "line": 4,
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ]
+      },
+      {
+        "id": "profile;update-address",
+        "keyword": "Scenario",
+        "name": "Update address",
+        "description": "",
+        "line": 10,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "When ",
+            "name": "I submit the address",
+            "line": 11,
+            "doc_string": {
+              "value": "{\n  \"street\": \"Hauptstraße 1\",\n  \"city\": \"Zürich\"\n}",
+              "content_type": "",
+              "line": 12
+            },
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9000000
+            }
+          },
+          {
+            "keyword": "Then ",
+            "name": "my addresses are",
+            "line": 16,
+            "rows": [
+              {
+                "cells": [
+                  "street",
+                  "city"
+                ]
+              },
+              {
+                "cells": [
+                  "Hauptstraße 1",
+                  "Zürich"
+                ]
+              }
+            ],
+            "match": {
+              "location": "features/step_definitions/checkout_steps.rb:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ],
+        "after": [
+          {
+            "match": {
+              "location": "features/support/hooks.rb:7"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2000000
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

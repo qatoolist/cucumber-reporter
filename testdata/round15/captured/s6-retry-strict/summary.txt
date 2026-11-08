@@ -1,0 +1,27 @@
+$ [run] CI= BROWSER= FLAKY=gw-retry:1 FAIL= cucumber --retry 1 --strict
+Failing Scenarios:
+cucumber features/checkout.feature:31 # Scenario Outline: Add 7 items (row-7 wrong)
+cucumber features/checkout.feature:56 # Scenario: Invalid coupon has ANSI colour in the error
+cucumber features/francais.feature:20 # Plan du scénario: Ajouter 2 articles
+cucumber features/francais.feature:24 # Scénario: Échec accentué
+cucumber features/search.feature:12 # Scenario: Nested step fails inside
+cucumber features/search.feature:15 # Scenario: Deep multiline exception with backtrace
+cucumber features/search.feature:28 # Scenario: Ambiguous step
+cucumber features/search.feature:45 # Scenario: Failure with screenshots attached
+cucumber features/search.feature:58 # Scenario Outline: Search term term4 fails
+cucumber features/search.feature:65 # Scenario Outline: Search term term11 fails
+Flaky Scenarios:
+cucumber features/checkout.feature:79 # Scenario: Payment gateway retried
+Undefined Scenarios:
+cucumber features/search.feature:23 # Scenario: Undefined step with snippet
+Pending Scenarios:
+cucumber features/search.feature:18 # Scenario: Pending with a message
+73 scenarios (10 failed, 1 flaky, 1 undefined, 1 pending, 60 passed)
+171 steps (21 failed, 4 skipped, 1 undefined, 1 pending, 144 passed)
+0m0.124s
+You can implement step definitions for undefined steps with these snippets:
+When('I search for {string} with {int} filters') do |string, int|
+# When('I search for {string} with {float} filters') do |string, float|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+exit=1

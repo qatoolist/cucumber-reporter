@@ -1,0 +1,22 @@
+.PF.
+
+(::) pending steps (::)
+
+features/step_definitions/s.rb:2:in `"step {word}"'
+
+(::) failed steps (::)
+
+boom z attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:10:in `step z'
+
+Failing Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+Pending Scenarios:
+cucumber features/a.feature:5 # Scenario: Y
+
+4 scenarios (1 failed, 1 pending, 2 passed)
+4 steps (1 failed, 1 pending, 2 passed)
+0m0.183s
+$ PLAN=y:pending,z:fail cucumber --strict
+exit=1

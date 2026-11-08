@@ -1,0 +1,85 @@
+[
+  {
+    "uri": "js.feature",
+    "name": "JS",
+    "elements": [
+      {
+        "name": "case",
+        "line": 9,
+        "type": "scenario",
+        "steps": [
+          {
+            "keyword": "Before",
+            "name": "before1",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          },
+          {
+            "keyword": "Before",
+            "name": "before2",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          },
+          {
+            "keyword": "Then ",
+            "name": "first",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "Before",
+            "name": "after-first",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          },
+          {
+            "keyword": "Before",
+            "name": "before-pay1",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          },
+          {
+            "keyword": "Before",
+            "name": "before-pay2",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          },
+          {
+            "keyword": "Then ",
+            "name": "pay",
+            "result": {
+              "status": "failed",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "Before",
+            "name": "after",
+            "result": {
+              "status": "passed",
+              "duration": 0
+            },
+            "hidden": true
+          }
+        ]
+      }
+    ]
+  }
+]

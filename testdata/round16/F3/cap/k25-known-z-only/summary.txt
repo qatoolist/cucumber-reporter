@@ -1,0 +1,20 @@
+..FF.
+
+(::) failed steps (::)
+
+boom z attempt 1 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:10:in `step z'
+
+boom z attempt 2 (RuntimeError)
+./features/step_definitions/s.rb:9:in 'block in <top (required)>'
+features/a.feature:10:in `step z'
+
+Failing Scenarios:
+cucumber features/a.feature:9 # Scenario: Z
+
+4 scenarios (1 failed, 3 passed)
+5 steps (2 failed, 3 passed)
+0m0.024s
+$ PLAN=z:fail cucumber --retry 1
+exit=1
