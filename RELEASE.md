@@ -1,7 +1,7 @@
 # Release checklist
 
 Do not tag until every required check below has passed on the exact release commit.
-v0.3.0 was released on 2026-11-08. Offline checks do not substitute for browser results.
+This list is reused for every release; v0.3.0 is tagged from the release commit only after it passes. Offline checks do not substitute for browser results.
 
 - [ ] Commit the reviewed tree, then run `make release-gate`. It refuses dirty trees, records HEAD and the Git tree digest, and runs in a fresh detached worktree. Attach the complete receipt. Its required stages include `api-check`, `corpus-check` and `dom-check`; no stage may be skipped.
 - [ ] jsdom for `internal/browsercheck/dom`: the DOM suite resolves `jsdom` from `internal/browsercheck/node_modules`. Run `npm ci --prefix internal/browsercheck --ignore-scripts` once (the release gate does this), or point `NODE_PATH` at an existing install of jsdom 20.0.3, for example `NODE_PATH=/path/to/node_modules python3 internal/browsercheck/dom/check.py --mutants`.
@@ -29,8 +29,7 @@ v0.3.0 was released on 2026-11-08. Offline checks do not substitute for browser 
       or a pass on the final release tree. A local Chrome launch aborted before
       DevTools became available, so its interaction tests remain pending CI.
 
-- [ ] Change the README's “Planned version 0.3.0 (unreleased)” heading to the release
-      version. Change CHANGELOG `[Unreleased]` to `[0.3.0] - YYYY-MM-DD` and add a fresh
+- [ ] Change the README's planned-version heading to the release version. Change CHANGELOG `[Unreleased]` to `[0.3.0] - YYYY-MM-DD` and add a fresh
       unreleased section. Replace the guide's pre-tag wording with the completed status.
 - [ ] Run `go test ./report -run '^$' -bench '^BenchmarkSidecarRelativeBudget$' -benchtime=1x`
       on the release filesystem; the median durable-publication budget is 2× write-only.
