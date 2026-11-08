@@ -1,7 +1,7 @@
 # Release checklist
 
 Do not tag until every required check below has passed on the exact release commit.
-v0.3.0 is currently unreleased. Offline checks do not substitute for browser results.
+v0.3.0 was released on 2026-11-08. Offline checks do not substitute for browser results.
 
 - [ ] Commit the reviewed tree, then run `make release-gate`. It refuses dirty trees, records HEAD and the Git tree digest, and runs in a fresh detached worktree. Attach the complete receipt. Its required stages include `api-check`, `corpus-check` and `dom-check`; no stage may be skipped.
 - [ ] jsdom for `internal/browsercheck/dom`: the DOM suite resolves `jsdom` from `internal/browsercheck/node_modules`. Run `npm ci --prefix internal/browsercheck --ignore-scripts` once (the release gate does this), or point `NODE_PATH` at an existing install of jsdom 20.0.3, for example `NODE_PATH=/path/to/node_modules python3 internal/browsercheck/dom/check.py --mutants`.
@@ -9,7 +9,7 @@ v0.3.0 is currently unreleased. Offline checks do not substitute for browser res
 - [ ] Review the final public API against the previous tag; use named struct fields.
 - [ ] Confirm `developmentVersion` in `cmd/cucumber-report/version.go` matches the
       intended version. Installed builds report `debug.ReadBuildInfo().Main.Version`;
-      ordinary development source uses `0.3.0-dev` with a revision when available;
+      ordinary development source uses `<next>-dev` with a revision when available;
       release source/archives must set the exact version before tagging.
 - [ ] Confirm pinned tools exist and install with the selected Go/Python versions:
       [golangci-lint v2.15.0](https://github.com/golangci/golangci-lint/releases/tag/v2.15.0)

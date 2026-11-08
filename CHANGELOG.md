@@ -5,7 +5,7 @@ Semantic Versioning.
 
 ## [Unreleased]
 
-Planned v0.3.0; browser/print/cross-browser CI remains a release gate.
+## [0.3.0] - 2026-11-08
 
 ### Added
 

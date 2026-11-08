@@ -11,7 +11,7 @@ The screenshots illustrate the original report layout; v0.3.0 adds the controls 
 
 ![Dashboard of a synthetic run](docs/dashboard.jpg)
 
-## Planned version 0.3.0 (unreleased)
+## Version 0.3.0
 
 Enhanced summaries use schema 4.
 Plain options schema 2 and plain navigation IDs remain unchanged; see the [identity guide](docs/0.3.0.md#identity-merge-and-comparison-rules).
